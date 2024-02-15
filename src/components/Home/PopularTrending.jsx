@@ -30,11 +30,11 @@ const PopularTrending = ({ trendingData }) => {
 
   return (
     <div
-      className="absolute right-40 top-6 rounded bg-white mb-4 border"
+      className="absolute right-[3rem] top-6 rounded-xl mb-4 border bg-gray-100 w-64"
       style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
     >
-      <div className="p-3 text-xxs font-semibold w-full">
-        TRENDING COMMUNITIES
+      <div className="p-5 text-xs font-semibold w-full text-gray-500">
+      POPULAR COMMUNITIES
       </div>
       {trendingData
         .slice(0, showMore ? trendingData.length : 4)
@@ -43,7 +43,7 @@ const PopularTrending = ({ trendingData }) => {
         ))}
       {!showMore && trendingData.length > 4 && (
         <div
-          className="p-3 text-black hover:bg-gray-500 text-[.789rem] cursor-pointer"
+          className="p-3 text-black hover:bg-gray-500 text-[.789rem] cursor-pointer hover:bg-inherit"
           onClick={() => setShowMore(true)}
         >
           See More
@@ -51,7 +51,7 @@ const PopularTrending = ({ trendingData }) => {
       )}
       {showMore && (
         <div
-          className="p-3 px-5 text-center text-black hover:bg-gray-500 text-sm cursor-pointer"
+        className="p-3 text-black hover:bg-gray-500 text-[.789rem] cursor-pointer hover:bg-inherit"
           onClick={() => setShowMore(false)}
         >
           See Less

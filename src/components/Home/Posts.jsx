@@ -3,7 +3,9 @@ import React from "react";
 
 const Post = ({ postData }) => {
   return (
+    
     <div className="py-2">
+        
       <div className="w-full hover:border-grey rounded bg-white cursor-pointer">
         {/* Vote Buttons */}
 
@@ -115,13 +117,15 @@ const Post = ({ postData }) => {
 const Posts = ({ posts }) => {
   return (
     <div className="w-[60%]">
+        
       <div className="flex ">
         {/* Main Content */}
         <div className="">
           {posts.map((post, index) => (
             <React.Fragment key={index}>
+                <hr />
               <Post postData={post} />
-              <hr />
+              
             </React.Fragment>
           ))}
         </div>

@@ -150,7 +150,6 @@ const Home = () => {
     <div className="ml-12 my-3 ms-[36rem]">
       <Carousel />
       <MenuButtons />
-      <hr className=" py-2 border-blue-gray-50 " />
       <div className="flex relative">
         <Posts posts={postsData} />
         <PopularTrending trendingData={trendingData}/>
