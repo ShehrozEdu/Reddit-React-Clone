@@ -1,160 +1,193 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Carousel from "./Carousel";
 import MenuButtons from "./MenuButtons";
 import Posts from "./Posts";
 import PopularTrending from "./PopularTrending";
+import { ContextAPIContext } from "../Context/ContextAPIContext ";
+import axios from "axios";
+import PostDetails from "./PostDetails";
+import Demo from "../../Community/demo";
+import CreateAPost from "../../Community/CreateAPost";
+import CommunityPageDetails from "../../Community/CommunityPageDetails";
+import ProfileOverview from "../../Community/Profile/ProfileOverview";
 
 const Home = () => {
-  const postsData = [
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-    {
-      username: "u/TestUser",
-      subreddit: "r/tailwind",
-      time: "2 hours ago",
-      title:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse tempor placerat turpis eu semper.",
-      avatar: "https://avatars0.githubusercontent.com/u/30317862?s=200&v=4",
-      image: "https://docs.material-tailwind.com/img/face-2.jpg",
-      upvotes: 20,
-      comments: 222,
-    },
-  ];
-  const trendingData = [
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    {
-      subreddit: 'r/tailwind',
-      members: '45,00,000',
-      avatar: 'https://avatars0.githubusercontent.com/u/30317862?s=200&v=4',
-    },
-    // Add more trending data objects here as needed
-  ];
+  const {
+    posts,
+    setPosts,
+    popularPosts,
+    setPopularPosts,
+    popularCommunityChannel,
+    setPopularCommunityChannel,
+    setLoading,
+    darkMode,
+  } = useContext(ContextAPIContext);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showCountrySelect, setshowCountrySelect] = useState(false);
+  const [isResponsive, setIsResponsive] = useState(false);
+
+
+  const handleResize = () => {
+    setIsResponsive(window.innerWidth < 900);
+  };
+  // console.log( window.innerWidth)
+  // console.log(isResponsive)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsResponsive(window.innerWidth < 768);
+    };
+
+    const debouncedHandleResize = debounce(handleResize, 20);
+
+    window.addEventListener("resize", debouncedHandleResize);
+
+    return () => {
+      window.removeEventListener("resize", debouncedHandleResize);
+    };
+  }, []);
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return function (...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
+  };
+
+  const fetchPosts = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.get(
+        `https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`,
+        {
+          headers: {
+            projectId: "t0v7xsdvt1j1",
+          },
+        }
+      );
+
+      if (Array.isArray(response.data.data)) {
+        if (response.data.data.length === 0) {
+          setHasMore(false);
+        } else {
+          setPosts((prevPosts) => [...prevPosts, ...response.data.data]);
+        }
+      } else {
+        console.error("Data fetched is not an array:", response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (hasMore) {
+      fetchPosts();
+    }
+  }, [page, hasMore]);
+
+  useEffect(() => {
+    const sortedPosts = [...posts].sort((a, b) => b.likeCount - a.likeCount);
+    setPopularPosts(sortedPosts);
+  }, [posts]);
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchPopularCommunity = async () => {
+      try {
+        const response = await axios.get(
+          "https://academics.newtonschool.co/api/v1/reddit/channel",
+          {
+            headers: {
+              projectId: "t0v7xsdvt1j1",
+            },
+          }
+        );
+        setPopularCommunityChannel(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPopularCommunity();
+  }, []);
+
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`);
+  };
+
   return (
-    <div className="ml-12 my-3 ms-[36rem]">
-      <Carousel />
-      <MenuButtons />
-      <div className="flex relative">
-        <Posts posts={postsData} />
-        <PopularTrending trendingData={trendingData}/>
-        
-      </div>
+    <div className={`xl:ml-[30rem] lg:ml-[30rem] ml-0 ${location.pathname === '/submit' ? 'xl:ml-[15.8rem] lg:ml-[15.8rem] mt-0 h-screen w-screen ' + (darkMode ? 'bg-[#0B1416]' : 'bg-[#dae0e6]') : ''}`}>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="flex flex-col relative">
+              {!isResponsive && <Carousel />}
+              <MenuButtons showCountrySelect={true} />
+              <div className={`flex relative `}>
+                <Posts
+                  posts={posts}
+                  popularPosts={popularPosts}
+                  handlePostClick={handlePostClick}
+                  isPopular={false}
+                  fetchPosts={fetchPosts}
+                />
+                {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />}
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/popular"
+          element={
+            <div className="flex flex-col relative">
+                 {!isResponsive && <Carousel />}
+
+              <MenuButtons showCountrySelect={showCountrySelect} />
+              <div className="flex relative">
+                <Posts
+                  posts={posts}
+                  popularPosts={popularPosts}
+                  handlePostClick={handlePostClick}
+                  isPopular={true}
+                  fetchPosts={fetchPosts}
+                />
+                                {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />}
+
+              </div>
+            </div>
+          }
+        />
+        <Route path="/post/:id" element={<PostDetails posts={posts} />} />
+        <Route path="/test" element={<Demo />} />
+        <Route path="/submit" element={<CreateAPost />} />
+        <Route path="/community/:id" element={<CommunityPageDetails />} />
+        <Route path="/user/:name/" element={<ProfileOverview />} />
+      </Routes>
     </div>
   );
 };

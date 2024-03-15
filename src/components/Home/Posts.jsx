@@ -1,72 +1,563 @@
-import { Avatar } from "@material-tailwind/react";
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { ContextAPIContext } from "../Context/ContextAPIContext ";
+import { Spinner } from "@material-tailwind/react";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const Post = ({ postData }) => {
+// const Post = ({ postData, handlePostClick, fetchPosts, data }) => {
+//   const [timeAgo, setTimeAgo] = useState("");
+
+//   useEffect(() => {
+//     const createdAt = new Date(postData.createdAt);
+//     const currentTime = new Date();
+//     const timeDifference = currentTime - createdAt;
+
+//     const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+//     const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+//     const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+//     let timeAgoString = "";
+//     if (days > 0) {
+//       timeAgoString = `${days} day${days > 1 ? "s" : ""} ago`;
+//     } else if (hours > 0) {
+//       timeAgoString = `${hours} hour${hours > 1 ? "s" : ""} ago`;
+//     } else {
+//       timeAgoString = `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+//     }
+
+//     setTimeAgo(timeAgoString);
+//   }, [postData.createdAt]);
+//   // console.log(postData)
+//   const [isUpvoted, setIsUpvoted] = useState(false);
+//   const [isDownvoted, setIsDownvoted] = useState(false);
+//   const token = localStorage.getItem("token");
+//   const [likeCount, setLikeCount] = useState(postData.likeCount);
+
+
+//   const handleUpClick = async () => {
+//     setIsUpvoted(!isUpvoted);
+//     let newLikeCount = isUpvoted ? likeCount - 1 : likeCount + 1;
+//     setLikeCount(newLikeCount);
+
+//     const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${postData._id}`, {
+//       method: isUpvoted ? 'DELETE' : 'POST',
+//       headers: {
+//         'Authorization': `Bearer ${token}`,
+//         'projectID': 't0v7xsdvt1j1'
+//       }
+//     });
+
+//     if (response.ok) {
+//       let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
+//       if (isUpvoted) {
+//         upvotedPosts = upvotedPosts.filter(id => id !== postData._id);
+//       } else {
+//         upvotedPosts = [...upvotedPosts, postData._id];
+//       }
+//       localStorage.setItem('upvotedPosts', JSON.stringify(upvotedPosts));
+//     }
+//   };
+
+//   const isPostUpvoted = JSON.parse(localStorage.getItem('upvotedPosts'))?.includes(postData._id);
+
+//   const handleDownClick = async () => {
+//     // Optimistically update the state
+//     setIsDownvoted(!isDownvoted);
+//     let newLikeCount = isDownvoted ? likeCount + 1 : likeCount - 1;
+//     setLikeCount(newLikeCount);
+
+//     const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${postData._id}`, {
+//       method: isDownvoted ? 'POST' : 'DELETE',
+//       headers: {
+//         'Authorization': `Bearer ${token}`,
+//         'projectID': 't0v7xsdvt1j1'
+//       }
+//     });
+
+//     if (!response.ok) {
+//       // If the request fails, revert the state
+//       setIsDownvoted(!isDownvoted);
+//       setLikeCount(likeCount);
+//       console.error('Downvote failed');
+//     } else {
+//       console.log('Downvote successful');
+//       fetchPosts();
+//     }
+//   };
+//   const deletePost = async (postId) => {
+//     try {
+//       console.log(postId)
+//       const token = localStorage.getItem("token");
+//       const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postId}`, {
+//         method: 'DELETE',
+//         headers: {
+//           'Authorization': `Bearer ${token}`,
+//           'projectId': "t0v7xsdvt1j1"
+//         }
+//       });
+
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! status: ${response.status}`);
+//       } else {
+//         toast.success("Post deleted successfully")
+//         console.log("Post deleted successfully");
+//       }
+//     } catch (error) {
+//       console.error("Error deleting post:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="py-2">
+//       <div className="w-full hover:border-grey rounded bg-white cursor-pointer">
+//         {/* Post Content */}
+//         <div className="pt-2">
+//           {/* Post Header */}
+//           <div className="flex items-center text-xs mb-2">
+//             <a
+//               href="#"
+//               className="font-semibold no-underline hover:underline text-black flex items-center"
+//             >
+//               <img
+//                 className="rounded-full border h-5 w-5"
+//                 src={postData.author.profileImage || "/images/svgs/defaultProfile.svg"}
+//                 alt="Avatar"
+//               />
+//               {postData.channel && (
+//                 <span className="ml-2">{postData.channel.name}</span>
+//               )}
+//             </a>
+//             <span className="text-grey-light mx-1 text-xxs">•</span>
+//             <span className="text-grey">Posted by</span>
+//             <a href="#" className="text-grey mx-1 no-underline hover:underline">
+//               {postData.author.name}
+//             </a>
+//             <span className="text-grey">{timeAgo}</span>
+
+//             {data?._id === postData.author._id && <div className="text-red-500 ml-3" onClick={() => deletePost(postData._id)}>
+//               Delete
+//             </div>}
+//           </div>
+//           {/* Post Title */}
+//           <div
+//             className="flex justify-between "
+//             onClick={() => {
+//               handlePostClick(postData._id);
+//             }}
+//           >
+//             <h2 className="text-lg font-normal mb-1">
+//               {postData.content?.slice(0, 150)}...
+//             </h2>
+//             {postData.images && (
+//               <img
+//                 src={postData.images[0]}
+//                 width={120}
+//                 // height={120}
+//                 alt="avatar"
+//                 className="object-cover"
+//               />
+//             )}
+//           </div>
+//           {/* Post Actions */}
+
+//           <div className="inline-flex items-center my-1">
+//             <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
+//               <button className="text-xs" onClick={handleUpClick}>
+//                 {!isPostUpvoted ? (
+//                   <svg
+//                     rpl=""
+//                     fill="currentColor"
+//                     height="16"
+//                     icon-name="upvote-outline"
+//                     viewBox="0 0 20 20"
+//                     width="16"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     <path d="M12.877 19H7.123A1.125 1.125 0 0 1 6 17.877V11H2.126a1.114 1.114 0 0 1-1.007-.7 1.249 1.249 0 0 1 .171-1.343L9.166.368a1.128 1.128 0 0 1 1.668.004l7.872 8.581a1.25 1.25 0 0 1 .176 1.348 1.113 1.113 0 0 1-1.005.7H14v6.877A1.125 1.125 0 0 1 12.877 19ZM7.25 17.75h5.5v-8h4.934L10 1.31 2.258 9.75H7.25v8ZM2.227 9.784l-.012.016c.01-.006.014-.01.012-.016Z"></path>
+//                   </svg>
+//                 ) : (
+//                   <svg
+//                     rpl=""
+//                     fill="currentColor"
+//                     height="16"
+//                     icon-name="upvote-fill"
+//                     viewBox="0 0 20 20"
+//                     width="16"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     <path d="M18.706 8.953 10.834.372A1.123 1.123 0 0 0 10 0a1.128 1.128 0 0 0-.833.368L1.29 8.957a1.249 1.249 0 0 0-.171 1.343 1.114 1.114 0 0 0 1.007.7H6v6.877A1.125 1.125 0 0 0 7.123 19h5.754A1.125 1.125 0 0 0 14 17.877V11h3.877a1.114 1.114 0 0 0 1.005-.7 1.251 1.251 0 0 0-.176-1.347Z"></path>{" "}
+//                   </svg>
+//                 )}
+//               </button>
+//               <span className="text-xs font-normal my-1 mx-1">
+//                 {postData.likeCount}
+//               </span>
+//               <button className="text-xs" onClick={handleDownClick}>
+//                 {!isDownvoted ? (
+//                   <svg
+//                     rpl=""
+//                     fill="currentColor"
+//                     height="16"
+//                     icon-name="downvote-outline"
+//                     viewBox="0 0 20 20"
+//                     width="16"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     <path d="M10 20a1.122 1.122 0 0 1-.834-.372l-7.872-8.581A1.251 1.251 0 0 1 1.118 9.7 1.114 1.114 0 0 1 2.123 9H6V2.123A1.125 1.125 0 0 1 7.123 1h5.754A1.125 1.125 0 0 1 14 2.123V9h3.874a1.114 1.114 0 0 1 1.007.7 1.25 1.25 0 0 1-.171 1.345l-7.876 8.589A1.128 1.128 0 0 1 10 20Zm-7.684-9.75L10 18.69l7.741-8.44H12.75v-8h-5.5v8H2.316Zm15.469-.05c-.01 0-.014.007-.012.013l.012-.013Z"></path>
+//                   </svg>
+//                 ) : (
+//                   <svg
+//                     rpl=""
+//                     fill="currentColor"
+//                     height="16"
+//                     icon-name="downvote-fill"
+//                     viewBox="0 0 20 20"
+//                     width="16"
+//                     xmlns="http://www.w3.org/2000/svg"
+//                   >
+//                     <path d="M18.88 9.7a1.114 1.114 0 0 0-1.006-.7H14V2.123A1.125 1.125 0 0 0 12.877 1H7.123A1.125 1.125 0 0 0 6 2.123V9H2.123a1.114 1.114 0 0 0-1.005.7 1.25 1.25 0 0 0 .176 1.348l7.872 8.581a1.124 1.124 0 0 0 1.667.003l7.876-8.589A1.248 1.248 0 0 0 18.88 9.7Z"></path>
+//                   </svg>
+//                 )}
+//               </button>
+//             </div>
+//             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
+//               <svg
+//                 xmlns="http://www.w3.org/2000/svg"
+//                 fill="none"
+//                 viewBox="0 0 24 24"
+//                 strokeWidth={1.5}
+//                 stroke="currentColor"
+//                 className="w-6 h-6"
+//               >
+//                 <path
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                   d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+//                 />
+//               </svg>
+//               <span className="ml-2 text-xs font-normal text-grey">
+//                 {postData.commentCount}
+//               </span>
+//             </div>
+//             {/* Share */}
+//             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
+//               <svg
+//                 rpl=""
+//                 aria-hidden="true"
+//                 className="icon-share"
+//                 fill="currentColor"
+//                 height="20"
+//                 icon-name="share-ios-outline"
+//                 viewBox="0 0 20 20"
+//                 width="20"
+//                 xmlns="http://www.w3.org/2000/svg"
+//               >
+//                 <path d="M19 11v5.378A2.625 2.625 0 0 1 16.378 19H3.622A2.625 2.625 0 0 1 1 16.378V11h1.25v5.378a1.373 1.373 0 0 0 1.372 1.372h12.756a1.373 1.373 0 0 0 1.372-1.372V11H19ZM9.375 3.009V14h1.25V3.009l2.933 2.933.884-.884-4-4a.624.624 0 0 0-.884 0l-4 4 .884.884 2.933-2.933Z"></path>{" "}
+//               </svg>
+//               <span className="ml-2 text-xs font-normal text-grey">Share</span>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
+  const [timeAgo, setTimeAgo] = useState("");
+  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [isDownvoted, setIsDownvoted] = useState(false);
+  const [likeCount, setLikeCount] = useState(postData.likeCount);
+  const { darkMode } = useContext(ContextAPIContext);
+
+  useEffect(() => {
+    const createdAt = new Date(postData.createdAt);
+    const currentTime = new Date();
+    const timeDifference = currentTime - createdAt;
+    const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+    const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    let timeAgoString = "";
+    if (days > 0) {
+      timeAgoString = `${days} day${days > 1 ? "s" : ""} ago`;
+    } else if (hours > 0) {
+      timeAgoString = `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    } else {
+      timeAgoString = `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    }
+    setTimeAgo(timeAgoString);
+  }, [postData.createdAt]);
+
+  const handleUpClick = async () => {
+    setIsUpvoted(!isUpvoted);
+    if(isUpvoted){
+      setIsUpvoted(false)
+    }
+    let newLikeCount = isUpvoted ? likeCount - 1 : likeCount + 1;
+    setLikeCount(newLikeCount);
+  
+    const token = localStorage.getItem("token");
+    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${postData._id}`, {
+      method: isUpvoted ? 'DELETE' : 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'projectID': 't0v7xsdvt1j1'
+      }
+    });
+  
+    if (response.ok) {
+      let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
+      if (isUpvoted) {
+        upvotedPosts = upvotedPosts.filter(id => id !== postData._id);
+      } else {
+        upvotedPosts = [...upvotedPosts, postData._id];
+      }
+      localStorage.setItem('upvotedPosts', JSON.stringify(upvotedPosts));
+    } else {
+      setIsUpvoted(!isUpvoted);
+      setLikeCount(likeCount);
+    }
+  };
+  
+
+  const handleDownClick = async () => {
+    setIsDownvoted(!isDownvoted);
+    if(isDownvoted){
+      setIsDownvoted(false)
+    }
+    let newLikeCount = isDownvoted ? likeCount + 1 : likeCount - 1;
+    setLikeCount(newLikeCount);
+  
+    const token = localStorage.getItem("token");
+    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/dislike/${postData._id}`, {
+      method: isDownvoted ? 'DELETE' : 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'projectID': 't0v7xsdvt1j1'
+      }
+    });
+  
+    if (response.ok) {
+      let downvotedPosts = JSON.parse(localStorage.getItem('downvotedPosts')) || [];
+      if (isDownvoted) {
+        downvotedPosts = downvotedPosts.filter(id => id !== postData._id);
+      } else {
+        downvotedPosts = [...downvotedPosts, postData._id];
+      }
+      localStorage.setItem('downvotedPosts', JSON.stringify(downvotedPosts));
+    } else {
+      // If the request fails, revert the UI changes
+      setIsDownvoted(!isDownvoted);
+      setLikeCount(likeCount);
+      console.error('Downvote failed');
+    }
+  };
+  useEffect(() => {
+    let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
+    let downvotedPosts = JSON.parse(localStorage.getItem('downvotedPosts')) || [];
+  
+    setIsUpvoted(upvotedPosts.includes(postData._id));
+    setIsDownvoted(downvotedPosts.includes(postData._id));
+  }, []);
+  const deletePost = async (postId) => {
+    try {
+      // console.log(postId)
+      const token = localStorage.getItem("token");
+      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'projectId': "t0v7xsdvt1j1"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        toast.success("Post deleted successfully")
+        console.log("Post deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+  const [joinedStatus, setJoinedStatus] = useState(false);
+  const toggleFollow = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      let url = '';
+      let method = '';
+      if (joinedStatus) {
+        // Unfollow
+        url = `https://academics.newtonschool.co/api/v1/quora/follow/${id}`;
+        method = 'DELETE';
+      } else {
+        // Follow
+        url = `https://academics.newtonschool.co/api/v1/quora/follow/${id}`;
+        method = 'POST';
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'projectId': "t0v7xsdvt1j1"
+        }
+      });
+
+
+      if (joinedStatus) {
+        toast.success("Unfollowed successfully");
+        // console.log("1",joinedStatus)
+      } else {
+        toast.success("Followed successfully");
+        // console.log("2",joinedStatus)
+
+      }
+      setJoinedStatus(!joinedStatus);
+      // console.log("3",joinedStatus)
+    }
+    catch (error) {
+
+      if (response.status === 400) {
+        toast.error("Already followed")
+
+      } else {
+        console.log(error)
+      }
+    }
+  }
+
+  // Effect to check joined status on component mount
+  useEffect(() => {
+    const status = localStorage.getItem('joinedStatus');
+    if (status) {
+      setJoinedStatus(status === 'true');
+    }
+  }, []);
+
+  // Effect to update joined status in local storage
+  useEffect(() => {
+    localStorage.setItem('joinedStatus', joinedStatus);
+  }, [joinedStatus]);
   return (
-    
     <div className="py-2">
-        
-      <div className="w-full hover:border-grey rounded bg-white cursor-pointer">
-        {/* Vote Buttons */}
+      <div className={`w-full hover:border-grey rounded ${darkMode?"bg-[#0B1416]":"bg-white"} cursor-pointer`}>
+        <div className="pt-2">
+          <div className="flex items-center text-xs mb-2 justify-between">
+            <div className="flex items-center">
+              <a
+                href="#"
+                className="font-semibold no-underline hover:underline text-black flex items-center"
+              >
+                <img
+                  className="rounded-full border h-5 w-5"
+                  src={postData.author.profileImage || "/images/svgs/defaultProfile.svg"}
+                  alt="Avatar"
+                />
+                <span className="ml-2 text-black dark:text-white">{postData.channel?.name}</span>
+              </a>
+              <span className="text-grey-light mx-1 text-xxs dark:text-white">•</span>
+              <span className="text-grey dark:text-white">Posted by</span>
+              <a href="#" className="text-grey mx-1 no-underline hover:underline dark:text-white">
+                {(postData.author?.name)}
+              </a>
+              <span className="text-grey dark:text-white ml-2">{timeAgo}</span>
+            </div>
 
-        {/* Post Content */}
-        <div className=" pt-2">
-          {/* Post Header */}
-          <div className="flex items-center text-xs mb-2">
-            <a
-              href="#"
-              className="font-semibold no-underline hover:underline text-black flex items-center"
-            >
-              <img
-                className="rounded-full border h-5 w-5"
-                src={postData.avatar}
-                alt="Avatar"
-              />
-              <span className="ml-2">{postData.subreddit}</span>
-            </a>
-            <span className="text-grey-light mx-1 text-xxs">•</span>
-            <span className="text-grey">Posted by</span>
-            <a
-              href="#"
-              className="text-grey mx-1 no-underline hover:underline"
-            >
-              {postData.username}
-            </a>
-            <span className="text-grey">{postData.time}</span>
+            <div className="flex items-center">
+              {data && (
+                <div
+                  className="text-white ml-3 bg-blue-800 p-2 px-4 rounded-full"
+                  onClick={() => toggleFollow(postData.author._id)}
+                >
+                  {joinedStatus ? "Unfollow" : "Join"}
+                </div>
+              )}
+              {data?._id === postData.author._id && (
+                <div
+                  className="text-red-500 ml-3"
+                  onClick={() => deletePost(postData?._id)}
+                >
+                  Delete
+                </div>
+              )}
+            </div>
           </div>
-          {/* Post Title */}
-          <div className="flex justify-between ">
-            <h2 className="text-lg font-medium mb-1">{postData.title}</h2>
-            <img
-              src={postData.image}
-              width={120}
-              height={100}
-              alt="avatar"
-            />
+          <div className="flex flex-col" onClick={() => handlePostClick(postData._id)}>
+            <h2 className="text-lg font-normal mb-1 dark:text-white">
+              {postData?.title || (postData.content && postData.content.length > 150
+                ? postData.content.slice(0, 150) + "..."
+                : postData.content)}
+            </h2>
+            <h2 className="text-lg font-normal mb-1 dark:text-white">
+              {postData?.title && (postData.content && postData.content.length > 150
+                ? postData.content.slice(0, 150) + "..."
+                : postData.content)}
+            </h2>
+
+            {postData.images.length > 0 ? (
+              <img src={postData?.images[0]} alt="avatar" />) : ""
+            }
           </div>
-          {/* Post Actions */}
-          <div className="inline-flex items-center my-1 ">
+          <div className="inline-flex items-center my-1">
             <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-              <button className="text-xs">
-                <svg
-                  className="w-5 fill-current text-grey"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M7 10v8h6v-8h5l-8-8-8 8h5z" />
-                </svg>
+              <button className="text-xs" onClick={handleUpClick}>
+                {!isUpvoted ? (
+                  <svg
+                    rpl=""
+                    fill="currentColor"
+                    height="16"
+                    icon-name="upvote-outline"
+                    viewBox="0 0 20 20"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12.877 19H7.123A1.125 1.125 0 0 1 6 17.877V11H2.126a1.114 1.114 0 0 1-1.007-.7 1.249 1.249 0 0 1 .171-1.343L9.166.368a1.128 1.128 0 0 1 1.668.004l7.872 8.581a1.25 1.25 0 0 1 .176 1.348 1.113 1.113 0 0 1-1.005.7H14v6.877A1.125 1.125 0 0 1 12.877 19ZM7.25 17.75h5.5v-8h4.934L10 1.31 2.258 9.75H7.25v8ZM2.227 9.784l-.012.016c.01-.006.014-.01.012-.016Z"></path>
+                  </svg>
+                ) : (
+                  <svg
+                    rpl=""
+                    fill="currentColor"
+                    height="16"
+                    icon-name="upvote-fill"
+                    viewBox="0 0 20 20"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18.706 8.953 10.834.372A1.123 1.123 0 0 0 10 0a1.128 1.128 0 0 0-.833.368L1.29 8.957a1.249 1.249 0 0 0-.171 1.343 1.114 1.114 0 0 0 1.007.7H6v6.877A1.125 1.125 0 0 0 7.123 19h5.754A1.125 1.125 0 0 0 14 17.877V11h3.877a1.114 1.114 0 0 0 1.005-.7 1.251 1.251 0 0 0-.176-1.347Z"></path>{" "}
+                  </svg>
+                )}
               </button>
-              <span className="text-xs font-normal my-1">{postData.upvotes}</span>
-              <button className="text-xs">
-                <svg
-                  className="w-5 fill-current text-grey"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M7 10V2h6v8h5l-8 8-8-8h5z" />
-                </svg>
+              <span className="text-xs font-normal my-1">{likeCount}</span>
+              <button className="text-xs" onClick={handleDownClick}>
+                {!isDownvoted ? (
+                  <svg
+                    rpl=""
+                    fill="currentColor"
+                    height="16"
+                    icon-name="downvote-outline"
+                    viewBox="0 0 20 20"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M10 20a1.122 1.122 0 0 1-.834-.372l-7.872-8.581A1.251 1.251 0 0 1 1.118 9.7 1.114 1.114 0 0 1 2.123 9H6V2.123A1.125 1.125 0 0 1 7.123 1h5.754A1.125 1.125 0 0 1 14 2.123V9h3.874a1.114 1.114 0 0 1 1.007.7 1.25 1.25 0 0 1-.171 1.345l-7.876 8.589A1.128 1.128 0 0 1 10 20Zm-7.684-9.75L10 18.69l7.741-8.44H12.75v-8h-5.5v8H2.316Zm15.469-.05c-.01 0-.014.007-.012.013l.012-.013Z"></path>
+                  </svg>
+                ) : (
+                  <svg
+                    rpl=""
+                    fill="currentColor"
+                    height="16"
+                    icon-name="downvote-fill"
+                    viewBox="0 0 20 20"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18.88 9.7a1.114 1.114 0 0 0-1.006-.7H14V2.123A1.125 1.125 0 0 0 12.877 1H7.123A1.125 1.125 0 0 0 6 2.123V9H2.123a1.114 1.114 0 0 0-1.005.7 1.25 1.25 0 0 0 .176 1.348l7.872 8.581a1.124 1.124 0 0 0 1.667.003l7.876-8.589A1.248 1.248 0 0 0 18.88 9.7Z"></path>
+                  </svg>
+                )}
               </button>
-              {/* Comments */}
             </div>
             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
               <svg
@@ -83,17 +574,15 @@ const Post = ({ postData }) => {
                   d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                 />
               </svg>
-
               <span className="ml-2 text-xs font-normal text-grey">
-                {postData.comments}
+                {postData?.commentCount}
               </span>
             </div>
-            {/* Share */}
             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
               <svg
                 rpl=""
                 aria-hidden="true"
-                class="icon-share"
+                className="icon-share"
                 fill="currentColor"
                 height="20"
                 icon-name="share-ios-outline"
@@ -103,9 +592,7 @@ const Post = ({ postData }) => {
               >
                 <path d="M19 11v5.378A2.625 2.625 0 0 1 16.378 19H3.622A2.625 2.625 0 0 1 1 16.378V11h1.25v5.378a1.373 1.373 0 0 0 1.372 1.372h12.756a1.373 1.373 0 0 0 1.372-1.372V11H19ZM9.375 3.009V14h1.25V3.009l2.933 2.933.884-.884-4-4a.624.624 0 0 0-.884 0l-4 4 .884.884 2.933-2.933Z"></path>{" "}
               </svg>
-              <span className="ml-2 text-xs font-normal text-grey">
-                Share
-              </span>
+              <span className="ml-2 text-xs font-normal text-grey">Share</span>
             </div>
           </div>
         </div>
@@ -114,21 +601,55 @@ const Post = ({ postData }) => {
   );
 };
 
-const Posts = ({ posts }) => {
+
+
+const Posts = ({ posts, popularPosts, fetchPosts, handlePostClick }) => {
+
+  const { selectedItem, loading, data,darkMode } = useContext(ContextAPIContext);
+
+  if (selectedItem === "Hot") {
+    posts.sort(
+      (a, b) =>
+        Math.abs(1 - a.likeCount / a.dislikeCount) -
+        Math.abs(1 - b.likeCount / b.dislikeCount)
+    );
+  } else if (selectedItem === "Best") {
+    posts.sort(
+      (a, b) => b.likeCount / b.dislikeCount - a.likeCount / a.dislikeCount
+    );
+  } else if (selectedItem === "New") {
+    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } else if (selectedItem === "Top") {
+    posts.sort((a, b) => b.likeCount - a.likeCount);
+  } else if (selectedItem === "Rising") {
+    posts.sort(
+      (a, b) => b.likeCount + b.commentCount - (a.likeCount + a.commentCount)
+    );
+  }
+  const location = useLocation();
+  let dataToDisplay;
+  if (location.pathname === "/popular") {
+    dataToDisplay = popularPosts;
+  } else {
+    dataToDisplay = posts;
+  }
+
   return (
-    <div className="w-[60%]">
-        
-      <div className="flex ">
+    <div className="xl:w-[60%] lg:w-[60%] md-[80%] w-[100%]  p-2">
+      <div className="flex">
         {/* Main Content */}
-        <div className="">
-          {posts.map((post, index) => (
+        <div className={`${darkMode ? 'bg-[#0B1416]' : ''}}`}>
+          {dataToDisplay.map((postData, index) => (
             <React.Fragment key={index}>
-                <hr />
-              <Post postData={post} />
-              
+              <hr />
+              <Post2 postData={postData} handlePostClick={handlePostClick} fetchPosts={fetchPosts} data={data} />
+              {/* <Post2 postData={postData} /> */}
             </React.Fragment>
           ))}
         </div>
+      </div>
+      <div className="flex items-center justify-center">
+        {loading && <Spinner className="h-16 w-16 text-gray-900/50 " />}
       </div>
     </div>
   );
