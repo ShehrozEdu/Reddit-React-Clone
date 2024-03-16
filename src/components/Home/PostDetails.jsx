@@ -5,9 +5,10 @@ import Comments from "./Comments";
 import MenuButtons from "./MenuButtons";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
+import { Input } from "@material-tailwind/react";
 
 const PostDetails = ({ posts }) => {
-  const{setComments}=useContext(ContextAPIContext)
+  const { setComments, data } = useContext(ContextAPIContext)
   const [isOpen, setIsOpen] = useState(false);
 
   const { id } = useParams();
@@ -17,38 +18,38 @@ const PostDetails = ({ posts }) => {
   if (!post) {
     return <div>Post not found</div>;
   }
-  const tempPosts = [
+  const commBookmarks = [
     {
       id: 1,
-      subreddit: "r/BollyBlindsNGossip",
+      name: "🤝 Volunteer With Us",
       title: "Post Title 1",
       upvotes: 123,
       commentsCount: 45,
     },
     {
       id: 2,
-      subreddit: "r/BollyBlindsNGossip",
+      name: "✍🏽 Wiki",
       title: "Post Title 2",
       upvotes: 456,
       commentsCount: 78,
     },
     {
       id: 3,
-      subreddit: "r/BollyBlindsNGossip",
+      name: "💼 Job Board",
       title: "Post Title 3",
       upvotes: 789,
       commentsCount: 12,
     },
     {
       id: 4,
-      subreddit: "r/BollyBlindsNGossip",
+      name: "🎙️ AMAs",
       title: "Post Title 3",
       upvotes: 789,
       commentsCount: 12,
     },
     {
       id: 5,
-      subreddit: "r/BollyBlindsNGossip",
+      name: "🧵 Must Read Threads",
       title: "Post Title 3",
       upvotes: 789,
       commentsCount: 12,
@@ -94,7 +95,14 @@ const PostDetails = ({ posts }) => {
       console.log(error);
     }
   };
+  useEffect(()=>{
+    fetchComments();
+  },[])
   const createComment = async () => {
+    if (!data) {
+      alert("User is not logged in");
+      return;
+    }
     const token = localStorage.getItem("token");
 
     try {
@@ -119,17 +127,18 @@ const PostDetails = ({ posts }) => {
 
       const data = await response.json();
       setComment(prevComments => [...prevComments, { content: comment, ...data }]);
+      fetchComments();
       return data;
     } catch (error) {
       console.error("Error:", error);
     }
   };
- 
-  
+
+
 
   return (
     <div className="flex relative">
-      <div className="flex flex-col bg-white rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] p-6">
+      <div className="flex flex-col bg-white dark:bg-[#0B1416] rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] p-6">
         <div className="flex items-center mb-4">
           <div className="flex items-center">
             <div className="rounded-full h-8 w-8 bg-gray-500 mr-2">
@@ -137,7 +146,7 @@ const PostDetails = ({ posts }) => {
             </div>
             <div>
               <div className="text-sm text-gray-600 flex justify-between">
-                <p className="mr-1">r/{post.channel?.name}</p>
+                <p className="mr-1 dark:text-white">r/{post.channel?.name}</p>
                 <span
                   id="time-ago-separator"
                   class="flex items-center w-2xs text-[#576F76] font-normal text-12"
@@ -150,13 +159,13 @@ const PostDetails = ({ posts }) => {
             </div>
           </div>
         </div>
-        <p className="font-bold text-lg text-black">
+        <p className="font-bold text-lg text-black dark:text-white">
           {post.content?.slice(0, 40)}
         </p>
         <p className="text-xs text-black-300 mt-2 bg-yellow-500 rounded-xl w-32 py-1 font-bold p-2">
           Foreign Relations
         </p>
-        <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]">          <p className="text-black my-5">{post?.content}</p>
+        <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]">          <p className="text-black my-5 dark:text-white">{post?.content}</p>
           <img src={post?.images[0]} alt="img" className="rounded-2xl" />
         </div>
         {/* Post Actions */}
@@ -226,17 +235,17 @@ const PostDetails = ({ posts }) => {
               className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[43rem] lg:w-[43rem] w-[27rem] rounded-3xl items-center"
               onClick={() => setIsOpen(true)}
             >
-              <span>Add a comment</span>
+              <span className="dark:text-white">Add a comment</span>
             </div>
           ) : (
             ""
           )}
 
-          {isOpen && (
+          {isOpen && (data ? (
             <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[43rem] lg:w-[43rem] w-[27rem]">
               <div className="flex items-center space-x-2">
-                <input
-                  className="flex-grow border-none focus:outline-none"
+                <Input
+                  className="flex-grow border-none focus:outline-none dark:text-white"
                   type="text"
                   placeholder="Add a comment..."
                   value={comment}
@@ -253,11 +262,11 @@ const PostDetails = ({ posts }) => {
                   </button>
                 </div>
                 <div>
-                  <button className="border border-gray-400 rounded-full px-4 py-1" onClick={() => setIsOpen(false)}>
+                  <button className="border border-gray-400 rounded-full px-4 py-1 dark:text-white" onClick={() => setIsOpen(false)}>
                     Cancel
                   </button>
                   <button
-                    className="bg-blue-500 text-white rounded-full px-4 py-1"
+                    className="bg-blue-500 dark:bg-[#4f4a79] text-white  px-4 py-1 rounded-xl"
                     onClick={async () => {
                       await createComment();
                       setComment("");
@@ -269,62 +278,62 @@ const PostDetails = ({ posts }) => {
                 </div>
               </div>
             </div>
-          )}
+          ) : (
+            <div className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[43rem] lg:w-[43rem] w-[27rem] rounded-3xl items-center dark:text-white">Please Login to Comment</div>
+          ))}
+
         </div>
         <Comments postId={id} />
       </div>
-      <div className="fixed right-40 w-72">
+      <div className="fixed right-40 w-72 bg-gray-100 dark:bg-[#0B1416] dark:border dark: border-white dark:rounded-2xl">
         {" "}
-        <div className="p-4 bg-gray-100 rounded-xl mb-5 xl:block lg:block hidden">
+        <div className="p-4 rounded-xl mb-5 xl:block lg:block hidden">
           <div className="border-b pb-2 mb-4 flex">
-            <h1 className="text-md font-bold mr-3">r/{post.channel?.name}</h1>
+            <h1 className="text-md font-bold mr-3 dark:text-white">r/{post.channel?.name}</h1>
             <button className="bg-[#0045AC] text-white px-3 rounded-2xl text-xs">
               Join
             </button>
           </div>
 
           <div className="mb-6">
-            <h2 className="text-md font-bold">{post.channel?.name} Hub</h2>
-            <p className="text-[14px]">
+            <h2 className="text-md font-bold dark:text-white">{post.channel?.name} Hub</h2>
+            <p className="text-[14px] dark:text-white">
               {showMore ? post?.content : `${post?.content.slice(0, 40)}...`}
             </p>
             <button
               onClick={() => setShowMore(!showMore)}
-              className="text-blue-500 text-[14px]"
+              className="text-blue-500 text-[14px] dark:text-white"
             >
               {showMore ? "Show less" : "Show more"}
             </button>
           </div>
 
           <div className="flex justify-between items-center mb-6 pb-4">
-            <div className="text-sm">
-              <span className="font-bold text-sm">915K</span> Members
+            <div className="text-sm dark:text-white">
+              <span className="font-bold text-sm dark:text-white">915K</span> Members
             </div>
-            <div className="text-sm">
-              <span className="font-bold text-sm">2.2K</span> Online
+            <div className="text-sm dark:text-white">
+              <span className="font-bold text-sm dark:text-white">2.2K</span> Online
             </div>
           </div>
         </div>
-        <Scrollbars className="custom-scrollbar" style={{ height: 300 }}>
+            <hr />
+            <div className="flex justify-start p-2 py-4">
+              <div className="flex items-center space-x-2">
+              <img src="/images/svgs/defaultProfile.svg" className="w-7 h-7 bg-gray-400 rounded-full" alt="" />
+             <p className="dark:text-white"> {data?.name}</p>
+              </div>
+              </div>
           <div>
-            {tempPosts.map((post) => (
+            <hr />
+            {commBookmarks.map((post) => (
               <div key={post?.id} className="mb-6 p-2 text-sm xl:block lg:block hidden">
-                <div className="flex items-center">
-                  <img src="" alt="img" className="h-5 w-5 rounded-full mr-2" />
-                  <h3>{post?.subreddit}</h3>
+                <div className="flex items-center justify-center bg-[#eaedef] text-black dark:bg-[#4f4a79] p-2 rounded-2xl dark:text-white">
+                  <h3>{post?.name}</h3>
                 </div>
-                <div className="flex justify-between">
-                  <h2 className="text-md">{post.title}</h2>
-                  <img src="" alt="img" className="h-12 w-12 rounded-xl" />
-                </div>
-
-                <p className="text-sm">
-                  {post?.upvotes} upvotes • {post?.commentsCount} comments
-                </p>
               </div>
             ))}
           </div>
-        </Scrollbars>
       </div>
     </div>
   );

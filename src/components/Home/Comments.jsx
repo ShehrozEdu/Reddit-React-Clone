@@ -10,7 +10,7 @@ const onDeleteComment = (comment) => {
 };
 
 const Comments = ({ postId }) => {
-  const{comments,setComments,data}=useContext(ContextAPIContext)
+  const{comments,setComments,data,darkMode}=useContext(ContextAPIContext)
   const [expandedReplies, setExpandedReplies] = useState({});
   const [count, setCount] = useState(5);
 
@@ -252,7 +252,7 @@ const Comments = ({ postId }) => {
                     </div>
                   </faceplate-hovercard>
                 </div>
-                <strong className="mr-3 text-sm">{data?._id===comment.author? 'You': comment.author}</strong>
+                <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author}</strong>
                 *&nbsp;{" "}
                 <p className="text-sm">{moment(comment.createdAt).fromNow()}</p>
            
@@ -265,7 +265,7 @@ const Comments = ({ postId }) => {
 
                 {/* Post Actions */}
               </div>
-              <div className="inline-flex items-center my-1 ">
+              <div className="inline-flex items-center my-1 dark:text-white">
                 <div className="flex justify-between hover:bg-grey-lighter p-2  rounded-xl items-center">
                   <button className="text-xs">
                     <svg

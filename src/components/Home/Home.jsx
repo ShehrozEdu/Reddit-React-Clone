@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
 import Carousel from "./Carousel";
 import MenuButtons from "./MenuButtons";
 import Posts from "./Posts";
@@ -23,6 +23,7 @@ const Home = () => {
     setLoading,
     darkMode,
   } = useContext(ContextAPIContext);
+  // const { id } = useParams();
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
@@ -31,9 +32,9 @@ const Home = () => {
   const [isResponsive, setIsResponsive] = useState(false);
 
 
-  const handleResize = () => {
-    setIsResponsive(window.innerWidth < 900);
-  };
+  // const handleResize = () => {
+  //   setIsResponsive(window.innerWidth < 900);
+  // };
   // console.log( window.innerWidth)
   // console.log(isResponsive)
   useEffect(() => {
@@ -59,19 +60,14 @@ const Home = () => {
       }, delay);
     };
   };
-
   const fetchPosts = async () => {
     setLoading(true);
-
     try {
-      const response = await axios.get(
-        `https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`,
-        {
-          headers: {
-            projectId: "t0v7xsdvt1j1",
-          },
-        }
-      );
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
+        headers: {
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
 
       if (Array.isArray(response.data.data)) {
         if (response.data.data.length === 0) {
