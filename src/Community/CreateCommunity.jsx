@@ -81,23 +81,23 @@ const CreateCommunity = () => {
         onClick={handleOpen}
         className="flex text-black shadow-none items-center"
       >
-        <img src="/images/svgs/plus.svg" alt="" width={15} className="mr-2" />
-        <span className="capitalize">Create Community</span>
+        <img src="/images/svgs/darkModeSvgs/dark-plus.svg" alt="" width={15} className="mr-2" />
+        <span className="capitalize dark:text-white">Create Community</span>
       </div>
-      <Dialog open={open} handler={handleOpen}>
-        <DialogHeader className="text-md font-normal text-black">
+      <Dialog open={open} handler={handleOpen} className="bg-[#0B1416]">
+        <DialogHeader className="text-md font-normal text-black dark:text-white">
           Create a Community
         </DialogHeader>
         <hr />
         <DialogBody>
           <form>
             <div className="flex flex-col">
-              <div className="text-black">Name</div>
-              <div className="text-xs text-black">
+              <div className="text-black dark:text-white">Name</div>
+              <div className="text-xs text-black dark:text-white">
                 Community names including capitalization cannot be changed.
               </div>
             </div>
-            <div className="w-72">
+            <div className="w-72 ">
               <Input
                 type="text"
                 id="communityName"
@@ -123,46 +123,46 @@ const CreateCommunity = () => {
               )}
               <div className="flex flex-col items-center justify-start xl:w-[33rem] lg:w-[33rem] w-96">
                 <div>
-                  <p className="font-normal text-black">Community type</p>
+                  <p className="font-normal text-black dark:text-white">Community type</p>
                   <div>
-                    <label className="block mb-2">
+                    <label className="block mb-2 dark:text-white">
                       <input
                         type="radio"
                         name="access"
                         value="public"
                         className="mr-2"
                       />
-                      <strong className="text-black mr-2">Public</strong>{" "}
-                      <span className="text-sm text-black">
+                      <strong className="text-black mr-2 dark:text-white">Public</strong>{" "}
+                      <span className="text-sm text-black dark:text-white">
                         {" "}
                         Anyone can view, post, and comment to this community
                       </span>
                     </label>
 
-                    <label className="block mb-2">
+                    <label className="block mb-2 dark:text-white">
                       <input
                         type="radio"
                         name="access"
                         value="restricted"
                         className="mr-2"
                       />
-                      <strong className="text-black mr-2">Restricted</strong>{" "}
-                      <span className="text-sm text-black">
+                      <strong className="text-black mr-2 dark:text-white">Restricted</strong>{" "}
+                      <span className="text-sm text-black dark:text-white">
                         {" "}
                         Anyone can view this community, but only approved users
                         can post
                       </span>
                     </label>
 
-                    <label className="block mb-2">
+                    <label className="block mb-2 dark:text-white">
                       <input
                         type="radio"
                         name="access"
                         value="private"
                         className="mr-2"
                       />
-                      <strong className="text-black mr-2">Private</strong>{" "}
-                      <span className="text-sm text-black">
+                      <strong className="text-black mr-2 dark:text-white">Private</strong>{" "}
+                      <span className="text-sm text-black dark:text-white">
                         {" "}
                         Only approved users can view and submit to this community
                       </span>
@@ -172,7 +172,7 @@ const CreateCommunity = () => {
               </div>
               <div>
                 <div>
-                  <p className="text-black font-normal">Adult content</p>
+                  <p className="text-black font-normal dark:text-white">Adult content</p>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
                   <input
@@ -181,10 +181,10 @@ const CreateCommunity = () => {
                     onChange={() => setChecked(!checked)}
                     className="form-checkbox h-4 w-5 text-red-500"
                   />
-                  <span className="inline-block p-0.5 bg-red-500 text-white rounded">
+                  <span className="inline-block p-0.5 bg-red-500 text-white rounded ">
                     NSFW
                   </span>
-                  <span className="text-black">18+ year old community</span>
+                  <span className="text-black dark:text-white">18+ year old community</span>
                 </div>
               </div>
             </div>
