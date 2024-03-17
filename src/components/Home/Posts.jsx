@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
-import { Spinner } from "@material-tailwind/react";
+import { Input, Spinner } from "@material-tailwind/react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
 
 // const Post = ({ postData, handlePostClick, fetchPosts, data }) => {
 //   const [timeAgo, setTimeAgo] = useState("");
@@ -269,7 +270,16 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [isDownvoted, setIsDownvoted] = useState(false);
   const [likeCount, setLikeCount] = useState(postData.likeCount);
+  const [newTitle, setNewTitle] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [newImage, setNewImage] = useState('');
+  const [joinedStatus, setJoinedStatus] = useState(false);
+  const [editToggled,setEditToggled]=useState(false);
+  const [newPostTitle,setNewPostTitle]=useState("");
+  const [newPostData,setNewPostData]=useState("");
+
   const { darkMode } = useContext(ContextAPIContext);
+  // console.log(postData.length)
 
   useEffect(() => {
     const createdAt = new Date(postData.createdAt);
@@ -291,12 +301,12 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
 
   const handleUpClick = async () => {
     setIsUpvoted(!isUpvoted);
-    if(isUpvoted){
+    if (isUpvoted) {
       setIsUpvoted(false)
     }
     let newLikeCount = isUpvoted ? likeCount - 1 : likeCount + 1;
     setLikeCount(newLikeCount);
-  
+
     const token = localStorage.getItem("token");
     const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${postData._id}`, {
       method: isUpvoted ? 'DELETE' : 'POST',
@@ -305,7 +315,7 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
         'projectID': 't0v7xsdvt1j1'
       }
     });
-  
+
     if (response.ok) {
       let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
       if (isUpvoted) {
@@ -319,16 +329,16 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
       setLikeCount(likeCount);
     }
   };
-  
+
 
   const handleDownClick = async () => {
     setIsDownvoted(!isDownvoted);
-    if(isDownvoted){
+    if (isDownvoted) {
       setIsDownvoted(false)
     }
     let newLikeCount = isDownvoted ? likeCount + 1 : likeCount - 1;
     setLikeCount(newLikeCount);
-  
+
     const token = localStorage.getItem("token");
     const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/dislike/${postData._id}`, {
       method: isDownvoted ? 'DELETE' : 'POST',
@@ -337,7 +347,7 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
         'projectID': 't0v7xsdvt1j1'
       }
     });
-  
+
     if (response.ok) {
       let downvotedPosts = JSON.parse(localStorage.getItem('downvotedPosts')) || [];
       if (isDownvoted) {
@@ -356,7 +366,7 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
   useEffect(() => {
     let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
     let downvotedPosts = JSON.parse(localStorage.getItem('downvotedPosts')) || [];
-  
+
     setIsUpvoted(upvotedPosts.includes(postData._id));
     setIsDownvoted(downvotedPosts.includes(postData._id));
   }, []);
@@ -382,7 +392,6 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
       console.error("Error deleting post:", error);
     }
   };
-  const [joinedStatus, setJoinedStatus] = useState(false);
   const toggleFollow = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -429,7 +438,6 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
     }
   }
 
-  // Effect to check joined status on component mount
   useEffect(() => {
     const status = localStorage.getItem('joinedStatus');
     if (status) {
@@ -437,13 +445,51 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
     }
   }, []);
 
-  // Effect to update joined status in local storage
   useEffect(() => {
     localStorage.setItem('joinedStatus', joinedStatus);
   }, [joinedStatus]);
+
+  const handleEditPostSubmit = async () => {
+    const token = localStorage.getItem("token");
+    try {
+        let imageData = document.getElementById('images').files[0];
+        const formData = new FormData();
+
+        formData.append('title', newPostTitle);
+
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = newPostData;
+        const plainText = tempDiv.textContent || tempDiv.innerText || "";
+
+        formData.append('content', plainText);
+        formData.append('images', imageData);
+        formData.append('appType', "reddit");
+        const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postData._id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'projectId': 't0v7xsdvt1j1',
+            },
+            body: formData,
+        });
+        const data = await response.json();
+        console.log("Post edited:", data);
+        if(response.ok)(toast.success("Post edited Successfully!"))
+        setTimeout(() => {
+            // location.href="/"
+            
+        }, 3000);
+    } catch (error) {
+        console.error("Error creating post:", error);
+    }
+};
+const handleEditToggle = (curr) => {
+  setEditToggled(!curr);
+};
+
   return (
     <div className="py-2">
-      <div className={`w-full hover:border-grey rounded ${darkMode?"bg-[#0B1416]":"bg-white"} cursor-pointer`}>
+      <div className={`w-full hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
         <div className="pt-2">
           <div className="flex items-center text-xs mb-2 justify-between">
             <div className="flex items-center">
@@ -469,23 +515,31 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
             <div className="flex items-center">
               {data && (
                 <div
-                  className="text-white ml-3 bg-blue-800 p-2 px-4 rounded-full"
+                  className="text-white dark:text-black bg-blue-800 p-2 px-4 rounded-full"
                   onClick={() => toggleFollow(postData.author._id)}
                 >
                   {joinedStatus ? "Unfollow" : "Join"}
                 </div>
               )}
               {data?._id === postData.author._id && (
-                <div
-                  className="text-red-500 ml-3"
-                  onClick={() => deletePost(postData?._id)}
-                >
-                  Delete
+                <div className="flex items-center">
+                  <div
+                    className="text-white dark:text-black p-2 px-4 rounded-full bg-red-800"
+                    onClick={() => deletePost(postData?._id)}
+                  >
+                    Delete
+                  </div>
+                  <div
+                    className="text-white dark:text-black bg-blue-800 p-2 px-4 rounded-full"
+                    onClick={()=>handleEditToggle(editToggled)}
+                  >
+                    Edit post
+                  </div>
                 </div>
               )}
             </div>
           </div>
-          <div className="flex flex-col" onClick={() => handlePostClick(postData._id)}>
+         {!editToggled?<> <div className="flex flex-col" onClick={() => handlePostClick(postData._id)}>
             <h2 className="text-lg font-normal mb-1 dark:text-white">
               {postData?.title || (postData.content && postData.content.length > 150
                 ? postData.content.slice(0, 150) + "..."
@@ -594,7 +648,26 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
               </svg>
               <span className="ml-2 text-xs font-normal text-grey">Share</span>
             </div>
-          </div>
+          </div></>:<>
+          <div>
+                    <Input type="text" placeholder='Title' className='text-black' onChange={(e) => setNewPostTitle(e.target.value)} />
+                    <ReactQuill
+                        value={newPostData}
+                        onChange={(value) => setNewPostData(value)}
+                        placeholder="Write your post here..."
+                        className="w-full border border-gray-300 rounded-md p-2 mb-2 mt-2 dark:text-white"
+                    />
+                    <input
+                            type="file"
+                            id='images'
+                            // onChange={(e) => setImageData(e.target.files[0])}
+                            className="mb-2 mt-5"
+                        />
+                    <button onClick={handleEditPostSubmit} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                        Submit
+                    </button>
+                </div>
+          </>}
         </div>
       </div>
     </div>
@@ -605,7 +678,8 @@ const Post2 = ({ postData, handlePostClick, fetchPosts, data }) => {
 
 const Posts = ({ posts, popularPosts, fetchPosts, handlePostClick }) => {
 
-  const { selectedItem, loading, data,darkMode } = useContext(ContextAPIContext);
+  const { selectedItem, loading, data, darkMode } = useContext(ContextAPIContext);
+  console.log(posts.length)
 
   if (selectedItem === "Hot") {
     posts.sort(

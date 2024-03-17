@@ -3,10 +3,11 @@ import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
 
 const ProfileOverview = () => {
   const [activeTab, setActiveTab] = useState('Overview');
-  const{data}=useContext(ContextAPIContext)
+  const{data,posts}=useContext(ContextAPIContext)
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+  
   return (
     <div className='py-3 flex'>
       <div className='w-[48rem] '>
@@ -45,12 +46,32 @@ const ProfileOverview = () => {
           <img src="/images/svgs/plus.svg" alt="" /> <span className="text-black ml-2 font-medium"> Create a Post</span>
         </div>
         <hr />
-        <div className='flex justify-center'>
-          <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
-        </div>
-        <div className='flex justify-center'>
-          <h3 className='text-xs text-gray-600'> <strong>u/{data.name} hasn't posted yet</strong></h3>
-        </div>
+        {posts.map(post => (
+  post.author.name === data.name ? (
+    <div key={post._id}>
+      <div className='flex justify-center'>
+        <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
+      </div>
+      <div className='flex justify-center'>
+        <h3 className='text-xs text-gray-600'> <strong>u/{post.author.name}</strong></h3>
+      </div>
+      <div className='flex justify-center'>
+        <p>{post.content}</p>
+      </div>
+    </div>
+  ) : (
+    <div key={post._id}>
+      <div className='flex justify-center'>
+        <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
+      </div>
+      <div className='flex justify-center'>
+        <h3 className='text-xs text-gray-600'> <strong>u/{post.author?.name} hasn't posted yet</strong></h3>
+      </div>
+    </div>
+  )
+))}
+
+
 
       </div>
       <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50">

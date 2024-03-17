@@ -6,15 +6,15 @@ import MenuButtons from "./MenuButtons";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { Input } from "@material-tailwind/react";
+import axios from "axios";
 
 const PostDetails = ({ posts }) => {
   const { setComments, data } = useContext(ContextAPIContext)
   const [isOpen, setIsOpen] = useState(false);
 
   const { id } = useParams();
-  // Find the post with the matching id
   const post = posts.find((post) => post._id === id);
-  // Check if post is found
+  // console.log(post._id)
   if (!post) {
     return <div>Post not found</div>;
   }
@@ -83,7 +83,7 @@ const PostDetails = ({ posts }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `https://academics.newtonschool.co/api/v1/reddit/post/${post._Id}/comments`,
+        `https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`,
         {
           headers: {
             projectId: "t0v7xsdvt1j1",
@@ -153,7 +153,7 @@ const PostDetails = ({ posts }) => {
                 >
                   •
                 </span>
-                <p className="ml-1"> {timeAgo}</p>
+                <p className="ml-1 dark:text-white"> {timeAgo}</p>
               </div>
               <p className="text-xs">{post.author?.name}</p>
             </div>

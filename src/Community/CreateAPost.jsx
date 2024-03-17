@@ -50,7 +50,7 @@ const CreateAPost = () => {
             });
             const data = await response.json();
             console.log("Post created:", data);
-            toast.success(data.message);
+            toast.success("Post created Successfully!");
             setTimeout(() => {
                 location.href="/"
                 

@@ -254,7 +254,7 @@ const Comments = ({ postId }) => {
                 </div>
                 <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author}</strong>
                 *&nbsp;{" "}
-                <p className="text-sm">{moment(comment.createdAt).fromNow()}</p>
+                <p className="text-sm dark:text-white">{moment(comment.createdAt).fromNow()}</p>
            
               </div>
               {comment.author ===data?._id?  <button className="text-red-500 text-end" onClick={() => deleteComment(comment?._id)}>Delete</button>:""}
@@ -533,7 +533,7 @@ const Comments = ({ postId }) => {
                           </faceplate-hovercard>
                         </div>
                         <strong className="mr-3 text-sm">{reply.name}</strong>
-                        *&nbsp; <p className=" text-sm">10PM</p>
+                        *&nbsp; <p className=" text-sm dark:text-white">10PM</p>
                       </div>
                     </div>
                     <div className="p-3 pt-0 mt-2 flex flex-col justify-between hover:bg-grey-lighter rounded-xl border-l">

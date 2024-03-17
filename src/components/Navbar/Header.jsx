@@ -51,11 +51,11 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
- 
 
 
 
-  const { posts, data, setShowResults, showResults,setDarkMode,darkMode } = useContext(ContextAPIContext);
+
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
   const throttledFilterData = useThrottle(filterData, 500);
@@ -134,7 +134,7 @@ const Header = () => {
               <Input
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 label="Search Reddit"
-                className={darkMode?"dark-customInp":"customInp"}
+                className={darkMode ? "dark-customInp" : "customInp"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowResults(true)}
@@ -143,44 +143,45 @@ const Header = () => {
               {showResults && (
                 <div className="absolute top-12">
                   <Card className="w-[37rem]">
-                    <Scrollbars autoHide  style={{"height":"26rem" }}>
-                    <List className={` ${darkMode ? 'clr-dark-head' : ''} `}>
-                      {searchResults.map((item, idx) => (
-                        <ListItem
-                          ripple={false}
-                          className="py-1 pr-1 pl-4 text-black dark:text-white "
-                          key={idx}
-                          onClick={() => handlePostClick(item?._id)}
-                        >
-                          <div className="flex">
-                            <div className="flex flex-col justify-start">
-                              <Typography variant="small">Heading</Typography>
-                              <Typography
-                                variant="small"
-                                color={darkMode?"white":"black"}
-                                className="mr-2 font-medium"
-                              >
-                                {item?.content?.slice(0, 40)}
-                              </Typography>
-                              <div className="flex items-center justify-start">
-                                <img
-                                  src={(item.channel?.image)?.startsWith("https")?(item?.channel?.image):"/images/svgs/defaultProfile.svg"}
-                                  alt="smallImg"
-                                  className="w-5 rounded-full mr-1"
-                                />
-                                <Typography className="text-xs">
-                                  r/{item?.channel?.name.toLowerCase()} and more
+                    <Scrollbars autoHide style={{ "height": "26rem" }}>
+                      <List className={` ${darkMode ? 'clr-dark-head' : ''} `}>
+                        {searchResults.map((item, idx) => (
+                          <ListItem
+                            ripple={false}
+                            className="py-0 pr-1 pl-4 text-black dark:text-white "
+                            key={idx}
+                            onClick={() => handlePostClick(item?._id)}
+                          >
+                            <div className="flex">
+                              <div className="flex flex-col justify-start">
+
+                                <Typography
+                                  variant="small"
+                                  color={darkMode ? "white" : "black"}
+                                  className="mr-2 font-medium"
+                                >
+                                  {item?.content?.slice(0, 40)}
                                 </Typography>
+                                <div className="flex items-center justify-start">
+                                  <img
+                                    src={(item.channel?.image)?.startsWith("https") ? (item?.channel?.image) : "/images/svgs/defaultProfile.svg"}
+                                    alt="smallImg"
+                                    className="w-5 rounded-full mr-1"
+                                  />
+                                  <Typography className="text-xs">
+                                    r/{item?.channel?.name.toLowerCase()} and more
+                                  </Typography>
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <ListItemSuffix>
-                            <img src={item?.images[0]} width={130} alt="img" />
-                          </ListItemSuffix>
-                        </ListItem>
-                      ))}
-                    </List>
+                            <ListItemSuffix>
+                              {item?.images[0]?.startsWith("https") && <img src={item.images[0]} width={130} alt="img" />}
+                            </ListItemSuffix>
+
+                          </ListItem>
+                        ))}
+                      </List>
                     </Scrollbars>
                   </Card>
                 </div>
@@ -219,13 +220,13 @@ const Header = () => {
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" />
               </div>
               <div className=" cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
-              <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" />
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" />
               </div>
               <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600  rounded-3xl p-3 cursor-pointer" onClick={() => navigate("/submit")}>
-              <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Add" /> <span className="text-black dark:text-white ml-2"> Create</span>
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Add" /> <span className="text-black dark:text-white ml-2"> Create</span>
               </div>
               <div className="rounded-3xl cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
-              <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"} alt="" />
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"} alt="" />
               </div>
               <div className="">
                 <Popover>
@@ -241,7 +242,7 @@ const Header = () => {
                       />
                     </span>
                   </PopoverHandler>
-                  <PopoverContent className={`${darkMode?"bg-[#0B1416]":""}`}>
+                  <PopoverContent className={`${darkMode ? "bg-[#0B1416]" : ""}`}>
                     <List className={`my-2 p-0 `}>
                       <ListItem className="group rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black" onClick={() => navigate(`/user/${data?.name.toLowerCase()}/`)}>
                         <ListItemPrefix>
@@ -262,14 +263,14 @@ const Header = () => {
                       </ListItem>
                       <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shirt.svg" : "/images/svgs/shirt.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shirt.svg" : "/images/svgs/shirt.svg"} alt="" />
                         </ListItemPrefix>
                         Edit Avatar
                       </ListItem>
 
                       <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-trophy.svg" : "/images/svgs/trophy.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-trophy.svg" : "/images/svgs/trophy.svg"} alt="" />
                         </ListItemPrefix>
                         <div className="flex flex-col justify-start">
                           {" "}
@@ -282,7 +283,7 @@ const Header = () => {
 
                       <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-wallet.svg" : "/images/svgs/wallet.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-wallet.svg" : "/images/svgs/wallet.svg"} alt="" />
                         </ListItemPrefix>
                         <div className="flex flex-col justify-start">
                           {" "}
@@ -301,7 +302,7 @@ const Header = () => {
                       </ListItem>
                       <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-moon.svg" : "/images/svgs/moon.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-moon.svg" : "/images/svgs/moon.svg"} alt="" />
                         </ListItemPrefix>
                         <div className="flex items-center">
                           <p className="mr-3">Dark Mode</p>
@@ -325,7 +326,7 @@ const Header = () => {
                         onClick={handleOpen}
                       >
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-logout.svg" : "/images/svgs/logout.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-logout.svg" : "/images/svgs/logout.svg"} alt="" />
                         </ListItemPrefix>
                         <div onClick={handleOpen} variant="gradient">
                           Logout
@@ -359,7 +360,7 @@ const Header = () => {
 
                       <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" />
                         </ListItemPrefix>
                         Advertise on Reddit
                       </ListItem>
@@ -367,14 +368,14 @@ const Header = () => {
 
                       <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white">
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-settings.svg" : "/images/svgs/settings.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-settings.svg" : "/images/svgs/settings.svg"} alt="" />
                         </ListItemPrefix>
                         Settings
                       </ListItem>
                       <hr />
                       <ListItem className="rounded-none pt-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => navigate("/premium")}>
                         <ListItemPrefix>
-                        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shield.svg" : "/images/svgs/shield.svg"} alt="" />
+                          <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shield.svg" : "/images/svgs/shield.svg"} alt="" />
                         </ListItemPrefix>
                         Premium
                       </ListItem>

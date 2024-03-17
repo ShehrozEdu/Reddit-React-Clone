@@ -34,7 +34,7 @@ const CommunityPageDetails = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className='my-0 xl:w-[62rem] lg:w-[62rem]'>
+        <div className='my-0 xl:w-[62rem] lg:w-[62rem] h-[100vh]'>
             <div className={`${darkMode ? "bg-[#0B1416]" : "bg-gray-50"}`}>
                 <div className='w-full rounded-xl relative'>
                     <img src={channelData?.owner?.profileImage || "https://styles.redditmedia.com/t5_2dfnk0/styles/bannerBackgroundImage_w5zgsr59xx0b1.png"} alt="" className=' rounded-xl h-[8rem] object-cover xl:w-[62rem] lg:w-[62rem]' />
