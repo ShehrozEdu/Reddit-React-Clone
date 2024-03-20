@@ -72,7 +72,7 @@ const Carousel = () => {
     : post.title || (post.content && post.content.length > 16
         ? post.content.slice(0, 16) + "..."
         : post.content)}
-
+<img src="" alt="" />
             </Typography>
             <div className="flex items-center px-4">
               <img src={post.author.profileImage|| "/images/svgs/defaultProfile.svg"} alt=""  className="rounded-full w-6 h-6 bg-gray-100" />

@@ -49,7 +49,7 @@ const CreateAPost = () => {
                 body: formData,
             });
             const data = await response.json();
-            console.log("Post created:", data);
+            // console.log("Post created:", data);
             toast.success("Post created Successfully!");
             setTimeout(() => {
                 location.href="/"

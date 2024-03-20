@@ -3,13 +3,13 @@ import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
 
 const ProfileOverview = () => {
   const [activeTab, setActiveTab] = useState('Overview');
-  const{data,posts}=useContext(ContextAPIContext)
+  const { data } = useContext(ContextAPIContext);
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-  
   return (
-    <div className='py-3 flex'>
+    <div className='py-3 flex h-[100vh]'>
       <div className='w-[48rem] '>
         <div className='flex items-center'>
           <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png" alt="" className='rounded-full w-16 h-16' />
@@ -46,32 +46,12 @@ const ProfileOverview = () => {
           <img src="/images/svgs/plus.svg" alt="" /> <span className="text-black ml-2 font-medium"> Create a Post</span>
         </div>
         <hr />
-        {posts.map(post => (
-  post.author.name === data.name ? (
-    <div key={post._id}>
-      <div className='flex justify-center'>
-        <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
-      </div>
-      <div className='flex justify-center'>
-        <h3 className='text-xs text-gray-600'> <strong>u/{post.author.name}</strong></h3>
-      </div>
-      <div className='flex justify-center'>
-        <p>{post.content}</p>
-      </div>
-    </div>
-  ) : (
-    <div key={post._id}>
-      <div className='flex justify-center'>
-        <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
-      </div>
-      <div className='flex justify-center'>
-        <h3 className='text-xs text-gray-600'> <strong>u/{post.author?.name} hasn't posted yet</strong></h3>
-      </div>
-    </div>
-  )
-))}
-
-
+        <div className='flex justify-center'>
+          <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
+        </div>
+        <div className='flex justify-center'>
+          <h3 className='text-xs text-gray-600'> <strong>u/{data.name} hasn't posted yet</strong></h3>
+        </div>
 
       </div>
       <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50">

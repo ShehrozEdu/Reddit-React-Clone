@@ -95,9 +95,9 @@ const PostDetails = ({ posts }) => {
       console.log(error);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     fetchComments();
-  },[])
+  }, [])
   const createComment = async () => {
     if (!data) {
       alert("User is not logged in");
@@ -160,12 +160,16 @@ const PostDetails = ({ posts }) => {
           </div>
         </div>
         <p className="font-bold text-lg text-black dark:text-white">
-          {post.content?.slice(0, 40)}
+          {post?.title && post.title.length > 10
+            ? post.title.slice(0, 15)
+            : post.title || (post.content && post.content.length > 16
+              ? post.content.slice(0, 16) + "..."
+              : post.content)}
         </p>
         <p className="text-xs text-black-300 mt-2 bg-yellow-500 rounded-xl w-32 py-1 font-bold p-2">
           Foreign Relations
         </p>
-        <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]">          <p className="text-black my-5 dark:text-white">{post?.content}</p>
+        <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]">          <p className="text-black my-5 dark:text-white">{(post?.content) ? (post?.content) : (post?.title)}</p>
           <img src={post?.images[0]} alt="img" className="rounded-2xl" />
         </div>
         {/* Post Actions */}
@@ -317,23 +321,23 @@ const PostDetails = ({ posts }) => {
             </div>
           </div>
         </div>
-            <hr />
-            <div className="flex justify-start p-2 py-4">
-              <div className="flex items-center space-x-2">
-              <img src="/images/svgs/defaultProfile.svg" className="w-7 h-7 bg-gray-400 rounded-full" alt="" />
-             <p className="dark:text-white"> {data?.name}</p>
-              </div>
-              </div>
-          <div>
-            <hr />
-            {commBookmarks.map((post) => (
-              <div key={post?.id} className="mb-6 p-2 text-sm xl:block lg:block hidden">
-                <div className="flex items-center justify-center bg-[#eaedef] text-black dark:bg-[#4f4a79] p-2 rounded-2xl dark:text-white">
-                  <h3>{post?.name}</h3>
-                </div>
-              </div>
-            ))}
+        <hr />
+        <div className="flex justify-start p-2 py-4">
+          <div className="flex items-center space-x-2">
+            <img src="/images/svgs/defaultProfile.svg" className="w-7 h-7 bg-gray-400 rounded-full" alt="" />
+            <p className="dark:text-white"> {data?.name}</p>
           </div>
+        </div>
+        <div>
+          <hr />
+          {commBookmarks.map((post) => (
+            <div key={post?.id} className="mb-6 p-2 text-sm xl:block lg:block hidden">
+              <div className="flex items-center justify-center bg-[#eaedef] text-black dark:bg-[#4f4a79] p-2 rounded-2xl dark:text-white">
+                <h3>{post?.name}</h3>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

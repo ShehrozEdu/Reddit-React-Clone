@@ -11,6 +11,7 @@ import Demo from "../../Community/demo";
 import CreateAPost from "../../Community/CreateAPost";
 import CommunityPageDetails from "../../Community/CommunityPageDetails";
 import ProfileOverview from "../../Community/Profile/ProfileOverview";
+import AuthorProfile from "../../Community/Profile/AuthorProfile";
 
 const Home = () => {
   const {
@@ -142,7 +143,7 @@ const Home = () => {
           path="/"
           element={
             <div className="flex flex-col relative">
-              {!isResponsive && <Carousel />}
+              {/* {!isResponsive && <Carousel />} */}
               <MenuButtons showCountrySelect={true} />
               <div className={`flex relative `}>
                 <Posts
@@ -183,6 +184,7 @@ const Home = () => {
         <Route path="/submit" element={<CreateAPost />} />
         <Route path="/community/:id" element={<CommunityPageDetails />} />
         <Route path="/user/:name/" element={<ProfileOverview />} />
+        <Route path="/users/:authorName" element={<AuthorProfile posts={posts}/>} />
       </Routes>
     </div>
   );
