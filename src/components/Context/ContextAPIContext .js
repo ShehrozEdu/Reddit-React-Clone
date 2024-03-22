@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { createContext, useState, useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const ContextAPIContext = createContext(); // Export ContextAPIContext
 
@@ -22,9 +24,15 @@ export const ContextAPIProvider = ({ children }) => {
   const [recentCommunities, setRecentCommunities] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [likeCountMaintain, setLikeCountMaintain] = useState(false);
+  const[otherLike,setOtherLike]=useState([])
+  const handleClickToast = () => {
+    toast.warning('Work Under Progress');
+  };
+  
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
+    document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
   const data = JSON.parse(localStorage.getItem("userData"));
@@ -37,9 +45,82 @@ export const ContextAPIProvider = ({ children }) => {
   const handleAsideToggle = () => {
     setIsAsideOpen(!isAsideOpen);
   };
+  const handleUpClick = async (postData) => {
+    try {
+      setIsUpvoted(!isUpvoted);
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `https://academics.newtonschool.co/api/v1/reddit/like/${postData}`,
+        {
+          method: isUpvoted ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            projectID: "t0v7xsdvt1j1",
+          },
+        }
+      );
+      if (response.ok) {
+        setLikeCountMaintain(true);
+        console.log("Upvoted");
+      } else {
+        console.error("Upvote failed");
+      }
+    } catch (error) {
+      console.error("Error upvoting:", error);
+    }
+  };
+
+  const handleDownClick = async (postData) => {
+    try {
+      setIsDownvoted(!isDownvoted);
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `https://academics.newtonschool.co/api/v1/reddit/dislike/${postData}`,
+        {
+          method: isDownvoted ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            projectID: "t0v7xsdvt1j1",
+          },
+        }
+      );
+      if (response.ok) {
+        console.log("Downvoted");
+      } else {
+        console.error("Downvote failed");
+      }
+    } catch (error) {
+      console.error("Error downvoting:", error);
+    }
+  };
+  const fetchLikedPost = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${id}`, {
+        headers: {
+          projectId: "t0v7xsdvt1j1",
+          Authorization: `Bearer ${token}`
+        },
+      });
+
+      setOtherLike(response.data.data);
+      if (response.data.data.isLiked) {
+        setIsUpvoted(true)
+
+      }
+      if (response.data.data.isDisliked) setIsDownvoted(true);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
   return (
     <ContextAPIContext.Provider
       value={{
+        handleClickToast,
+        fetchLikedPost,
+        handleDownClick,
+        handleUpClick,
         posts,
         setPosts,
         setPopularPosts,
@@ -71,7 +152,13 @@ export const ContextAPIProvider = ({ children }) => {
         isAsideOpen,
         setIsAsideOpen,
         handleAsideToggle,
-        showResults,setShowResults,setDarkMode,darkMode,
+        showResults,
+        setShowResults,
+        setDarkMode,
+        darkMode,
+        likeCountMaintain,
+        setLikeCountMaintain,
+        otherLike,
       }}
     >
       {children}

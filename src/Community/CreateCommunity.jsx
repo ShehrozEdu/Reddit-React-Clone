@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import {
   Button,
@@ -8,8 +8,10 @@ import {
   DialogFooter,
   Input,
 } from "@material-tailwind/react";
+import { ContextAPIContext } from "../components/Context/ContextAPIContext ";
 
 const CreateCommunity = () => {
+  const {darkMode}=useContext(ContextAPIContext)
   const [communityName, setCommunityName] = useState("");
   const [inputFocused, setInputFocused] = useState(false); 
   const maxCharacters = 21;
@@ -81,10 +83,10 @@ const CreateCommunity = () => {
         onClick={handleOpen}
         className="flex text-black shadow-none items-center"
       >
-        <img src="/images/svgs/darkModeSvgs/dark-plus.svg" alt="" width={15} className="mr-2" />
+        <img src={`${darkMode?"/images/svgs/darkModeSvgs/dark-plus.svg":"/images/svgs/plus.svg"}`} alt="" width={15} className="mr-2" />
         <span className="capitalize dark:text-white">Create Community</span>
       </div>
-      <Dialog open={open} handler={handleOpen} className="bg-[#0B1416]">
+      <Dialog open={open} handler={handleOpen} className="dark:bg-[#0B1416]">
         <DialogHeader className="text-md font-normal text-black dark:text-white">
           Create a Community
         </DialogHeader>

@@ -1,13 +1,38 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const ProfileOverview = () => {
   const [activeTab, setActiveTab] = useState('Overview');
-  const { data } = useContext(ContextAPIContext);
+  const { data,handleClickToast } = useContext(ContextAPIContext);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+  const [dataProf, setDataProf] = useState(null);
+
+  const { name } = useParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(
+        'https://academics.newtonschool.co/api/v1/reddit/post',
+        {
+          params: {
+            search: JSON.stringify({ "author.name": name })
+          },
+          headers: {
+            'projectid': 't0v7xsdvt1j1'
+          }
+        }
+      );
+
+      setDataProf(result.data.data);
+    };
+    fetchData();
+  }, [name]);
+
+  console.log(dataProf)
   return (
     <div className='py-3 flex h-[100vh]'>
       <div className='w-[48rem] '>
@@ -46,18 +71,46 @@ const ProfileOverview = () => {
           <img src="/images/svgs/plus.svg" alt="" /> <span className="text-black ml-2 font-medium"> Create a Post</span>
         </div>
         <hr />
-        <div className='flex justify-center'>
+        {(!dataProf?.title || !dataProf?.content) ?
+         <>
+          {dataProf?.map((item, index) => {
+            return (
+              <div>
+                <div className='flex items-center gap-2 py-5' key={index}>
+                  <img src="/images/svgs/defaultProfile.svg" className='w-6 h-6 rounded-full bg-blue-gray-100' alt="" />
+                  <h5 className="text-sm">{item.author?.name}</h5>
+                  <span class="px-2xs"> • </span>
+                  <h6 className='text-xs underline'>{item?.title}</h6>
+
+                </div>
+
+                <div className='flex flex-col'>
+                  {item.title && <div className='font-bold pb-2'>{item?.title}</div>}
+                  <div>{item.content}</div>
+                  <div><img src={item?.images[0]} alt="postImg" /></div>
+
+                </div>
+
+                <div className='py-3'><hr /></div>
+              </div>
+            )
+          })}
+        </> 
+        :
+         <>
+          <div className='flex justify-center'>
           <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
         </div>
-        <div className='flex justify-center'>
-          <h3 className='text-xs text-gray-600'> <strong>u/{data.name} hasn't posted yet</strong></h3>
-        </div>
+          <div className='flex justify-center'>
+            <h3 className='text-xs text-gray-600'> <strong>u/{dataProf[0]?.author.name} hasn't posted yet</strong></h3>
+          </div > 
+          </>}
 
       </div>
       <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50">
         <div className='relative'>
           <div className="grad-cover w-80 h-36 rounded-2xl "></div>
-          <div className='w-8 h-8 top-24 right-4 flex items-center justify-center bg-white absolute rounded-full'>
+          <div className='w-8 h-8 top-24 right-4 flex items-center justify-center bg-white absolute rounded-full' onClick={handleClickToast}>
             <svg rpl="" aria-hidden="true" fill="currentColor" height="16" icon-name="add-media-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.376 3.032h-2.355L13.8 1.446A1.155 1.155 0 0 0 12.892 1h-5.74a1.17 1.17 0 0 0-.923.454L5.014 3.031H2.625A2.629 2.629 0 0 0 0 5.656v9.719A2.63 2.63 0 0 0 2.625 18h14.75A2.63 2.63 0 0 0 20 15.375V5.657a2.627 2.627 0 0 0-2.624-2.625Zm1.374 12.343a1.377 1.377 0 0 1-1.375 1.375H2.625a1.377 1.377 0 0 1-1.375-1.375V5.656a1.377 1.377 0 0 1 1.375-1.375h3L7.152 2.25l5.657-.041 1.6 2.072h2.971a1.375 1.375 0 0 1 1.37 1.376v9.718Zm-8.125-6H14v1.25h-3.375V14h-1.25v-3.375H6v-1.25h3.375V6h1.25v3.375Z">
 
@@ -67,7 +120,7 @@ const ProfileOverview = () => {
           <div className='p-3'>
             <h3 className='font-bold py-2'>{data.name}</h3>
 
-            <div className={`cursor-pointer bg-[#E2E7E9] rounded-3xl p-2 w-24 flex items-center font-medium`} >
+            <div className={`cursor-pointer bg-[#E2E7E9] rounded-3xl p-2 w-24 flex items-center font-medium cursor-pointer`} onClick={handleClickToast}>
               <span className='mr-2'><img src="/images/svgs/share-arrow.svg" alt="" /></span>Share
             </div>
             <div className="grid grid-cols-2 gap-4 py-5">
@@ -102,7 +155,7 @@ const ProfileOverview = () => {
                       <div className='text-sm'>Customise</div>
                     </div>
                   </div>
-                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium'>Edit profile</div>
+                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium cursor-pointer' onClick={handleClickToast}>Edit profile</div>
                 </div>
                 <div className='flex justify-between py-3'>
                   <div className='flex items-center space-x-2'>
@@ -110,11 +163,11 @@ const ProfileOverview = () => {
                       <img src="/images/svgs/shirt-outline.svg" className='w-6 rounded-full' alt="avatar" />
                     </div>
                     <div>
-                      <div className='text-sm'>Avatar</div>
-                      <div className='text-sm'>Customise</div>
+                      <div className='text-sm cursor-pointer' onClick={handleClickToast}>Avatar</div>
+                      <div className='text-sm cursor-pointer' onClick={handleClickToast}>Customise</div>
                     </div>
                   </div>
-                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium'>Style Avatar</div>
+                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium cursor-pointer' onClick={handleClickToast}>Style Avatar</div>
                 </div>
                 <div className='flex justify-between py-3'>
                   <div className='flex items-center space-x-2'>
@@ -122,17 +175,17 @@ const ProfileOverview = () => {
                       <img src="/images/svgs/mod.svg" className='w-6 rounded-full' alt="avatar" />
                     </div>
                     <div>
-                      <div className='text-sm'>Moderation</div>
-                      <div className='text-sm'>Moderation Tools</div>
+                      <div className='text-sm cursor-pointer' onClick={handleClickToast}>Moderation</div>
+                      <div className='text-sm cursor-pointer' onClick={handleClickToast}>Moderation Tools</div>
                     </div>
                   </div>
-                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium'>Mod Settings</div>
+                  <div className='bg-[#E2E7E9] rounded-3xl p-2 text-sm font-medium cursor-pointer' onClick={handleClickToast}>Mod Settings</div>
                 </div>
               </div>
               <hr />
               <div className='py-4'>
                 <div className='uppercase text-sm mb-4'>Links</div>
-                <div className={`cursor-pointer bg-[#E2E7E9] rounded-3xl p-2 w-[10rem] flex items-center`} >
+                <div className={`cursor-pointer bg-[#E2E7E9] rounded-3xl p-2 w-[10rem] flex items-center`} onClick={handleClickToast}>
                   <span className='mr-2'><img src="/images/svgs/plus.svg" alt="" /></span>Add Social Link
                 </div>
               </div>

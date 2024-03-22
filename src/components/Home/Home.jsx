@@ -63,12 +63,14 @@ const Home = () => {
   };
   const fetchPosts = async () => {
     setLoading(true);
+    const token=localStorage.getItem('token')
     try {
       const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
         headers: {
           projectId: "t0v7xsdvt1j1",
+          Authorization:`Bearer ${token}`
         },
-      });
+    });
 
       if (Array.isArray(response.data.data)) {
         if (response.data.data.length === 0) {

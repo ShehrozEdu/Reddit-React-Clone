@@ -19,7 +19,7 @@ import { toast } from 'react-toastify';
 const CreateAPost = () => {
     const [activeTab, setActiveTab] = React.useState("post");
     const [postData, setPostData] = React.useState("");
-    // const [imageData, setImageData] = React.useState("");
+    const [imageData, setImageData] = React.useState(null);
     const [linkData, setLinkData] = React.useState("");
     const [postTitle, setPostTitle] = useState("");
     const { data ,darkMode} = useContext(ContextAPIContext)
@@ -28,7 +28,7 @@ const CreateAPost = () => {
         // e.preventDefault()
         const token = localStorage.getItem("token");
         try {
-            let imageData = document.getElementById('images').files[0];
+            // imageData = document.getElementById('images').files[0];
             const formData = new FormData();
 
             formData.append('title', postTitle);
@@ -52,7 +52,7 @@ const CreateAPost = () => {
             // console.log("Post created:", data);
             toast.success("Post created Successfully!");
             setTimeout(() => {
-                location.href="/"
+                // location.href="/"
                 
             }, 3000);
         } catch (error) {
@@ -91,7 +91,7 @@ const CreateAPost = () => {
                         <input
                             type="file"
                             id='images'
-                            // onChange={(e) => setImageData(e.target.files[0])}
+                            onChange={(e) => setImageData(e.target.files[0])}
                             className="mb-2 mt-5"
                         />
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md" onClick={handlePostSubmit}>

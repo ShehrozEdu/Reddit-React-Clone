@@ -11,7 +11,7 @@ const TrendingItem = ({ item, addToLocalStorage }) => {
 
   const handleCommunityDetails = (id) => {
     setCommId(id);
-    addToLocalStorage(item); // Pass the whole item object
+    addToLocalStorage(item);
     navigate(`/community/${id}`)
   }
   

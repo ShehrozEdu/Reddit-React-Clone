@@ -1,20 +1,20 @@
-// PostDetails.js
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Comments from "./Comments";
 import MenuButtons from "./MenuButtons";
-import { Scrollbars } from "react-custom-scrollbars-2";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
 
 const PostDetails = ({ posts }) => {
-  const { setComments, data } = useContext(ContextAPIContext)
-  const [isOpen, setIsOpen] = useState(false);
-
+  const { setComments, data, isDownvoted, setIsDownvoted, setIsUpvoted, isUpvoted,handleClickToast} = useContext(ContextAPIContext);
   const { id } = useParams();
   const post = posts.find((post) => post._id === id);
-  // console.log(post._id)
+  const [showMore, setShowMore] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [comment, setComment] = useState("");
+    const [timeAgo, setTimeAgo] = useState("");
+
   if (!post) {
     return <div>Post not found</div>;
   }
@@ -55,8 +55,6 @@ const PostDetails = ({ posts }) => {
       commentsCount: 12,
     },
   ];
-  const [showMore, setShowMore] = useState(false);
-  const [timeAgo, setTimeAgo] = useState("");
 
   useEffect(() => {
     const createdAt = new Date(post.createdAt);
@@ -79,25 +77,60 @@ const PostDetails = ({ posts }) => {
     setTimeAgo(timeAgoString);
   }, [post.createdAt]);
 
-  const [comment, setComment] = useState("");
   const fetchComments = async () => {
     try {
-      const response = await axios.get(
-        `https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`,
-        {
-          headers: {
-            projectId: "t0v7xsdvt1j1",
-          },
-        }
-      );
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`, {
+        headers: {
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
       setComments(response.data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchComments();
-  }, [])
+  }, []);
+
+  const handleUpClick = async () => {
+    setIsUpvoted(!isUpvoted);
+    const token = localStorage.getItem("token");
+    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${posts._id}`, {
+      method: isUpvoted ? 'DELETE' : 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'projectID': 't0v7xsdvt1j1'
+      }
+    });
+
+    await fetchLikedPost();
+    toast.success("Upvoted")
+    setIsDownvoted(false);
+  };
+
+  const handleDownClick = async () => {
+    setIsDownvoted(!isDownvoted);
+    const token = localStorage.getItem("token");
+    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/dislike/${posts._id}`, {
+      method: isDownvoted ? 'DELETE' : 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'projectID': 't0v7xsdvt1j1'
+      }
+    });
+
+    if (response.ok) {
+      await fetchLikedPost();
+      toast.error("Downvoted")
+      setIsUpvoted(false);
+    } else {
+      setIsDownvoted(!isDownvoted);
+      console.error('Downvote failed');
+    }
+  };
+
   const createComment = async () => {
     if (!data) {
       alert("User is not logged in");
@@ -106,20 +139,17 @@ const PostDetails = ({ posts }) => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(
-        `https://academics.newtonschool.co/api/v1/reddit/comment/${post._id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            projectID: "t0v7xsdvt1j1",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: comment,
-          }),
-        }
-      );
+      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/comment/${post._id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          projectID: "t0v7xsdvt1j1",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: comment,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Response was not ok");
@@ -133,9 +163,6 @@ const PostDetails = ({ posts }) => {
       console.error("Error:", error);
     }
   };
-
-
-
   return (
     <div className="flex relative">
       <div className="flex flex-col bg-white dark:bg-[#0B1416] rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] p-6">
@@ -174,27 +201,63 @@ const PostDetails = ({ posts }) => {
         </div>
         {/* Post Actions */}
         <div className="inline-flex items-center my-1 py-3">
-          <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-            <button className="text-xs">
-              <svg
-                className="w-5 fill-current text-grey"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M7 10v8h6v-8h5l-8-8-8 8h5z" />
-              </svg>
-            </button>
-            <span className="text-xs font-normal my-1">{post?.likeCount}</span>
-            <button className="text-xs">
-              <svg
-                className="w-5 fill-current text-grey"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M7 10V2h6v8h5l-8 8-8-8h5z" />
-              </svg>
-            </button>
-          </div>
+        <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
+                <button className="text-xs" onClick={handleUpClick}>
+                  {!isUpvoted ? (
+                    <svg
+                      rpl=""
+                      fill="currentColor"
+                      height="16"
+                      icon-name="upvote-outline"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12.877 19H7.123A1.125 1.125 0 0 1 6 17.877V11H2.126a1.114 1.114 0 0 1-1.007-.7 1.249 1.249 0 0 1 .171-1.343L9.166.368a1.128 1.128 0 0 1 1.668.004l7.872 8.581a1.25 1.25 0 0 1 .176 1.348 1.113 1.113 0 0 1-1.005.7H14v6.877A1.125 1.125 0 0 1 12.877 19ZM7.25 17.75h5.5v-8h4.934L10 1.31 2.258 9.75H7.25v8ZM2.227 9.784l-.012.016c.01-.006.014-.01.012-.016Z"></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      rpl=""
+                      fill="currentColor"
+                      height="16"
+                      icon-name="upvote-fill"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M18.706 8.953 10.834.372A1.123 1.123 0 0 0 10 0a1.128 1.128 0 0 0-.833.368L1.29 8.957a1.249 1.249 0 0 0-.171 1.343 1.114 1.114 0 0 0 1.007.7H6v6.877A1.125 1.125 0 0 0 7.123 19h5.754A1.125 1.125 0 0 0 14 17.877V11h3.877a1.114 1.114 0 0 0 1.005-.7 1.251 1.251 0 0 0-.176-1.347Z"></path>{" "}
+                    </svg>
+                  )}
+                </button>
+                <span className="text-xs font-normal my-1">{post.likeCount}</span>
+                <button className="text-xs" onClick={handleDownClick}>
+                  {!isDownvoted ? (
+                    <svg
+                      rpl=""
+                      fill="currentColor"
+                      height="16"
+                      icon-name="downvote-outline"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M10 20a1.122 1.122 0 0 1-.834-.372l-7.872-8.581A1.251 1.251 0 0 1 1.118 9.7 1.114 1.114 0 0 1 2.123 9H6V2.123A1.125 1.125 0 0 1 7.123 1h5.754A1.125 1.125 0 0 1 14 2.123V9h3.874a1.114 1.114 0 0 1 1.007.7 1.25 1.25 0 0 1-.171 1.345l-7.876 8.589A1.128 1.128 0 0 1 10 20Zm-7.684-9.75L10 18.69l7.741-8.44H12.75v-8h-5.5v8H2.316Zm15.469-.05c-.01 0-.014.007-.012.013l.012-.013Z"></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      rpl=""
+                      fill="currentColor"
+                      height="16"
+                      icon-name="downvote-fill"
+                      viewBox="0 0 20 20"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M18.88 9.7a1.114 1.114 0 0 0-1.006-.7H14V2.123A1.125 1.125 0 0 0 12.877 1H7.123A1.125 1.125 0 0 0 6 2.123V9H2.123a1.114 1.114 0 0 0-1.005.7 1.25 1.25 0 0 0 .176 1.348l7.872 8.581a1.124 1.124 0 0 0 1.667.003l7.876-8.589A1.248 1.248 0 0 0 18.88 9.7Z"></path>
+                    </svg>
+                  )}
+                </button>
+              </div>
           <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +274,7 @@ const PostDetails = ({ posts }) => {
               />
             </svg>
             <span className="ml-2 text-xs font-normal text-grey">
-              {post?.commentCount}
+              {post.commentCount}
             </span>
           </div>
           {/* Share */}
@@ -289,7 +352,7 @@ const PostDetails = ({ posts }) => {
         </div>
         <Comments postId={id} />
       </div>
-      <div className="fixed right-40 w-72 bg-gray-100 dark:bg-[#0B1416] dark:border dark: border-white dark:rounded-2xl">
+      <div className="fixed xl:block lg:block hidden right-40 w-72 bg-gray-100 dark:bg-[#0B1416] dark:border dark: border-white dark:rounded-2xl">
         {" "}
         <div className="p-4 rounded-xl mb-5 xl:block lg:block hidden">
           <div className="border-b pb-2 mb-4 flex">
@@ -331,7 +394,7 @@ const PostDetails = ({ posts }) => {
         <div>
           <hr />
           {commBookmarks.map((post) => (
-            <div key={post?.id} className="mb-6 p-2 text-sm xl:block lg:block hidden">
+            <div key={post?.id} className="mb-6 p-2 text-sm xl:block lg:block hidden cursor-pointer" onClick={handleClickToast}>
               <div className="flex items-center justify-center bg-[#eaedef] text-black dark:bg-[#4f4a79] p-2 rounded-2xl dark:text-white">
                 <h3>{post?.name}</h3>
               </div>

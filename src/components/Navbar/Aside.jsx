@@ -24,14 +24,14 @@ import { HiTrendingUp } from "react-icons/hi";
 import { PiTelevisionSimple } from "react-icons/pi";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import CreateCommunity from "../../Community/CreateCommunity";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Scrollbars from "react-custom-scrollbars-2";
 
 const Aside = () => {
   const [open, setOpen] = React.useState(0);
   const [subOpen, setSubOpen] = React.useState(0);
   const [width, setWidth] = useState("75%");
-  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId } = useContext(ContextAPIContext);
+  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast } = useContext(ContextAPIContext);
 
   const location = useLocation();
 
@@ -86,6 +86,9 @@ const Aside = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+  const handleNavigate = (url) => {
+    Navigate(url);
+  };
   return (
 
     <Card className={`h-[calc(100vh-4.2rem)]   ${location.pathname === '/submit' ? 'w-full max-w-[16rem]' : 'w-full xl:max-w-[27rem] lg:max-w-[27rem] max-w-[16rem]'} p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
@@ -551,7 +554,7 @@ const Aside = () => {
                             </span>
                             <div className="flex justify-between items-center w-full">
                               <span className="text-black dark:text-white"> r/{item.name}</span>
-                              <span className="">
+                              <span className="" onClick={handleClickToast}>
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -605,109 +608,50 @@ const Aside = () => {
               </ListItem>
               <AccordionBody className="py-1">
                 <List className="p-0">
-                  <ListItem>
-                    <ListItemPrefix>
+                  <ListItem onClick={() => window.open("https://www.redditinc.com/", "_blank")}>
+                    <ListItemPrefix >
                       <img src="/images/svgs/resourcesTab/aboutReddit.svg" alt="" />
                     </ListItemPrefix>
-                    About Reddit
+                    <h5 >About Reddit</h5>
                   </ListItem>
-                  <ListItem>
+                  <ListItem onClick={() => window.open("https://support.reddithelp.com/hc/en-us", "_blank")}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/advertise.svg" alt="" />
                     </ListItemPrefix>
                     Advertise
-                  </ListItem>
-                  <ListItem>
+                  </ListItem >
+                  <ListItem onClick={handleClickToast}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/help.svg" alt="" />
                     </ListItemPrefix>
                     Help
                   </ListItem>
-                  <ListItem>
+                  <ListItem onClick={handleClickToast}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/bolg.svg" alt="" />
                     </ListItemPrefix>
                     Blog
                   </ListItem>
-                  <ListItem>
+                  <ListItem onClick={handleClickToast}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/careers.svg" alt="" />
                     </ListItemPrefix>
                     Careers
                   </ListItem>
-                  <ListItem>
+                  <ListItem onClick={handleClickToast}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/press.svg" alt="" />
                     </ListItemPrefix>
                     Press
                   </ListItem>
                   <hr className="text-blue-700" />
-                  <div className="py-3">
-                    <ListItem>
-                      <ListItemPrefix>
-                        <img src="/images/svgs/resourcesTab/boreddit.svg" alt="" />
-                      </ListItemPrefix>
-                      Best Of Reddit
-                    </ListItem>
-                    <ListItem>
-                      <ListItemPrefix>
-                        <img src="/images/svgs/resourcesTab/boreddit.svg" alt="" />
-                      </ListItemPrefix>
-                      Best Of Reddit
-                    </ListItem>
-                    <ListItem>
-                      <ListItemPrefix>
-                        <img src="/images/svgs/resourcesTab/boreddit.svg" alt="" />
-                      </ListItemPrefix>
-                      Best Of Reddit
-                    </ListItem>
-                  </div>
+
                 </List>
               </AccordionBody>
             </Accordion>
             <hr className=" py-2 border-blue-gray-50" />
 
-            <Accordion
-              open={open === 4}
-              icon={
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`mx-auto h-4 w-4 transition-transform ${open === 4 ? "rotate-180" : ""
-                    }`}
-                />
-              }
-            >
-              <ListItem className="p-0" selected={open === 4}>
-                <AccordionHeader
-                  onClick={() => handleOpen(4)}
-                  className="border-b-0 p-3"
-                >
-                  <Typography
-                    color="black"
-                    variant="small"
-                    className={`mr-auto ${darkMode ? "custom-textSideNavDark" : "custom-textSideNav"} uppercase`}
-                  >
-                    Popular Posts
-                  </Typography>
-                </AccordionHeader>
-              </ListItem>
-              <AccordionBody className="py-1">
-                <List className="p-0">
-                  <ListItem>
-                    <ListItemPrefix>
-                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                    </ListItemPrefix>
-                    Orders
-                  </ListItem>
-                  <ListItem>
-                    <ListItemPrefix>
-                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                    </ListItemPrefix>
-                    Products
-                  </ListItem>
-                </List>
-              </AccordionBody>
-            </Accordion>
+       
           </List>
         </Scrollbars>
       </div>

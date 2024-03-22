@@ -55,7 +55,7 @@ const Header = () => {
 
 
 
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode } = useContext(ContextAPIContext);
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode,handleClickToast } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
   const throttledFilterData = useThrottle(filterData, 500);
@@ -217,10 +217,10 @@ const Header = () => {
           ) : (
             <div className="flex items-center  justify-center gap-1">
               <div className="rounded-3xl cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600   p-2">
-                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" />
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" onClick={handleClickToast}/>
               </div>
               <div className=" cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
-                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" />
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" onClick={handleClickToast}/>
               </div>
               <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600  rounded-3xl p-3 cursor-pointer" onClick={() => navigate("/submit")}>
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Add" /> <span className="text-black dark:text-white ml-2"> Create</span>
