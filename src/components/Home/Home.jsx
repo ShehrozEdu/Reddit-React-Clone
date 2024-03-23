@@ -63,15 +63,21 @@ const Home = () => {
   };
   const fetchPosts = async () => {
     setLoading(true);
-    const token=localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     try {
+      let headers = {
+        projectId: "t0v7xsdvt1j1"
+      };
+  
+      // Check if token is available
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+  
       const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
-        headers: {
-          projectId: "t0v7xsdvt1j1",
-          Authorization:`Bearer ${token}`
-        },
-    });
-
+        headers: headers,
+      });
+  
       if (Array.isArray(response.data.data)) {
         if (response.data.data.length === 0) {
           setHasMore(false);
@@ -86,6 +92,7 @@ const Home = () => {
     }
     setLoading(false);
   };
+  
 
   useEffect(() => {
     if (hasMore) {

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
+import { toast } from "react-toastify";
 
 // Dummy onDeleteComment function
 const onDeleteComment = (comment) => {
@@ -42,26 +43,39 @@ const Comments = ({ postId }) => {
 
   }, [postId]);
   const deleteComment = async (commentId) => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
+  
+    // Check if token is available
+    if (!token) {
+      // Handle the case where the user is not logged in
+      // For example, show a message or redirect to login page
+      toast.error("User is not logged in.");
+      // You can show a message to the user
+      return;
+    }
   
     try {
-      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/comment/${commentId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectID': "t0v7xsdvt1j1"
+      const response = await fetch(
+        `https://academics.newtonschool.co/api/v1/reddit/comment/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            projectID: "t0v7xsdvt1j1",
+          },
         }
-      });
+      );
   
       if (!response.ok) {
-        throw new Error('Response was not ok');
+        throw new Error("Response was not ok");
       }
   
       fetchComments();
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
+  
   return (
     <div className="flex flex-col gap-4">
       {comments.map((comment,index) => (

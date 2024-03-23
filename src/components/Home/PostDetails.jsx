@@ -361,7 +361,7 @@ const PostDetails = ({ posts }) => {
         <div className="p-4 rounded-xl mb-5 xl:block lg:block hidden">
           <div className="border-b pb-2 mb-4 flex">
             <h1 className="text-md font-bold mr-3 dark:text-white">r/{post.channel?.name}</h1>
-            <button className="bg-[#0045AC] text-white px-3 rounded-2xl text-xs">
+            <button className="bg-[#0045AC] text-white px-3 rounded-2xl text-xs" onClick={()=>handleClickToast()}>
               Join
             </button>
           </div>

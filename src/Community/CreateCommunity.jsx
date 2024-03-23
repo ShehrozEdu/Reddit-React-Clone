@@ -55,6 +55,13 @@
         formDataObject.append('images', "/images/svgs/defaultProfile.svg");
     
         const token = localStorage.getItem("token");
+        
+        if (!token) {
+          
+          toast.error("User is not logged in.");
+          return;
+        }
+        
         const response = await fetch(
           "https://academics.newtonschool.co/api/v1/reddit/channel/",
           {
@@ -73,6 +80,7 @@
         console.error("Error creating community:", error);
       }
     };
+    
     
     
 

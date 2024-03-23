@@ -201,6 +201,7 @@ const Header = () => {
                   variant="small"
                   color="black"
                   className="mr-2 font-medium"
+                  onClick={()=>handleClickToast()}
                 >
                   Get App
                 </Typography>
@@ -212,7 +213,7 @@ const Header = () => {
                   {data?.name}
                 </Button>
               )}
-              <EllipsisHorizontalIcon className="h-8 w-8 text-black" />)
+              {/* <EllipsisHorizontalIcon className="h-8 w-8 text-black" />) */}
             </div>
           ) : (
             <div className="flex items-center  justify-center gap-1">

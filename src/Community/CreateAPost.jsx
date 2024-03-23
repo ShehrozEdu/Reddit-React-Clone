@@ -28,15 +28,19 @@ const CreateAPost = () => {
         // e.preventDefault()
         const token = localStorage.getItem("token");
         try {
-            // imageData = document.getElementById('images').files[0];
+            if (!token) {
+                toast.error("User is not logged in. Please Login");
+                return;
+            }
+    
             const formData = new FormData();
-
+    
             formData.append('title', postTitle);
-
+    
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = postData;
             const plainText = tempDiv.textContent || tempDiv.innerText || "";
-
+    
             formData.append('content', plainText);
             formData.append('images', imageData);
             formData.append('appType', "reddit");
@@ -52,13 +56,14 @@ const CreateAPost = () => {
             // console.log("Post created:", data);
             toast.success("Post created Successfully!");
             setTimeout(() => {
-                // location.href="/"
+                location.href="/"
                 
             }, 3000);
         } catch (error) {
             console.error("Error creating post:", error);
         }
     };
+    
 
 
     const dataTab = [

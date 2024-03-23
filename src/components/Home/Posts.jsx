@@ -71,72 +71,90 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [upvotes, setUpvotes] = useState({});
   const [downvotes, setDownvotes] = useState({});
   const handleUpClick = async (postId) => {
-    const currentUpvotes = {...upvotes};
-  currentUpvotes[postId] = !currentUpvotes[postId];
-  setUpvotes(currentUpvotes);
-    setIsUpvoted(!isUpvoted);
-    if (isUpvoted) {
-      setIsUpvoted(false);
-    }
-    
-  
     const token = localStorage.getItem("token");
+  
+    // Check if token is available
+    if (!token) {
+      // Handle the case where the user is not logged in
+      // For example, show a message or redirect to login page
+      toast.error("User is not logged in.");
+      return;
+    }
+  
+    const currentUpvotes = { ...upvotes };
+    currentUpvotes[postId] = !currentUpvotes[postId];
+  
     try {
       const response = await axios({
-        method: isUpvoted ? 'DELETE' : 'POST',
-        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postData._id}`,
+        method: currentUpvotes[postId] ? "POST" : "DELETE",
+        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectID': 't0v7xsdvt1j1'
-        }
+          Authorization: `Bearer ${token}`,
+          projectId: "t0v7xsdvt1j1",
+        },
       });
   
-      if (isUpvoted && response.status === 200 && response.request.method === 'DELETE') {
-        toast.error("Post Unvoted");
-      } else {
+      if (response.status === 200) {
+        if (currentUpvotes[postId]) {
+          toast.success("Upvoted");
+        } else {
+          toast.error("Post Unvoted");
+        }
         setLikeCountMaintain(true);
         fetchLikedPost();
-        toast.success("Upvoted");
         setIsDownvoted(false);
       }
     } catch (error) {
-      console.error('Upvote failed:', error);
-      setIsUpvoted(!isUpvoted);
-      // Revert UI changes or handle errors accordingly
+      console.error("Upvote failed:", error);
+      toast.error("Upvote failed");
+      currentUpvotes[postId] = !currentUpvotes[postId]; // Revert the toggle
+      setUpvotes(currentUpvotes); // Update state
     }
   };
   
-
-
   const handleDownClick = async (postId) => {
-    const currentDownvotes = {...downvotes};
-    currentDownvotes[postId] = !currentDownvotes[postId];
-    setDownvotes(currentDownvotes);
-    setIsDownvoted(!isDownvoted);
-    if (isDownvoted) {
-      setIsDownvoted(false);
+    const token = localStorage.getItem("token");
+  
+    // Check if token is available
+    if (!token) {
+      // Handle the case where the user is not logged in
+      // For example, show a message or redirect to login page
+      toast.error("User is not logged in.");
+      return;
     }
   
-    const token = localStorage.getItem("token");
+    const currentDownvotes = { ...downvotes };
+    currentDownvotes[postId] = !currentDownvotes[postId];
+  
     try {
       const response = await axios({
-        method: isDownvoted ? 'DELETE' : 'POST',
-        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postData._id}`,
+        method: currentDownvotes[postId] ? "POST" : "DELETE",
+        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectID': 't0v7xsdvt1j1'
-        }
+          Authorization: `Bearer ${token}`,
+          projectId: "t0v7xsdvt1j1",
+        },
       });
-      setDislikeCountMaintain(true);
-      fetchLikedPost();
-      toast.error("Downvoted");
-      setIsUpvoted(false);
+  
+      if (response.status === 200) {
+        if (currentDownvotes[postId]) {
+          toast.error("Downvoted");
+        } else {
+          toast.error("Post Unvoted,check login?");
+        }
+        setDislikeCountMaintain(true);
+        fetchLikedPost();
+        setIsUpvoted(false);
+      }
     } catch (error) {
-      console.error('Downvote failed:', error);
-      setIsDownvoted(!isDownvoted);
-      // Revert UI changes or handle errors accordingly
+      console.error("Downvote failed:", error);
+      toast.error("Downvote failed, check login?");
+      currentDownvotes[postId] = !currentDownvotes[postId]; // Revert the toggle
+      setDownvotes(currentDownvotes); // Update state
     }
   };
+  
+  
   // useEffect(() => {
   //   fetchPosts();
   // }, [likeCountMaintain])
