@@ -10,22 +10,22 @@ const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { commId, darkMode,handleDownClick,handleUpClick ,likeCountMaintain,isUpvoted , isDownvoted,fetchLikedPost,handleClickToast } = useContext(ContextAPIContext);
+    const { commId, darkMode, handleDownClick, handleUpClick, likeCountMaintain, isUpvoted, isDownvoted, fetchLikedPost, handleClickToast } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
 
     const handleClick = () => {
-        if (!isJoined) {    
-          toast.success("Joined the community");
+        if (!isJoined) {
+            toast.success("Joined the community");
         } else {
-          toast.warning("Left the community");
+            toast.warning("Left the community");
         }
         setIsJoined(!isJoined);
-      };
+    };
 
     // useEffect(() => {
     //     fetchLikedPost();
-    
-    
+
+
     //   }, [])
     useEffect(() => {
         const fetchChannelData = async () => {
@@ -65,14 +65,14 @@ const CommunityPageDetails = () => {
                                 <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"}`} alt="" /> <span className="text-black dark:text-white ml-2 font-medium" > Create a Post</span>
                             </div>
                             <div className='rounded-full w-12 h-12 hover:bg-gray-200 border border-black flex items-center justify-center dark:border-white'>
-                                <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"}`} className='cursor-pointer' alt="bell" />
+                                <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"}`} className='cursor-pointer' alt="bell" onClick={()=>handleClickToast()}/>
                             </div>
                             <div
-      className={`rounded-2xl p-2 hover:bg-gray-200 border border-black flex items-center justify-center font-medium dark:text-white dark:border-white cursor-pointer`}
-      onClick={handleClick}
-    >
-      {isJoined ? 'Joined' : 'Join'}
-    </div>
+                                className={`rounded-2xl p-2 hover:bg-gray-200 border border-black flex items-center justify-center font-medium dark:text-white dark:border-white cursor-pointer`}
+                                onClick={handleClick}
+                            >
+                                {isJoined ? 'Joined' : 'Join'}
+                            </div>
                             <div className='rounded-full w-12 h-12 hover:bg-gray-200 border border-black flex items-center justify-center dark:border-white'>
                                 <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-threeDots.svg" : "/images/svgs/threeDots.svg"}`} className='' alt="bell" />
                             </div>
@@ -107,72 +107,72 @@ const CommunityPageDetails = () => {
                                         </div>
                                         <div className="flex flex-col">
                                             <h2 className="text-lg font-normal mb-1 dark:text-white">{channelData?.description}</h2>
-                                           
-                                                <img
-                                                    src={channelData?.image|| "https://picsum.photos/200/100"}
-                                                    alt="avatar"
-                                                    className='w-[26rem] h-[20rem]'
-                                                />
-                                        
+
+                                            <img
+                                                src={channelData?.image || "https://picsum.photos/200/100"}
+                                                alt="avatar"
+                                                className='w-[26rem] h-[20rem]'
+                                            />
+
                                         </div>
                                         <div className="inline-flex items-center my-1">
-                                        <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-                <button className="text-xs" onClick={handleUpClick}>
-                  {!isUpvoted ? (
-                    <svg
-                      rpl=""
-                      fill="currentColor"
-                      height="16"
-                      icon-name="upvote-outline"
-                      viewBox="0 0 20 20"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M12.877 19H7.123A1.125 1.125 0 0 1 6 17.877V11H2.126a1.114 1.114 0 0 1-1.007-.7 1.249 1.249 0 0 1 .171-1.343L9.166.368a1.128 1.128 0 0 1 1.668.004l7.872 8.581a1.25 1.25 0 0 1 .176 1.348 1.113 1.113 0 0 1-1.005.7H14v6.877A1.125 1.125 0 0 1 12.877 19ZM7.25 17.75h5.5v-8h4.934L10 1.31 2.258 9.75H7.25v8ZM2.227 9.784l-.012.016c.01-.006.014-.01.012-.016Z"></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      rpl=""
-                      fill="currentColor"
-                      height="16"
-                      icon-name="upvote-fill"
-                      viewBox="0 0 20 20"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M18.706 8.953 10.834.372A1.123 1.123 0 0 0 10 0a1.128 1.128 0 0 0-.833.368L1.29 8.957a1.249 1.249 0 0 0-.171 1.343 1.114 1.114 0 0 0 1.007.7H6v6.877A1.125 1.125 0 0 0 7.123 19h5.754A1.125 1.125 0 0 0 14 17.877V11h3.877a1.114 1.114 0 0 0 1.005-.7 1.251 1.251 0 0 0-.176-1.347Z"></path>{" "}
-                    </svg>
-                  )}
-                </button>
-                <span className="text-xs font-normal my-1">{"2"}</span>
-                <button className="text-xs" onClick={handleDownClick}>
-                  {!isDownvoted ? (
-                    <svg
-                      rpl=""
-                      fill="currentColor"
-                      height="16"
-                      icon-name="downvote-outline"
-                      viewBox="0 0 20 20"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M10 20a1.122 1.122 0 0 1-.834-.372l-7.872-8.581A1.251 1.251 0 0 1 1.118 9.7 1.114 1.114 0 0 1 2.123 9H6V2.123A1.125 1.125 0 0 1 7.123 1h5.754A1.125 1.125 0 0 1 14 2.123V9h3.874a1.114 1.114 0 0 1 1.007.7 1.25 1.25 0 0 1-.171 1.345l-7.876 8.589A1.128 1.128 0 0 1 10 20Zm-7.684-9.75L10 18.69l7.741-8.44H12.75v-8h-5.5v8H2.316Zm15.469-.05c-.01 0-.014.007-.012.013l.012-.013Z"></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      rpl=""
-                      fill="currentColor"
-                      height="16"
-                      icon-name="downvote-fill"
-                      viewBox="0 0 20 20"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M18.88 9.7a1.114 1.114 0 0 0-1.006-.7H14V2.123A1.125 1.125 0 0 0 12.877 1H7.123A1.125 1.125 0 0 0 6 2.123V9H2.123a1.114 1.114 0 0 0-1.005.7 1.25 1.25 0 0 0 .176 1.348l7.872 8.581a1.124 1.124 0 0 0 1.667.003l7.876-8.589A1.248 1.248 0 0 0 18.88 9.7Z"></path>
-                    </svg>
-                  )}
-                </button>
-              </div>
+                                            <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
+                                                <button className="text-xs" onClick={handleUpClick}>
+                                                    {!isUpvoted ? (
+                                                        <svg
+                                                            rpl=""
+                                                            fill="currentColor"
+                                                            height="16"
+                                                            icon-name="upvote-outline"
+                                                            viewBox="0 0 20 20"
+                                                            width="16"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M12.877 19H7.123A1.125 1.125 0 0 1 6 17.877V11H2.126a1.114 1.114 0 0 1-1.007-.7 1.249 1.249 0 0 1 .171-1.343L9.166.368a1.128 1.128 0 0 1 1.668.004l7.872 8.581a1.25 1.25 0 0 1 .176 1.348 1.113 1.113 0 0 1-1.005.7H14v6.877A1.125 1.125 0 0 1 12.877 19ZM7.25 17.75h5.5v-8h4.934L10 1.31 2.258 9.75H7.25v8ZM2.227 9.784l-.012.016c.01-.006.014-.01.012-.016Z"></path>
+                                                        </svg>
+                                                    ) : (
+                                                        <svg
+                                                            rpl=""
+                                                            fill="currentColor"
+                                                            height="16"
+                                                            icon-name="upvote-fill"
+                                                            viewBox="0 0 20 20"
+                                                            width="16"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M18.706 8.953 10.834.372A1.123 1.123 0 0 0 10 0a1.128 1.128 0 0 0-.833.368L1.29 8.957a1.249 1.249 0 0 0-.171 1.343 1.114 1.114 0 0 0 1.007.7H6v6.877A1.125 1.125 0 0 0 7.123 19h5.754A1.125 1.125 0 0 0 14 17.877V11h3.877a1.114 1.114 0 0 0 1.005-.7 1.251 1.251 0 0 0-.176-1.347Z"></path>{" "}
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                                <span className="text-xs font-normal my-1">{"2"}</span>
+                                                <button className="text-xs" onClick={handleDownClick}>
+                                                    {!isDownvoted ? (
+                                                        <svg
+                                                            rpl=""
+                                                            fill="currentColor"
+                                                            height="16"
+                                                            icon-name="downvote-outline"
+                                                            viewBox="0 0 20 20"
+                                                            width="16"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M10 20a1.122 1.122 0 0 1-.834-.372l-7.872-8.581A1.251 1.251 0 0 1 1.118 9.7 1.114 1.114 0 0 1 2.123 9H6V2.123A1.125 1.125 0 0 1 7.123 1h5.754A1.125 1.125 0 0 1 14 2.123V9h3.874a1.114 1.114 0 0 1 1.007.7 1.25 1.25 0 0 1-.171 1.345l-7.876 8.589A1.128 1.128 0 0 1 10 20Zm-7.684-9.75L10 18.69l7.741-8.44H12.75v-8h-5.5v8H2.316Zm15.469-.05c-.01 0-.014.007-.012.013l.012-.013Z"></path>
+                                                        </svg>
+                                                    ) : (
+                                                        <svg
+                                                            rpl=""
+                                                            fill="currentColor"
+                                                            height="16"
+                                                            icon-name="downvote-fill"
+                                                            viewBox="0 0 20 20"
+                                                            width="16"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M18.88 9.7a1.114 1.114 0 0 0-1.006-.7H14V2.123A1.125 1.125 0 0 0 12.877 1H7.123A1.125 1.125 0 0 0 6 2.123V9H2.123a1.114 1.114 0 0 0-1.005.7 1.25 1.25 0 0 0 .176 1.348l7.872 8.581a1.124 1.124 0 0 0 1.667.003l7.876-8.589A1.248 1.248 0 0 0 18.88 9.7Z"></path>
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            </div>
                                             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -188,7 +188,7 @@ const CommunityPageDetails = () => {
                                                         d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                                                     />
                                                 </svg>
-                                                <span className="ml-2 text-xs font-normal text-grey">{channelData?.commentCount||0}</span>
+                                                <span className="ml-2 text-xs font-normal text-grey">{channelData?.commentCount || 0}</span>
                                             </div>
                                             <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
                                                 <svg

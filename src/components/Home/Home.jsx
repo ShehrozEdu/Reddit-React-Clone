@@ -175,7 +175,7 @@ const Home = () => {
                   isPopular={true}
                   fetchPosts={fetchPosts}
                 />
-                                {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />}
+                                {/* {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />} */}
 
               </div>
             </div>

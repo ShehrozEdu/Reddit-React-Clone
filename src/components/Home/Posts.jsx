@@ -164,7 +164,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         toast.success("Post deleted successfully")
-        console.log("Post deleted successfully");
+        // console.log("Post deleted successfully");
+        // location.href="/"
       }
     } catch (error) {
       console.error("Error deleting post:", error);

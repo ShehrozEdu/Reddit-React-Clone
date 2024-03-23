@@ -66,6 +66,7 @@ const Aside = () => {
   }, []);
   const handleCommunityDetails = (id) => {
     setCommId(id);
+    // console.log(id)
     navigate(`/community/${id}`)
   }
   const [isMobile, setIsMobile] = useState(false);
@@ -147,7 +148,7 @@ const Aside = () => {
               <AccordionBody className="py-1">
                 <List className="p-0">
                   {(recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
-                    <ListItem key={index}><div className="flex items-center dark:text-white">
+                    <ListItem key={index}><div className="flex items-center dark:text-white" >
                       <img
                         className="h-8 w-8 border rounded-full mr-2"
                         src={community.image ? community.image : "https://styles.redditmedia.com/t5_4u2xam/styles/communityIcon_ude638vcihsb1.png"}
@@ -155,7 +156,7 @@ const Aside = () => {
                       />
                       <div className="flex flex-col font-medium items-center dark:text-white">
                         <a
-                          onClick={(e) => handleCommunityDetails(community._id)}
+                          
                           className="text-sm text-black no-underline leading-tight cursor-pointer hover:text-blue-gray-200 dark:text-white"
                         >
                           r/{community.name}
@@ -544,7 +545,7 @@ const Aside = () => {
                       </ListItem>
                       {popularCommunityChannel.slice(0, 3).map((item, idx) => {
                         return (
-                          <ListItem className="pl-0 py-1 flex items-center" key={idx}>
+                          <ListItem className="pl-0 py-1 flex items-center" key={idx} onClick={() => handleCommunityDetails(item._id)}>
                             <span className="mr-3">
                               <img
                                 src={item.image ? item.image : "https://styles.redditmedia.com/t5_2r0ij/styles/communityIcon_yor9myhxz5x11.png"}

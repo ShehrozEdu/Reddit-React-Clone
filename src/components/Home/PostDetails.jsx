@@ -5,9 +5,10 @@ import MenuButtons from "./MenuButtons";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const PostDetails = ({ posts }) => {
-  const { setComments, data, isDownvoted, setIsDownvoted, setIsUpvoted, isUpvoted,handleClickToast} = useContext(ContextAPIContext);
+  const { setComments, data, isDownvoted, setIsDownvoted, setIsUpvoted, isUpvoted,handleUpClick,handleDownClick,fetchLikedPost,handleClickToast} = useContext(ContextAPIContext);
   const { id } = useParams();
   const post = posts.find((post) => post._id === id);
   const [showMore, setShowMore] = useState(false);
@@ -56,6 +57,9 @@ const PostDetails = ({ posts }) => {
     },
   ];
 
+  useEffect(()=>{
+    fetchLikedPost();
+  },[])
   useEffect(() => {
     const createdAt = new Date(post.createdAt);
     const currentTime = new Date();
@@ -94,42 +98,42 @@ const PostDetails = ({ posts }) => {
     fetchComments();
   }, []);
 
-  const handleUpClick = async () => {
-    setIsUpvoted(!isUpvoted);
-    const token = localStorage.getItem("token");
-    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${posts._id}`, {
-      method: isUpvoted ? 'DELETE' : 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'projectID': 't0v7xsdvt1j1'
-      }
-    });
+  // const handleUpClick = async () => {
+  //   setIsUpvoted(!isUpvoted);
+  //   const token = localStorage.getItem("token");
+  //   const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/like/${posts._id}`, {
+  //     method: isUpvoted ? 'DELETE' : 'POST',
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`,
+  //       'projectID': 't0v7xsdvt1j1'
+  //     }
+  //   });
 
-    await fetchLikedPost();
-    toast.success("Upvoted")
-    setIsDownvoted(false);
-  };
+  //   fetchLikedPost();
+  //   toast.success("Upvoted")
+  //   setIsDownvoted(false);
+  // };
 
-  const handleDownClick = async () => {
-    setIsDownvoted(!isDownvoted);
-    const token = localStorage.getItem("token");
-    const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/dislike/${posts._id}`, {
-      method: isDownvoted ? 'DELETE' : 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'projectID': 't0v7xsdvt1j1'
-      }
-    });
+  // const handleDownClick = async () => {
+  //   setIsDownvoted(!isDownvoted);
+  //   const token = localStorage.getItem("token");
+  //   const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/dislike/${posts._id}`, {
+  //     method: isDownvoted ? 'DELETE' : 'POST',
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`,
+  //       'projectID': 't0v7xsdvt1j1'
+  //     }
+  //   });
 
-    if (response.ok) {
-      await fetchLikedPost();
-      toast.error("Downvoted")
-      setIsUpvoted(false);
-    } else {
-      setIsDownvoted(!isDownvoted);
-      console.error('Downvote failed');
-    }
-  };
+  //   if (response.ok) {
+  //     fetchLikedPost();
+  //     toast.error("Downvoted")
+  //     setIsUpvoted(false);
+  //   } else {
+  //     setIsDownvoted(!isDownvoted);
+  //     console.error('Downvote failed');
+  //   }
+  // };
 
   const createComment = async () => {
     if (!data) {
@@ -202,7 +206,7 @@ const PostDetails = ({ posts }) => {
         {/* Post Actions */}
         <div className="inline-flex items-center my-1 py-3">
         <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-                <button className="text-xs" onClick={handleUpClick}>
+                <button className="text-xs" onClick={()=>handleUpClick(post._id)}>
                   {!isUpvoted ? (
                     <svg
                       rpl=""
@@ -230,7 +234,7 @@ const PostDetails = ({ posts }) => {
                   )}
                 </button>
                 <span className="text-xs font-normal my-1">{post.likeCount}</span>
-                <button className="text-xs" onClick={handleDownClick}>
+                <button className="text-xs" onClick={()=>handleDownClick(post._id)}>
                   {!isDownvoted ? (
                     <svg
                       rpl=""
