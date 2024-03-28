@@ -20,7 +20,7 @@ const Login = ({ navigate }) => {
     email: "",
     password: "",
   });
-  const { isSignIn, setIsSignIn, setLoginCheck } =
+  const { isSignIn, setIsSignIn, handleClickToast } =
   useContext(ContextAPIContext);
 const handleOpen = () => setOpen((cur) => !cur);
 const toggleComponent = () => setIsSignIn((prev) => !prev);
@@ -152,14 +152,14 @@ const handleSubmit = async () => {
               By continuing, you agree to our User Agreement and acknowledge
               that you understand the Privacy Policy.
             </Typography>
-            <Button className="bg-white text-black capitalize flex justify-between items-center border border-black rounded-2xl">
+            <Button className="bg-white text-black capitalize flex justify-between items-center border border-black rounded-2xl" onClick={()=>handleClickToast()}>
               <div className="custom_googleLogo">
                 <img src="/images/svgs/google-logo.svg" alt="googleLogo" />
               </div>
 
               <p>Continue with Google</p>
             </Button>
-            <Button className="bg-white text-black capitalize flex justify-between items-center border border-black rounded-2xl">
+            <Button className="bg-white text-black capitalize flex justify-between items-center border border-black rounded-2xl" onClick={()=>handleClickToast()}>
               <div className="custom_googleLogo">
                 <img src="/images/svgs/apple-logo.svg" alt="googleLogo" />
               </div>
