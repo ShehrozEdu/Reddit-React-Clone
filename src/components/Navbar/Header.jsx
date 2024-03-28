@@ -96,6 +96,7 @@ const Header = () => {
   // console.log(data)
   const handleLogout = () => {
     localStorage.removeItem("userData");
+    localStorage.removeItem("token");
     window.location.href = "/";
   };
   const [open, setOpen] = React.useState(false);

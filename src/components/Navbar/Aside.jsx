@@ -87,9 +87,7 @@ const Aside = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  const handleNavigate = (url) => {
-    Navigate(url);
-  };
+  const userinfo = localStorage.getItem("userData");
   return (
 
     <Card className={`h-[calc(100vh-4.2rem)]   ${location.pathname === '/submit' ? 'w-full max-w-[16rem]' : 'w-full xl:max-w-[27rem] lg:max-w-[27rem] max-w-[16rem]'} p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
@@ -121,7 +119,7 @@ const Aside = () => {
               Popular
             </ListItem>
             <hr className=" py-2 border-blue-gray-50" />
-            <Accordion
+           {userinfo && <Accordion
               open={open === 1}
               icon={
                 <ChevronDownIcon
@@ -147,29 +145,30 @@ const Aside = () => {
               </ListItem>
               <AccordionBody className="py-1">
                 <List className="p-0">
-                  {(recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
-                    <ListItem key={index}><div className="flex items-center dark:text-white" >
-                      <img
-                        className="h-8 w-8 border rounded-full mr-2"
-                        src={community.image ? community.image : "https://styles.redditmedia.com/t5_4u2xam/styles/communityIcon_ude638vcihsb1.png"}
-                        alt="Avatar"
-                      />
-                      <div className="flex flex-col font-medium items-center dark:text-white">
-                        <a
-                          
-                          className="text-sm text-black no-underline leading-tight cursor-pointer hover:text-blue-gray-200 dark:text-white"
-                        >
-                          r/{community.name}
-                        </a>
-                      </div>
-                    </div></ListItem>
-                  )) : <ListItem>No recent Items</ListItem>)}
+                {( recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
+    <ListItem key={index}>
+        <div className="flex items-center dark:text-white">
+            <img
+                className="h-8 w-8 border rounded-full mr-2"
+                src={community.image ? community.image : "https://styles.redditmedia.com/t5_4u2xam/styles/communityIcon_ude638vcihsb1.png"}
+                alt="Avatar"
+            />
+            <div className="flex flex-col font-medium items-center dark:text-white">
+                <a
+                    className="text-sm text-black no-underline leading-tight cursor-pointer hover:text-blue-gray-200 dark:text-white"
+                >
+                    r/{community.name}
+                </a>
+            </div>
+        </div>
+    </ListItem>
+)) : <ListItem>No recent Items</ListItem>)}
 
 
                 </List>
               </AccordionBody>
-            </Accordion>
-            <hr className=" py-2 border-blue-gray-50" />
+            </Accordion>}
+            {userinfo &&<hr className=" py-2 border-blue-gray-50" />}
             <Accordion
               open={open === 2}
               icon={
@@ -184,7 +183,7 @@ const Aside = () => {
                 <>
                   <ListItem className="p-0" selected={open === 2}>
                     <AccordionHeader
-                      onClick={() => handleOpen(2)}
+                      onClick={() => handleClickToast()}
                       className="border-b-0 p-3"
                     >
                       <Typography

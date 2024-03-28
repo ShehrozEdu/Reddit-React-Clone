@@ -343,14 +343,14 @@ const handleEditPostSubmit = async () => {
 
                   <List className="w-52">
                     <ListItem>
-                      {data && (
+                      {data ? (
                         <div
                           className="text-black dark:text-white dark:bg-black p-2 rounded-full"
                           onClick={() => toggleFollow(postData.author._id)}
                         >
                           {joinedStatus ? "Unfollow" : "Follow User"}
                         </div>
-                      )}
+                      ):<p onClick={()=>toast.success("Reported")}> Report</p>}
                     </ListItem>
                     {data?._id === postData.author._id && (
                       <>
