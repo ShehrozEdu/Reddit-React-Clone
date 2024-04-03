@@ -16,9 +16,11 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [newPostTitle, setNewPostTitle] = useState(postData?.title || "");
   const [newPostData, setNewPostData] = useState(postData?.content || '');
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
-  const { likeCountMaintain,setLikeCountMaintain,isUpvoted, setIsUpvoted,isDownvoted, setIsDownvoted,setCommId} = useContext(ContextAPIContext)
+  const { likeCountMaintain,setLikeCountMaintain, setIsUpvoted, setIsDownvoted,setCommId,isUpvoted,isDownvoted} = useContext(ContextAPIContext)
   const [dislikeCountMaintain, setDislikeCountMaintain] = useState(false);
   const[test,setTest]=useState([])
+  const [upvotes, setUpvotes] = useState({});
+  const [downvotes, setDownvotes] = useState({});
 
 
 
@@ -41,7 +43,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     }
     setTimeAgo(timeAgoString);
   }, [postData.createdAt]);
-  let testing;
+
+
   const fetchLikedPost = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -55,6 +58,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       setTest(response.data.data);
       if (response.data.data.isLiked) {
         setIsUpvoted(true)
+        
 
       }
       if (response.data.data.isDisliked) setIsDownvoted(true);
@@ -68,103 +72,104 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   }, [])
 
-  const [upvotes, setUpvotes] = useState({});
-  const [downvotes, setDownvotes] = useState({});
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
   
     // Check if token is available
     if (!token) {
-      // Handle the case where the user is not logged in
-      // For example, show a message or redirect to login page
       toast.error("User is not logged in.");
       return;
     }
   
-    const currentUpvotes = { ...upvotes };
-    currentUpvotes[postId] = !currentUpvotes[postId];
+    // Check if the post has already been upvoted
+    const alreadyUpvoted = upvotes[postId];
   
     try {
       const response = await axios({
-        method: currentUpvotes[postId] ? "POST" : "DELETE",
+        method: alreadyUpvoted ? "DELETE" : "POST",
         url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
         headers: {
           Authorization: `Bearer ${token}`,
           projectId: "t0v7xsdvt1j1",
         },
       });
+     
+      
+      if (response.data.status === "success") {
+        toast.success(alreadyUpvoted ? "Upvote removed" : "Upvoted");
   
-      if (response.status === 200) {
-        if (currentUpvotes[postId]) {
-          toast.success("Upvoted");
-        } else {
-          toast.error("Post Unvoted");
+        // Update likeCount locally
+        setLikeCount(likeCount + (alreadyUpvoted ? -1 : 1));
+  
+        // Update the upvotes state to reflect the toggle
+        setUpvotes({ ...upvotes, [postId]: !alreadyUpvoted });
+        setIsUpvoted(true);
+        setIsDownvoted(false)
+        } else {      
+        // If the post was previously downvoted, remove the downvote
+        if (downvotes[postId]) {
+          setDownvotes({ ...downvotes, [postId]: false });
         }
-        setLikeCountMaintain(true);
-        fetchLikedPost();
-        setIsDownvoted(false);
       }
+     
     } catch (error) {
-      console.error("Upvote failed:", error);
-      toast.error("Upvote failed");
-      currentUpvotes[postId] = !currentUpvotes[postId]; // Revert the toggle
-      setUpvotes(currentUpvotes); // Update state
+      console.error("Upvote operation failed:", error);
+      toast.error("You already liked this post")
+      setIsUpvoted(true)
+      
     }
   };
   
   const handleDownClick = async (postId) => {
     const token = localStorage.getItem("token");
-  
+
     // Check if token is available
     if (!token) {
-      // Handle the case where the user is not logged in
-      // For example, show a message or redirect to login page
-      toast.error("User is not logged in.");
-      return;
+        toast.error("User is not logged in.");
+        return;
     }
-  
-    const currentDownvotes = { ...downvotes };
-    currentDownvotes[postId] = !currentDownvotes[postId];
-  
-    try {
-      const response = await axios({
-        method: currentDownvotes[postId] ? "POST" : "DELETE",
-        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
-  
-      if (response.status === 200) {
-        if (currentDownvotes[postId]) {
-          toast.error("Downvoted");
-        } else {
-          toast.error("Post Unvoted,check login?");
-        }
-        setDislikeCountMaintain(true);
-        fetchLikedPost();
-        setIsUpvoted(false);
-      }
-    } catch (error) {
-      console.error("Downvote failed:", error);
-      toast.error("Downvote failed, check login?");
-      currentDownvotes[postId] = !currentDownvotes[postId]; // Revert the toggle
-      setDownvotes(currentDownvotes); // Update state
-    }
-  };
-  
-  
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, [likeCountMaintain])
-  // useEffect(() => {
-  //   let upvotedPosts = JSON.parse(localStorage.getItem('upvotedPosts')) || [];
-  //   let downvotedPosts = JSON.parse(localStorage.getItem('downvotedPosts')) || [];
 
-  //   setIsUpvoted(upvotedPosts.includes(postData._id));
-  //   setIsDownvoted(downvotedPosts.includes(postData._id));
-  // }, []);
+    // Check if the post has already been downvoted
+    const alreadyDownvoted = downvotes[postId];
+    const alreadyUpvoted = upvotes[postId]; // Check if already upvoted
+
+    try {
+        const response = await axios({
+            method: alreadyDownvoted ? "DELETE" : "POST",
+            url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                projectId: "t0v7xsdvt1j1",
+            },
+        });
+
+        if (response.data.status === "success") {
+            toast.success(alreadyDownvoted ? "Downvote removed" : "Downvoted");
+
+            // Update the dislikeCountMaintain state
+            setDislikeCountMaintain(!alreadyDownvoted);
+
+            // Update the downvotes state to reflect the toggle
+            setDownvotes({ ...downvotes, [postId]: !alreadyDownvoted });
+            setIsDownvoted(true)
+
+            // If the post was previously upvoted, remove the upvote and update like count
+            if (alreadyUpvoted) {
+                setUpvotes({ ...upvotes, [postId]: false });
+                // Update like count locally
+                setLikeCount(likeCount - 1);
+            }
+        }
+    } catch (error) {
+        console.error("Downvote operation failed:", error);
+    }
+};
+
+  
+  
+  
+  
+
 
   const deletePost = async (postId) => {
     try {
@@ -405,7 +410,7 @@ const handleEditPostSubmit = async () => {
             <div className="inline-flex items-center my-1">
               <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
                 <button className="text-xs" onClick={()=>handleUpClick(postData._id)}>
-                {!upvotes[postData._id] ? (
+                {!upvotes[postData._id] ||!isUpvoted ? (
                     <svg
                       rpl=""
                       fill="currentColor"
@@ -433,7 +438,7 @@ const handleEditPostSubmit = async () => {
                 </button>
                 <span className="text-xs font-normal my-1">{!likeCountMaintain?likeCount:test.likeCount}</span>
                 <button className="text-xs" onClick={()=>handleDownClick(postData._id)}>
-                {!downvotes[postData._id] ? (
+                {!downvotes[postData._id]||!isDownvoted ? (
                     <svg
                       rpl=""
                       fill="currentColor"
@@ -522,7 +527,7 @@ const handleEditPostSubmit = async () => {
 
 
 
-const Posts = ({ posts, popularPosts, fetchPosts, handlePostClick }) => {
+const Posts = ({ posts, popularPosts, fetchPosts,  handlePostClick }) => {
 
   const { selectedItem, loading, data, darkMode } = useContext(ContextAPIContext);
   // console.log(posts.length)
@@ -555,7 +560,7 @@ const Posts = ({ posts, popularPosts, fetchPosts, handlePostClick }) => {
   }
 
   return (
-    <div className="xl:w-[60%] lg:w-[60%] md-[80%] w-[100%]  p-2">
+    <div className="xl:w-[70%] lg:w-[70%] md-[80%] w-[100%]  p-2">
       <div className="flex">
         {/* Main Content */}
         <div className={`${darkMode ? 'bg-[#0B1416]' : ''}}`}>

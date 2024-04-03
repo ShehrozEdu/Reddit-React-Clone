@@ -69,12 +69,11 @@ const Home = () => {
         projectId: "t0v7xsdvt1j1"
       };
   
-      // Check if token is available
       if (token) {
         headers.Authorization = `Bearer ${token}`;
       }
   
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=15&page=${page}`, {
         headers: headers,
       });
   
@@ -145,7 +144,7 @@ const Home = () => {
   };
 
   return (
-    <div className={`xl:ml-[30rem] lg:ml-[30rem] ml-0 ${location.pathname === '/submit' ? 'xl:ml-[15.8rem] lg:ml-[15.8rem] mt-0 h-screen w-screen ' + (darkMode ? 'bg-[#0B1416]' : 'bg-[#dae0e6]') : ''}`}>
+    <div className={`xl:ml-[23rem] lg:ml-[23rem] ml-0 ${location.pathname === '/submit' ? 'xl:ml-[15.6rem] lg:ml-[15.6rem] mt-0 h-screen w-screen ' + (darkMode ? 'bg-[#0B1416]' : 'bg-[#dae0e6]') : ''}`}>
 
       <Routes>
         <Route
@@ -154,8 +153,9 @@ const Home = () => {
             <div className="flex flex-col relative">
               {/* {!isResponsive && <Carousel />} */}
               <MenuButtons showCountrySelect={true} />
-              <div className={`flex relative `}>
+              <div className={`flex relative`}>
                 <Posts
+                setPosts={setPosts}
                   posts={posts}
                   popularPosts={popularPosts}
                   handlePostClick={handlePostClick}

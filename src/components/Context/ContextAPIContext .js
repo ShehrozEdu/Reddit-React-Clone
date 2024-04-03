@@ -17,7 +17,7 @@ export const ContextAPIProvider = ({ children }) => {
   const [isSignIn, setIsSignIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [comments, setComments] = useState([]);
-  const [selectedItem, setSelectedItem] = useState("Hot");
+  const [selectedItem, setSelectedItem] = useState("Top");
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [isDownvoted, setIsDownvoted] = useState(false);
   const [commId, setCommId] = useState(false);
@@ -47,7 +47,10 @@ export const ContextAPIProvider = ({ children }) => {
   };
   const handleUpClick = async (postData) => {
     try {
-      setIsUpvoted(!isUpvoted);
+      if(data){
+
+        setIsUpvoted(!isUpvoted);
+      }
       const token = localStorage.getItem("token");
       const response = await fetch(
         `https://academics.newtonschool.co/api/v1/reddit/like/${postData}`,
@@ -60,10 +63,13 @@ export const ContextAPIProvider = ({ children }) => {
         }
       );
       if (response.ok) {
-        setLikeCountMaintain(true);
         console.log("Upvoted");
+        toast.success("Upvoted")
       } else {
+
         console.error("Upvote failed");
+        toast.error("Check if you are logged in")
+
       }
     } catch (error) {
       console.error("Error upvoting:", error);
@@ -72,7 +78,9 @@ export const ContextAPIProvider = ({ children }) => {
 
   const handleDownClick = async (postData) => {
     try {
+      if(data){
       setIsDownvoted(!isDownvoted);
+      }
       const token = localStorage.getItem("token");
       const response = await fetch(
         `https://academics.newtonschool.co/api/v1/reddit/dislike/${postData}`,
@@ -86,8 +94,11 @@ export const ContextAPIProvider = ({ children }) => {
       );
       if (response.ok) {
         console.log("Downvoted");
+        toast.error("Downvoted")
+
       } else {
         console.error("Downvote failed");
+        toast.error("Check if you are logged in")
       }
     } catch (error) {
       console.error("Error downvoting:", error);

@@ -66,7 +66,7 @@ const PopularTrending = ({ trendingData }) => {
 
   return (
     <div
-      className={`rounded-xl mb-4 border ${darkMode?"bg-[#0B1416]":"bg-gray-100"} w-64 ${isFixed ? "fixed right-40 top-90" : "fixed top-32 right-40"
+      className={`rounded-xl mb-4 border ${darkMode?"bg-[#0B1416]":"bg-gray-100"} w-64 ${isFixed ? "fixed right-3 top-90" : "fixed top-32 right-3"
         }`}
       style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
     >

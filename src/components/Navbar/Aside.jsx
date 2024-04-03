@@ -90,9 +90,9 @@ const Aside = () => {
   const userinfo = localStorage.getItem("userData");
   return (
 
-    <Card className={`h-[calc(100vh-4.2rem)]   ${location.pathname === '/submit' ? 'w-full max-w-[16rem]' : 'w-full xl:max-w-[27rem] lg:max-w-[27rem] max-w-[16rem]'} p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
+    <Card className={`h-[calc(100vh-4.2rem)] w-full max-w-[21rem] p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
 
-      <div className="flex justify-end">
+      <div className="">
         <Scrollbars autoHide style={{ height: "calc(100vh - 4.2rem)", width: isMobile ? "100%" : width }}>
           <List className="">
             <ListItem

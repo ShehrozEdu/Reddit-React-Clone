@@ -11,7 +11,7 @@ import { CursorArrowRaysIcon } from "@heroicons/react/24/solid";
 import Scrollbars from "react-custom-scrollbars-2";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 
-const MenuItemList = ({ items, selectedItem, setSelectedItem }) => {
+const MenuItemList = ({ items, setSelectedItem }) => {
   const handleMenuItemClick = (item) => {
     setSelectedItem(item);
   };

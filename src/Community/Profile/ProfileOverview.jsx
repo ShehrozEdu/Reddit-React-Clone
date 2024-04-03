@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 const ProfileOverview = () => {
   const [activeTab, setActiveTab] = useState('Overview');
-  const { data,handleClickToast } = useContext(ContextAPIContext);
+  const { data,handleClickToast,darkMode } = useContext(ContextAPIContext);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -39,11 +39,11 @@ const ProfileOverview = () => {
         <div className='flex items-center'>
           <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png" alt="" className='rounded-full w-16 h-16' />
           <div className='ml-2'>
-            <h5 className='font-bold text-2xl'>{data.name}</h5>
-            <p>u/{data.name}</p>
+            <h5 className='font-bold text-2xl dark:text-white'>{data.name}</h5>
+            <p className="dark:text-white">u/{data.name}</p>
           </div>
         </div>
-        <div className='flex justify-around mt-6'>
+        <div className='flex justify-around mt-6 dark:text-white'>
           <div className={`cursor-pointer bg-${activeTab === 'Overview' ? '[#D2DADD]' : 'transparent'} rounded-3xl px-4 py-2`} onClick={() => handleTabClick('Overview')}>
             Overview
           </div>
@@ -67,8 +67,8 @@ const ProfileOverview = () => {
           </div>
 
         </div>
-        <div className=" flex items-center hover:bg-gray-200 rounded-3xl p-3 cursor-pointer border border-black w-40 mt-4" >
-          <img src="/images/svgs/plus.svg" alt="" /> <span className="text-black ml-2 font-medium"> Create a Post</span>
+        <div className=" flex items-center hover:bg-gray-200 rounded-3xl p-3 cursor-pointer border border-black dark:border-white w-40 mt-4" >
+        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Plus" /> <span className="text-black ml-2 font-medium dark:text-white"> Create a Post</span>
         </div>
         <hr />
         {(!dataProf?.title || !dataProf?.content) ?
@@ -78,15 +78,15 @@ const ProfileOverview = () => {
               <div>
                 <div className='flex items-center gap-2 py-5' key={index}>
                   <img src="/images/svgs/defaultProfile.svg" className='w-6 h-6 rounded-full bg-blue-gray-100' alt="" />
-                  <h5 className="text-sm">{item.author?.name}</h5>
+                  <h5 className="text-sm dark:text-white">{item.author?.name}</h5>
                   <span class="px-2xs"> • </span>
-                  <h6 className='text-xs underline'>{item?.title}</h6>
+                  <h6 className='text-xs underline dark:text-white'>{item?.title}</h6>
 
                 </div>
 
                 <div className='flex flex-col'>
-                  {item.title && <div className='font-bold pb-2'>{item?.title}</div>}
-                  <div>{item.content}</div>
+                  {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
+                  <div className="dark:text-white">{item.content}</div>
                   <div><img src={item?.images[0]} alt="postImg" /></div>
 
                 </div>
@@ -107,7 +107,7 @@ const ProfileOverview = () => {
           </>}
 
       </div>
-      <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50">
+      <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50  dark:bg-gray-500 ">
         <div className='relative'>
           <div className="grad-cover w-80 h-36 rounded-2xl "></div>
           <div className='w-8 h-8 top-24 right-4 flex items-center justify-center bg-white absolute rounded-full' onClick={handleClickToast}>

@@ -10,7 +10,7 @@ const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { commId, darkMode, handleDownClick, handleUpClick, likeCountMaintain, isUpvoted, isDownvoted, fetchLikedPost, handleClickToast } = useContext(ContextAPIContext);
+    const { commId, darkMode, handleDownClick, handleUpClick, likeCountMaintain, isUpvoted, isDownvoted, fetchLikedPost, handleClickToast,data } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
 
     const handleClick = () => {
@@ -212,7 +212,7 @@ const CommunityPageDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className={`fixed right-60 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-300"} dark:border dark:border-white p-3`}>
+                        <div className={`fixed right-60 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-200 rounded-xl"} dark:border dark:border-white p-3`}>
                             <div className="mb-6">
                                 <h2 className="text-md font-bold dark:text-white">{channelData.name} Community</h2>
                                 <p className="text-[14px] dark:text-white">
@@ -228,7 +228,7 @@ const CommunityPageDetails = () => {
                                 </div>
                             </div>
                             <hr />
-                            <div>
+                           {data&& <div>
                                 <div>
                                     <h5 className='text-12 text-[#645caf] py-3'>USER FLAIR</h5>
                                     <div className='flex items-center'>
@@ -242,10 +242,10 @@ const CommunityPageDetails = () => {
                                                 className="max-w-full rounded-full"
                                             />
                                         </span>
-                                        <h5 className='ml-3 text-12 text-[#645caf]'>LAMEASF</h5>
+                                        <h5 className='ml-3 text-12 text-[#645caf]'>{data?.name}</h5>
                                     </div>
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 </div>
