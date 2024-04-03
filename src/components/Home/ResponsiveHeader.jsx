@@ -270,12 +270,12 @@ const ResponsiveHeader = () => {
                         />
                         {searchResults && showResults && (
                             <div className="absolute top-28 z-10">
-                                <Card className="w-[29rem]">
+                                <Card className="w-[26rem]">
                                     <List className="overflow-y-scroll max-h-96">
                                         {searchResults.map((item, idx) => (
                                             <ListItem
                                                 ripple={false}
-                                                className="py-1 pr-1 pl-4 text-black"
+                                                className="py-1 pr-1 text-black"
                                                 key={idx}
                                                 onClick={() => handlePostClick(item?._id)}
                                             >
@@ -291,7 +291,7 @@ const ResponsiveHeader = () => {
                                                         </Typography>
                                                         <div className="flex items-center justify-start">
                                                             <img
-                                                                src={item?.channel?.image}
+                                                                src={item?.channel?.image||"/images/svgs/defaultProfile.svg"}
                                                                 alt="smallImg"
                                                                 className="w-5 rounded-full mr-1"
                                                             />
@@ -303,7 +303,9 @@ const ResponsiveHeader = () => {
                                                 </div>
 
                                                 <ListItemSuffix>
-                                                    <img src={item?.images[0]} width={130} alt="img" />
+                                                <img src={item.images && item.images[0]?.startsWith("https:") ? item.images[0] : ""} width={130} />
+
+
                                                 </ListItemSuffix>
                                             </ListItem>
                                         ))}
