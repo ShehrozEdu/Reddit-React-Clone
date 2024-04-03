@@ -30,37 +30,23 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCountrySelect, setshowCountrySelect] = useState(false);
-  const [isResponsive, setIsResponsive] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
 
 
-  // const handleResize = () => {
-  //   setIsResponsive(window.innerWidth < 900);
-  // };
-  // console.log( window.innerWidth)
-  // console.log(isResponsive)
+
   useEffect(() => {
     const handleResize = () => {
-      setIsResponsive(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 900);
     };
 
-    const debouncedHandleResize = debounce(handleResize, 20);
-
-    window.addEventListener("resize", debouncedHandleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", debouncedHandleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return function (...args) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(this, args);
-      }, delay);
-    };
-  };
+
   const fetchPosts = async () => {
     setLoading(true);
     const token = localStorage.getItem('token');
@@ -73,7 +59,7 @@ const Home = () => {
         headers.Authorization = `Bearer ${token}`;
       }
   
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=15&page=${page}`, {
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
         headers: headers,
       });
   
@@ -162,7 +148,7 @@ const Home = () => {
                   isPopular={false}
                   fetchPosts={fetchPosts}
                 />
-                {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />}
+                {!isMobile && <PopularTrending trendingData={popularCommunityChannel} />}
               </div>
             </div>
           }
@@ -171,7 +157,7 @@ const Home = () => {
           path="/popular"
           element={
             <div className="flex flex-col relative">
-                 {!isResponsive && <Carousel />}
+                 {!isMobile && <Carousel />}
 
               <MenuButtons showCountrySelect={showCountrySelect} />
               <div className="flex relative">

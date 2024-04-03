@@ -5,8 +5,18 @@ import { useParams } from 'react-router-dom';
 
 const ProfileOverview = () => {
   const [activeTab, setActiveTab] = useState('Overview');
-  const { data,handleClickToast,darkMode } = useContext(ContextAPIContext);
+  const { data,handleClickToast,darkMode,isMobile,handleResize } = useContext(ContextAPIContext);
 
+
+  useEffect(()=>{
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
+  },[])
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -35,7 +45,7 @@ const ProfileOverview = () => {
   console.log(dataProf)
   return (
     <div className='py-3 flex h-[100vh]'>
-      <div className='w-[48rem] '>
+      <div className='xl:w-[48rem] lg:w-[48rem] w-[25rem] '>
         <div className='flex items-center'>
           <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png" alt="" className='rounded-full w-16 h-16' />
           <div className='ml-2'>
@@ -43,7 +53,7 @@ const ProfileOverview = () => {
             <p className="dark:text-white">u/{data.name}</p>
           </div>
         </div>
-        <div className='flex justify-around mt-6 dark:text-white'>
+        <div className='flex justify-around xl:flex-row lg:flex-row flex-col mt-6 dark:text-white'>
           <div className={`cursor-pointer bg-${activeTab === 'Overview' ? '[#D2DADD]' : 'transparent'} rounded-3xl px-4 py-2`} onClick={() => handleTabClick('Overview')}>
             Overview
           </div>
@@ -107,7 +117,7 @@ const ProfileOverview = () => {
           </>}
 
       </div>
-      <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50  dark:bg-gray-500 ">
+    {!isMobile&&  <div className="fixed right-20 w-[20rem] rounded-2xl bg-gray-50  dark:bg-gray-500 ">
         <div className='relative'>
           <div className="grad-cover w-80 h-36 rounded-2xl "></div>
           <div className='w-8 h-8 top-24 right-4 flex items-center justify-center bg-white absolute rounded-full' onClick={handleClickToast}>
@@ -196,7 +206,7 @@ const ProfileOverview = () => {
         </div>
 
 
-      </div>
+      </div>}
     </div>
   )
 }

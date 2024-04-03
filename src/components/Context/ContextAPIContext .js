@@ -26,6 +26,8 @@ export const ContextAPIProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [likeCountMaintain, setLikeCountMaintain] = useState(false);
   const[otherLike,setOtherLike]=useState([])
+  const [upvotes, setUpvotes] = useState({});
+  const [downvotes, setDownvotes] = useState({});
   const handleClickToast = () => {
     toast.warning('Work Under Progress');
   };
@@ -45,65 +47,98 @@ export const ContextAPIProvider = ({ children }) => {
   const handleAsideToggle = () => {
     setIsAsideOpen(!isAsideOpen);
   };
-  const handleUpClick = async (postData) => {
+  const handleUpClick = async (postId) => {
+    const token = localStorage.getItem("token");
+  
+    // Check if token is available
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
+  
+    // Check if the post has already been upvoted
+    const alreadyUpvoted = upvotes[postId];
+  
     try {
-      if(data){
-
-        setIsUpvoted(!isUpvoted);
-      }
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `https://academics.newtonschool.co/api/v1/reddit/like/${postData}`,
-        {
-          method: isUpvoted ? "DELETE" : "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            projectID: "t0v7xsdvt1j1",
-          },
+      const response = await axios({
+        method: alreadyUpvoted ? "DELETE" : "POST",
+        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
+     
+      
+      if (response.data.status === "success") {
+        toast.success(alreadyUpvoted ? "Upvote removed" : "Upvoted");
+  
+        // Update likeCount locally
+        setLikeCount(likeCount + (alreadyUpvoted ? -1 : 1));
+  
+        // Update the upvotes state to reflect the toggle
+        setUpvotes({ ...upvotes, [postId]: !alreadyUpvoted });
+        setIsUpvoted(true);
+        setIsDownvoted(false)
+        } else {      
+        // If the post was previously downvoted, remove the downvote
+        if (downvotes[postId]) {
+          setDownvotes({ ...downvotes, [postId]: false });
         }
-      );
-      if (response.ok) {
-        console.log("Upvoted");
-        toast.success("Upvoted")
-      } else {
-
-        console.error("Upvote failed");
-        toast.error("Check if you are logged in")
-
       }
+     
     } catch (error) {
-      console.error("Error upvoting:", error);
+      console.error("Upvote operation failed:", error);
+      toast.error("You already liked this post")
+      setIsUpvoted(true)
+      
     }
   };
+  
+  const handleDownClick = async (postId) => {
+    const token = localStorage.getItem("token");
 
-  const handleDownClick = async (postData) => {
-    try {
-      if(data){
-      setIsDownvoted(!isDownvoted);
-      }
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `https://academics.newtonschool.co/api/v1/reddit/dislike/${postData}`,
-        {
-          method: isDownvoted ? "DELETE" : "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            projectID: "t0v7xsdvt1j1",
-          },
-        }
-      );
-      if (response.ok) {
-        console.log("Downvoted");
-        toast.error("Downvoted")
-
-      } else {
-        console.error("Downvote failed");
-        toast.error("Check if you are logged in")
-      }
-    } catch (error) {
-      console.error("Error downvoting:", error);
+    // Check if token is available
+    if (!token) {
+        toast.error("User is not logged in.");
+        return;
     }
-  };
+
+    // Check if the post has already been downvoted
+    const alreadyDownvoted = downvotes[postId];
+    const alreadyUpvoted = upvotes[postId]; // Check if already upvoted
+
+    try {
+        const response = await axios({
+            method: alreadyDownvoted ? "DELETE" : "POST",
+            url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                projectId: "t0v7xsdvt1j1",
+            },
+        });
+
+        if (response.data.status === "success") {
+            toast.success(alreadyDownvoted ? "Downvote removed" : "Downvoted");
+
+            // Update the dislikeCountMaintain state
+            setDislikeCountMaintain(!alreadyDownvoted);
+
+            // Update the downvotes state to reflect the toggle
+            setDownvotes({ ...downvotes, [postId]: !alreadyDownvoted });
+            setIsDownvoted(true)
+
+            // If the post was previously upvoted, remove the upvote and update like count
+            if (alreadyUpvoted) {
+                setUpvotes({ ...upvotes, [postId]: false });
+                // Update like count locally
+                setLikeCount(likeCount - 1);
+            }
+        }
+    } catch (error) {
+        console.error("Downvote operation failed:", error);
+    }
+};
   const fetchLikedPost = async (id) => {
     try {
       const token = localStorage.getItem('token');
@@ -124,10 +159,19 @@ export const ContextAPIProvider = ({ children }) => {
       console.error("Error fetching posts:", error);
     }
   };
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
 
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+    };
+
+ 
   return (
     <ContextAPIContext.Provider
       value={{
+        isMobile, setIsMobile,handleResize,
+        upvotes, setUpvotes,downvotes, setDownvotes,
         handleClickToast,
         fetchLikedPost,
         handleDownClick,

@@ -55,7 +55,7 @@ const Header = () => {
 
 
 
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode,handleClickToast } = useContext(ContextAPIContext);
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
   const throttledFilterData = useThrottle(filterData, 500);
@@ -216,7 +216,7 @@ const Header = () => {
                   variant="small"
                   color="black"
                   className="mr-2 font-medium"
-                  onClick={()=>handleClickToast()}
+                  onClick={() => handleClickToast()}
                 >
                   Get App
                 </Typography>
@@ -233,10 +233,10 @@ const Header = () => {
           ) : (
             <div className="flex items-center  justify-center gap-1">
               <div className="rounded-3xl cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600   p-2">
-                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" onClick={handleClickToast}/>
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" onClick={handleClickToast} />
               </div>
               <div className=" cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
-                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" onClick={handleClickToast}/>
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-comment.svg" : "/images/svgs/comment.svg"} alt="" onClick={handleClickToast} />
               </div>
               <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600  rounded-3xl p-3 cursor-pointer" onClick={() => navigate("/submit")}>
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Add" /> <span className="text-black dark:text-white ml-2"> Create</span>
@@ -245,12 +245,12 @@ const Header = () => {
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"} alt="" />
               </div>
               <div className="">
-              <Popover
-  open={openPop}
-  placement="top"
-  handler={handleTogglePop} 
-  anchorEl={anchorEl}
->
+                <Popover
+                  open={openPop}
+                  placement="top"
+                  handler={handleTogglePop}
+                  anchorEl={anchorEl}
+                >
                   <PopoverHandler>
                     <span
                       rpl=""
@@ -265,7 +265,7 @@ const Header = () => {
                   </PopoverHandler>
                   <PopoverContent className={`${darkMode ? "bg-[#0B1416]" : ""}`}>
                     <List className={`my-2 p-0 `}>
-                      <ListItem className="group rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black" onClick={() =>{handleTogglePop(); navigate(`/user/${data?.name.toLowerCase()}/`)}}>
+                      <ListItem className="group rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black" onClick={() => { handleTogglePop(); navigate(`/user/${data?.name.toLowerCase()}/`) }}>
                         <ListItemPrefix>
                           <img
                             src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png"
@@ -283,7 +283,7 @@ const Header = () => {
                         </div>
                       </ListItem>
                       <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white"
-                      onClick={()=>{handleTogglePop();handleClickToast()}}
+                        onClick={() => { handleTogglePop(); handleClickToast() }}
                       >
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shirt.svg" : "/images/svgs/shirt.svg"} alt="" />
@@ -291,7 +291,7 @@ const Header = () => {
                         Edit Avatar
                       </ListItem>
 
-                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={()=>{handleTogglePop();handleClickToast()}}>
+                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); handleClickToast() }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-trophy.svg" : "/images/svgs/trophy.svg"} alt="" />
                         </ListItemPrefix>
@@ -304,7 +304,7 @@ const Header = () => {
                         </div>
                       </ListItem>
 
-                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={()=>{handleTogglePop();handleClickToast()}}>
+                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); handleClickToast() }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-wallet.svg" : "/images/svgs/wallet.svg"} alt="" />
                         </ListItemPrefix>
@@ -323,7 +323,7 @@ const Header = () => {
                           </p>
                         </div>
                       </ListItem>
-                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={()=>{handleTogglePop();}}>
+                      <ListItem className="rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-moon.svg" : "/images/svgs/moon.svg"} alt="" />
                         </ListItemPrefix>
@@ -381,7 +381,7 @@ const Header = () => {
                       </ListItem>
                       <hr />
 
-                      <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={()=>{handleTogglePop();handleClickToast()}}>
+                      <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); handleClickToast() }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-mouse-cursor.svg" : "/images/svgs/mouse-cursor.svg"} alt="" />
                         </ListItemPrefix>
@@ -389,7 +389,7 @@ const Header = () => {
                       </ListItem>
                       <hr />
 
-                      <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={()=>{handleTogglePop();handleClickToast()}}>
+                      <ListItem className="rounded-none py-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); handleClickToast() }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-settings.svg" : "/images/svgs/settings.svg"} alt="" />
                         </ListItemPrefix>
