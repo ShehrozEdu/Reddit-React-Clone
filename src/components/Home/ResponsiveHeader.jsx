@@ -6,8 +6,7 @@ import Aside from '../Navbar/Aside';
 import { ContextAPIContext } from '../Context/ContextAPIContext ';
 
 const ResponsiveHeader = () => {
-    const{setDarkMode, darkMode,data,handleClickToast} = useContext(ContextAPIContext)
-    const [isAsideOpen, setIsAsideOpen] = useState(false);
+    const{setDarkMode, darkMode,data,handleClickToast,handleAsideToggle,isAsideOpen, setIsAsideOpen} = useContext(ContextAPIContext)
     const [showInput, setShowInput] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -58,9 +57,7 @@ const ResponsiveHeader = () => {
 
     }
 
-    const handleAsideToggle = () => {
-        setIsAsideOpen(!isAsideOpen);
-    }
+ 
 
     const handleSearchIconClick = () => {
         setShowInput(true);
@@ -95,7 +92,7 @@ const ResponsiveHeader = () => {
                     <div><img src="/images/svgs/reddit-icon.svg" alt="" className='cursor-pointer' onClick={() => { navigate("/") }} /></div>
                 </div>
                 <div className='flex items-center'>
-                    <Button className=' p-3 clr-FF4500 rounded-2xl capitalize py-2 cursor-pointer'>Use app</Button>
+                    <Button className=' p-3 clr-FF4500 rounded-2xl capitalize py-2 cursor-pointer' onClick={()=>{handleClickToast()}}>Use app</Button>
                     <div onClick={handleSearchIconClick}><img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-search.svg" : "/images/svgs/search.svg"}`} alt="" className='mx-2 cursor-pointer' /></div>
                     <div>
                     <Popover

@@ -31,7 +31,7 @@ const Aside = () => {
   const [open, setOpen] = React.useState(0);
   const [subOpen, setSubOpen] = React.useState(0);
   const [width, setWidth] = useState("75%");
-  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast } = useContext(ContextAPIContext);
+  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,isAsideOpen, setIsAsideOpen } = useContext(ContextAPIContext);
 
   const location = useLocation();
 
@@ -98,7 +98,7 @@ const Aside = () => {
             <ListItem
               className="text-black dark:text-white py-2"
               onClick={() => {
-                navigate("/");
+                {navigate("/");setIsAsideOpen(false)}
               }}
             >
               <ListItemPrefix>
@@ -109,7 +109,7 @@ const Aside = () => {
             <ListItem
               className="text-black dark:text-white py-2"
               onClick={() => {
-                navigate("/popular")
+             {   navigate("/popular");setIsAsideOpen(false)}
 
               }}
             >
