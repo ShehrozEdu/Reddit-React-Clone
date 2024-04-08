@@ -288,7 +288,7 @@ const handleDownvoteClick = () => {
         <div>
           {!isOpen ? (
             <div
-              className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[43rem] lg:w-[43rem] w-[27rem] rounded-3xl items-center"
+              className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[35rem] lg:w-[35rem] w-[27rem] rounded-3xl items-center"
               onClick={() => setIsOpen(true)}
             >
               <span className="dark:text-white">Add a comment</span>
@@ -335,13 +335,13 @@ const handleDownvoteClick = () => {
               </div>
             </div>
           ) : (
-            <div className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[43rem] lg:w-[43rem] w-[27rem] rounded-3xl items-center dark:text-white">Please Login to Comment</div>
+            <div className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[35rem] lg:w-[35rem] w-[27rem] rounded-3xl items-center dark:text-white">Please Login to Comment</div>
           ))}
 
         </div>
         <Comments postId={id} />
       </div>
-      <div className="fixed xl:block lg:block hidden right-40 w-72 bg-gray-100 dark:bg-[#0B1416] dark:border dark: border-white dark:rounded-2xl">
+      <div className="fixed xl:block lg:block hidden right-10 w-72 bg-gray-100 dark:bg-[#0B1416] dark:border dark: border-white dark:rounded-2xl">
         {" "}
         <div className="p-4 rounded-xl mb-5 xl:block lg:block hidden">
           <div className="border-b pb-2 mb-4 flex">

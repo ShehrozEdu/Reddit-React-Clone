@@ -59,7 +59,7 @@ const Home = () => {
         headers.Authorization = `Bearer ${token}`;
       }
   
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=10&page=${page}`, {
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=20&page=${page}`, {
         headers: headers,
       });
   
