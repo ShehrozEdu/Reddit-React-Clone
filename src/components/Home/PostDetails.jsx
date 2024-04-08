@@ -298,7 +298,7 @@ const handleDownvoteClick = () => {
           )}
 
           {isOpen && (data ? (
-            <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[43rem] lg:w-[43rem] w-[27rem]">
+            <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[35rem] lg:w-[35rem] w-[27rem]">
               <div className="flex items-center space-x-2">
                 <Input
                   className="flex-grow border-none focus:outline-none dark:text-white"
