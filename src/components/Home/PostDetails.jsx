@@ -288,7 +288,7 @@ const handleDownvoteClick = () => {
         <div>
           {!isOpen ? (
             <div
-              className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[35rem] lg:w-[35rem] w-[27rem] rounded-3xl items-center"
+              className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[32rem] lg:w-[32rem] w-[25rem] rounded-3xl items-center"
               onClick={() => setIsOpen(true)}
             >
               <span className="dark:text-white">Add a comment</span>
@@ -298,7 +298,7 @@ const handleDownvoteClick = () => {
           )}
 
           {isOpen && (data ? (
-            <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[35rem] lg:w-[35rem] w-[27rem]">
+            <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[32rem] lg:w-[32rem] w-[25rem]">
               <div className="flex items-center space-x-2">
                 <Input
                   className="flex-grow border-none focus:outline-none dark:text-white"
@@ -335,7 +335,7 @@ const handleDownvoteClick = () => {
               </div>
             </div>
           ) : (
-            <div className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[35rem] lg:w-[35rem] w-[27rem] rounded-3xl items-center dark:text-white">Please Login to Comment</div>
+            <div className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[32rem] lg:w-[32rem] w-[25rem] rounded-3xl items-center dark:text-white">Please Login to Comment</div>
           ))}
 
         </div>
@@ -345,7 +345,7 @@ const handleDownvoteClick = () => {
         {" "}
         <div className="p-4 rounded-xl mb-5 xl:block lg:block hidden">
           <div className="border-b pb-2 mb-4 flex">
-            <h1 className="text-md font-bold mr-3 dark:text-white">r/{post.channel?.name}</h1>
+            <h1 className="text-md font-bold mr-3 dark:text-white">r/{post.channel?.name || Channel}</h1>
             <button className="bg-[#0045AC] text-white px-3 rounded-2xl text-xs" onClick={()=>handleClickToast()}>
               Join
             </button>
