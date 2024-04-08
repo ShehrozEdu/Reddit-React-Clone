@@ -163,7 +163,7 @@ const Header = () => {
                         {searchResults.map((item, idx) => (
                           <ListItem
                             ripple={false}
-                            className="py-0 pr-1 pl-4 text-black dark:text-white "
+                            className="py-0 pr-1 pl-1 text-black dark:text-white "
                             key={idx}
                             onClick={() => handlePostClick(item?._id)}
                           >

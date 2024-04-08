@@ -145,21 +145,28 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
       if (response.data.status === "success") {
         toast.success(alreadyDownvoted ? "Downvote removed" : "Downvoted");
-
+      
         // Update the dislikeCountMaintain state
         setDislikeCountMaintain(!alreadyDownvoted);
-
+      
         // Update the downvotes state to reflect the toggle
         setDownvotes({ ...downvotes, [postId]: !alreadyDownvoted });
         setIsDownvoted(true)
-
-        // If the post was previously upvoted, remove the upvote and update like count
+      
+        // If the post was previously upvoted, remove the upvote
         if (alreadyUpvoted) {
           setUpvotes({ ...upvotes, [postId]: false });
-          // Update like count locally
+        }
+      
+        // If the post was not previously downvoted, decrease the like count
+        // If the post was previously downvoted, increase the like count
+        if (!alreadyDownvoted) {
           setLikeCount(likeCount - 1);
+        } else {
+          setLikeCount(likeCount + 1);
         }
       }
+    
     } catch (error) {
       console.error("Downvote operation failed:", error);
     }

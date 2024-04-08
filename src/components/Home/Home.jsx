@@ -46,7 +46,7 @@ const Home = () => {
     };
   }, []);
 
-
+  
   const fetchPosts = async () => {
     setLoading(true);
     const token = localStorage.getItem('token');
