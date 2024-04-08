@@ -78,22 +78,22 @@ const PostDetails = ({ posts }) => {
   //   setTimeAgo(timeAgoString);
   // }, [post.createdAt]);
 
-  // const fetchComments = async () => {
-  //   try {
-  //     const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`, {
-  //       headers: {
-  //         projectId: "t0v7xsdvt1j1",
-  //       },
-  //     });
-  //     setComments(response.data.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`, {
+        headers: {
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
+      setComments(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchComments();
-  // }, []);
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [isDownvoted, setIsDownvoted] = useState(false);
@@ -118,38 +118,38 @@ const PostDetails = ({ posts }) => {
     setIsUpvoted(false);
   };
 
-  // const createComment = async () => {
-  //   if (!data) {
-  //     alert("User is not logged in");
-  //     return;
-  //   }
-  //   const token = localStorage.getItem("token");
+  const createComment = async () => {
+    if (!data) {
+      alert("User is not logged in");
+      return;
+    }
+    const token = localStorage.getItem("token");
 
-  //   try {
-  //     const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/comment/${post._id}`, {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         projectID: "t0v7xsdvt1j1",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         content: comment,
-  //       }),
-  //     });
+    try {
+      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/comment/${post._id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          projectID: "t0v7xsdvt1j1",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: comment,
+        }),
+      });
 
-  //     if (!response.ok) {
-  //       throw new Error("Response was not ok");
-  //     }
+      if (!response.ok) {
+        throw new Error("Response was not ok");
+      }
 
-  //     const data = await response.json();
-  //     setComment(prevComments => [...prevComments, { content: comment, ...data }]);
-  //     fetchComments();
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
+      const data = await response.json();
+      setComment(prevComments => [...prevComments, { content: comment, ...data }]);
+      fetchComments();
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   const handlePostDetails = async () => {
     if (!data) {
       alert("User is not logged in");
@@ -223,7 +223,7 @@ const PostDetails = ({ posts }) => {
           </div>
           {/* Post Actions */}
           <div className="inline-flex items-center my-1 py-3">
-            <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
+            <div className={`flex justify-between hover:bg-grey-lighter p-2 ${isDownvoted?"bg-[#6A5CFF]":"bg-gray-300"} ${isUpvoted?"bg-[#D93A00]":"bg-gray-300"} rounded-xl items-center`}>
               <button className="text-xs" onClick={handleUpvoteClick}>
                 {!isUpvoted ? (
                   <svg

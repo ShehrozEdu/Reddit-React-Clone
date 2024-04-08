@@ -153,6 +153,7 @@ const Header = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowResults(true)}
+                onClick={()=>handleNavigate()}
               />
               {/* Render search results */}
               {showResults && (
