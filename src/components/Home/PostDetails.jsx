@@ -107,7 +107,7 @@ useEffect(() => {
 
   const createComment = async () => {
     if (!data) {
-      alert("User is not logged in");
+      toast.error("User is not logged in");
       return;
     }
     const token = localStorage.getItem("token");
@@ -139,7 +139,7 @@ useEffect(() => {
   };
   const handlePostDetails = async () => {
     if (!data) {
-      alert("User is not logged in");
+      toast.error("User is not logged in");
       return;
     }
     const token = localStorage.getItem("token");

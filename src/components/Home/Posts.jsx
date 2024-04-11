@@ -8,7 +8,7 @@ import axios from "axios";
 
 
 
-const Post2 = ({ postData, handlePostClick, data }) => {
+const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
   const [timeAgo, setTimeAgo] = useState("");
   const [likeCount, setLikeCount] = useState(postData.likeCount);
   const [joinedStatus, setJoinedStatus] = useState(false);
@@ -17,15 +17,15 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [newPostData, setNewPostData] = useState(postData?.content || '');
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
   const { likeCountMaintain, setIsUpvoted, setIsDownvoted, setCommId } = useContext(ContextAPIContext)
-  const [test, setTest] = useState([])
+  const [singlePost, setSinglePost] = useState([])
   const [upvotes, setUpvotes] = useState({});
   const [downvotes, setDownvotes] = useState({});
-  
 
 
- 
 
-  const { darkMode ,handleClickToast} = useContext(ContextAPIContext);
+
+
+  const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
   useEffect(() => {
     const createdAt = new Date(postData.createdAt);
@@ -56,7 +56,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
         },
       });
 
-      setTest(response.data.data);
+      setSinglePost(response.data.data);
       if (response.data.data.isLiked) {
         setIsUpvoted(true)
 
@@ -73,105 +73,74 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   }, [])
 
+
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("User is not logged in.");
       return;
     }
+
   
-    const alreadyUpvoted = upvotes[postId];
-    const alreadyDownvoted = downvotes[postId];
-  
+
     try {
       const response = await axios({
-        method: alreadyUpvoted === true ? "DELETE" : "POST",
+        method: singlePost.isLiked === true ? "DELETE" : "POST",
         url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
         headers: {
           Authorization: `Bearer ${token}`,
           projectId: "t0v7xsdvt1j1",
         },
       });
-  
+
       if (response.data.status === "success") {
-        toast.success(alreadyUpvoted ? "Upvote removed" : "Upvoted");
-  
-        if (alreadyUpvoted) {
-          setUpvotes({ ...upvotes, [postId]: false });
-          setLikeCount(likeCount - 1 >= 0 ? likeCount - 1 : 0); // Ensure likeCount doesn't go below 0
-        } else {
-          setUpvotes({ ...upvotes, [postId]: true });
-          if (alreadyDownvoted) {
-            setLikeCount(likeCount + 2); // increase likeCount by 2 if it was previously downvoted
-            setDownvotes({ ...downvotes, [postId]: false });
-          } else {
-            setLikeCount(likeCount + 1); // increase likeCount by 1 if it was not previously downvoted
-          }
-        }
-  
-        setIsUpvoted(!alreadyUpvoted);
+        toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");    
+        // setIsUpvoted(!alreadyUpvoted);
         setIsDownvoted(false);
+        fetchLikedPost();
+      
+
       }
     } catch (error) {
       console.error("Upvote operation failed:", error);
-      if (alreadyUpvoted === true) {
-        toast.error("You already liked this post");
-        setIsUpvoted(true);
-      }
+     
     }
   };
-  
+
   const handleDownClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("User is not logged in.");
       return;
     }
-  
-    const alreadyDownvoted = downvotes[postId];
-    const alreadyUpvoted = upvotes[postId];
-  
+
+
     try {
       const response = await axios({
-        method: alreadyDownvoted === true ? "DELETE" : "POST",
+        method: singlePost.isDisliked === true ? "DELETE" : "POST",
         url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
         headers: {
           Authorization: `Bearer ${token}`,
           projectId: "t0v7xsdvt1j1",
         },
       });
-  
+
       if (response.data.status === "success") {
-        toast.success(alreadyDownvoted ? "Downvote removed" : "Downvoted");
-  
-        if (alreadyDownvoted) {
-          setDownvotes({ ...downvotes, [postId]: false });
-          setLikeCount(likeCount + 1); // increase likeCount
-        } else {
-          setDownvotes({ ...downvotes, [postId]: true });
-          if (alreadyUpvoted) {
-            setLikeCount(likeCount - 2 >= 0 ? likeCount - 2 : 0); // decrease likeCount by 2 if it was previously upvoted
-            setUpvotes({ ...upvotes, [postId]: false });
-          } else {
-            setLikeCount(likeCount - 1 >= 0 ? likeCount - 1 : 0); // decrease likeCount by 1 if it was not previously upvoted
-          }
-        }
-  
-        setIsDownvoted(!alreadyDownvoted);
+        toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
+
+        setIsDownvoted(true);
         setIsUpvoted(false);
+        fetchLikedPost()
       }
     } catch (error) {
       console.error("Downvote operation failed:", error);
-      if (alreadyDownvoted === true) {
-        toast.error("You already disliked this post");
-        setIsDownvoted(true);
-      }
+  
     }
   };
-  
-  // console.log(upvotes);
-  // console.log(downvotes);
-  
+
+  // console.log("upvote", upvotes);
+  // console.log("downvotes", downvotes);
+
   const deletePost = async (postId) => {
     try {
       // console.log(postId)
@@ -190,8 +159,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
         toast.success("Post deleted successfully")
         // console.log("Post deleted successfully");
         setTimeout(() => {
-          location.href="/"
-          
+          location.href = "/"
+
         }, 1200);
       }
     } catch (error) {
@@ -317,11 +286,11 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   return (
     <>
       {postData.author.name != "ash" && (
-        
-            <> 
-        <div className="py-2">
+
+        <>
+          <div className="py-2">
             <div className={`w-10/12 hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
-             <hr />
+              <hr />
               <div className="pt-2">
                 <div className="flex items-center text-xs mb-2 justify-between">
                   <div className="flex items-center">
@@ -401,14 +370,14 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                   </div>
                 </div>
                 {!editToggled ? <> <div className="flex flex-col" onClick={() => {
-  if (localStorage.getItem('yourData')) {
-    handlePostClick(postData._id)
-  }else{
-    toast.error("Login please")
-  }
-}}>
-                  <h2 className={`text-lg font-normal mb-1 dark:text-white ${postData.title ?"font-semibold":""}`}>
-                    {postData?.title|| (postData.content && postData.content.length > 150
+                  if (localStorage.getItem('token')) {
+                    handlePostClick(postData._id)
+                  } else {
+                    toast.error("Login please")
+                  }
+                }}>
+                  <h2 className={`text-lg font-normal mb-1 dark:text-white ${postData.title ? "font-semibold" : ""}`}>
+                    {postData?.title || (postData.content && postData.content.length > 150
                       ? postData.content.slice(0, 150) + "..."
                       : postData.content)}
                   </h2>
@@ -430,7 +399,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                   <div className="inline-flex items-center my-1">
                     <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
                       <button className="text-xs" onClick={() => handleUpClick(postData._id)}>
-                        {!upvotes[postData._id] && !postData.isLiked ? (
+                        {!singlePost.isLiked? (
                           <svg
                             rpl=""
                             fill="currentColor"
@@ -456,9 +425,9 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                           </svg>
                         )}
                       </button>
-                      <span className="text-xs font-normal my-1">{!likeCountMaintain ? likeCount : test.likeCount}</span>
+                      <span className="text-xs font-normal my-1">{singlePost.likeCount}</span>
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
-                        {!downvotes[postData._id] && !postData.isDisliked ? (
+                        {!singlePost.isDisliked ? (
                           <svg
                             rpl=""
                             fill="currentColor"
@@ -500,11 +469,11 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                           d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                         />
                       </svg>
-                      <span className="ml-2 text-xs font-normal text-grey">
+                      <span className="ml-1 text-xs font-normal text-grey">
                         {postData?.commentCount}
                       </span>
                     </div>
-                    <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center" onClick={()=>handleClickToast()}>
+                    <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center" onClick={() => handleClickToast()}>
                       <svg
                         rpl=""
                         aria-hidden="true"

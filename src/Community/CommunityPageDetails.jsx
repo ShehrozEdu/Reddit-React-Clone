@@ -162,7 +162,7 @@ useEffect(() => {
                                         </div>
                                         <div className="inline-flex items-center my-1">
                                             <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-                                                <button className="text-xs" onClick={handleUpvoteClick}>
+                                                <button className="text-xs" onClick={(handleUpvoteClick)}>
                                                     {!isUpvoted ? (
                                                         <svg
                                                             rpl=""
