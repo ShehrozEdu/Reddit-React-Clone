@@ -23,14 +23,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   
 
 
- // 1. Remove all dead clicks
-  // 2. Cannot delete post-->DONE
-  // 3. Channel name should be visible-->Need Dipesh
-  // 4. Post not visible in the homepage right after posting-->cz of Default sorting feature as BEST, will change it io NEW
-  // 5. Comment count is incorrect-->Count is coming directly from API count, possibility of error there? as if we check on fetch post API, count is 7(for example) for a particular post yet if we fetch comments for the same id of that post, it is 3.
-  // 6. Share option is not working(cz it is not work-able, we cant share it since no api there to do that)
-  // 7. Cannot create new group/ community--> We can create now, it was not refreshing earlier.
-  // 8. showing error page when trying to access other channels
+ 
 
   const { darkMode ,handleClickToast} = useContext(ContextAPIContext);
 
@@ -407,7 +400,13 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
                   </div>
                 </div>
-                {!editToggled ? <> <div className="flex flex-col" onClick={() => handlePostClick(postData._id)}>
+                {!editToggled ? <> <div className="flex flex-col" onClick={() => {
+  if (localStorage.getItem('yourData')) {
+    handlePostClick(postData._id)
+  }else{
+    toast.error("Login please")
+  }
+}}>
                   <h2 className={`text-lg font-normal mb-1 dark:text-white ${postData.title ?"font-semibold":""}`}>
                     {postData?.title|| (postData.content && postData.content.length > 150
                       ? postData.content.slice(0, 150) + "..."
