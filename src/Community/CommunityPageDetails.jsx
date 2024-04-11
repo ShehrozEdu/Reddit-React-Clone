@@ -14,15 +14,17 @@ const CommunityPageDetails = () => {
     const { commId, darkMode,handleCommunityDetails, handleClickToast, data } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
-  const params = useParams();
+  const commParams = useParams();
+  console.log("params",commParams)
   const fetchChannelData = async () => {
     try {
-        const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${params.id}`, {
+        const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${commParams.id}`, {
             headers: {
                 projectId: "t0v7xsdvt1j1",
             },
         });
         setChannelData(response.data.data);
+        console.log(channelData)
         setLoading(false);
     } catch (error) {
         setError(error);

@@ -303,7 +303,7 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
                         src={postData.author.profileImage || "/images/svgs/defaultProfile.svg"}
                         alt="Avatar"
                       />
-                      <span className="ml-2 text-black dark:text-white" onClick={postData.channel ? () => handleCommunityDetails(postData._id) : () => toast.error("Channel not found")}>
+                      <span className="ml-2 text-black dark:text-white" onClick={postData.channel ? () => handleCommunityDetails(postData.channel._id) : () => toast.error("Channel not found")}>
                         {postData.channel?.name || "Channel"}
                       </span>
 
