@@ -31,7 +31,7 @@ const Aside = () => {
   const [open, setOpen] = React.useState(0);
   const [subOpen, setSubOpen] = React.useState(0);
   const [width, setWidth] = useState("75%");
-  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,isAsideOpen, setIsAsideOpen } = useContext(ContextAPIContext);
+  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,handleCommNav, setIsAsideOpen,handleCommunityDetails } = useContext(ContextAPIContext);
 
   const location = useLocation();
 
@@ -59,16 +59,12 @@ const Aside = () => {
   // console.log(popularCommunityChannel)
   const navigate = useNavigate();
   useEffect(() => {
-    const storedCommunities = localStorage.getItem("recentCommunities");
+    const storedCommunities = sessionStorage.getItem("recentCommunities");
     if (storedCommunities) {
       setRecentCommunities(JSON.parse(storedCommunities));
     }
   }, []);
-  const handleCommunityDetails = (id) => {
-    setCommId(id);
-    // console.log(id)
-    navigate(`/community/${id}`)
-  }
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -88,6 +84,7 @@ const Aside = () => {
     };
   }, []);
   const userinfo = localStorage.getItem("userData");
+ 
   return (
 
     <Card className={`h-[calc(100vh-4.2rem)] w-full max-w-[21rem] p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
@@ -146,7 +143,7 @@ const Aside = () => {
               <AccordionBody className="py-1">
                 <List className="p-0">
                 {( recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
-    <ListItem key={index}>
+    <ListItem key={index} onClick={()=>handleCommunityDetails(community._id)}>
         <div className="flex items-center dark:text-white">
             <img
                 className="h-8 w-8 border rounded-full mr-2"

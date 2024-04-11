@@ -6,16 +6,20 @@ import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const PostDetails = ({ posts }) => {
-  const { setComments, data, handleClickToast } = useContext(ContextAPIContext);
+  const { setComments,comments, data, handleClickToast,handlePostClick, } = useContext(ContextAPIContext);
   const params = useParams();
-  // const post = posts.find((post) => post._id === id);
+  const timePost = posts?.find((post) => post?._id === params?.id);
+  // console.log(timePost.createdAt)
   const [post, setPostD] = useState({})
   const [showMore, setShowMore] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [timeAgo, setTimeAgo] = useState("");
+  const [likeCount, setLikeCount] = useState(Number.isNaN(post.likeCount) ? 0 : post.likeCount);
+
   if (!post) {
     return <div>Post not found</div>;
   }
@@ -57,66 +61,49 @@ const PostDetails = ({ posts }) => {
     },
   ];
 
-  // useEffect(() => {
-  //   const createdAt = new Date(post.createdAt);
-  //   const currentTime = new Date();
-  //   const timeDifference = currentTime - createdAt;
 
-  //   const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
-  //   const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
-  //   const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
-  //   let timeAgoString = "";
-  //   if (days > 0) {
-  //     timeAgoString = `${days} day${days > 1 ? "s" : ""} ago`;
-  //   } else if (hours > 0) {
-  //     timeAgoString = `${hours} hour${hours > 1 ? "s" : ""} ago`;
-  //   } else {
-  //     timeAgoString = `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-  //   }
-
-  //   setTimeAgo(timeAgoString);
-  // }, [post.createdAt]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}/comments`, {
-        headers: {
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
-      setComments(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, []);
 
   const [isUpvoted, setIsUpvoted] = useState(false);
-  const [isDownvoted, setIsDownvoted] = useState(false);
+const [isDownvoted, setIsDownvoted] = useState(false);
 
-  const handleUpvoteClick = () => {
-    if (isUpvoted) {
-      toast.success("Upvote removed");
-    } else {
-      toast.success("Upvoted");
-    }
-    setIsUpvoted(!isUpvoted);
-    setIsDownvoted(false);
-  };
-
-  const handleDownvoteClick = () => {
+const handleUpvoteClick = () => {
+  if (isUpvoted) {
+    toast.success("Upvote removed");
+    setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount but not below 0
+  } else {
+    toast.success("Upvoted");
     if (isDownvoted) {
-      toast.success("Downvote removed");
+      setLikeCount(prevCount => prevCount + 2); // increase likeCount by 2 if it was previously downvoted
     } else {
-      toast.success("Downvoted");
+      setLikeCount(prevCount => prevCount + 1); // increase likeCount by 1 if it was not previously downvoted
     }
-    setIsDownvoted(!isDownvoted);
-    setIsUpvoted(false);
-  };
+  }
+  setIsUpvoted(!isUpvoted);
+  setIsDownvoted(false);
+};
+
+const handleDownvoteClick = () => {
+  if (isDownvoted) {
+    toast.success("Downvote removed");
+    setLikeCount(prevCount => prevCount + 1); // increase likeCount
+  } else {
+    toast.success("Downvoted");
+    if (isUpvoted) {
+      setLikeCount(prevCount => Math.max(0, prevCount - 2)); // decrease likeCount by 2 if it was previously upvoted
+    } else {
+      setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount by 1 if it was not previously upvoted
+    }
+  }
+  setIsDownvoted(!isDownvoted);
+  setIsUpvoted(false);
+};
+
+useEffect(() => {
+  if (post && post.likeCount) {
+    setLikeCount(post.likeCount);
+  }
+}, [post]);
 
   const createComment = async () => {
     if (!data) {
@@ -173,16 +160,39 @@ const PostDetails = ({ posts }) => {
       const responseData = await response.json();
       const { status, data } = responseData;
       setPostD(data);
-      console.log(data);
+      // console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchComments = async () => {
+    const token=localStorage.getItem("token")
+    try {
+      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${params.id}/comments`, {
+        headers: {
+          projectId: "t0v7xsdvt1j1",
+          authorization: `Bearer ${token}`
+        },
+      });
+      setComments(response.data.data);
+      // console.log(response.data.data);
+      
     } catch (error) {
       console.log(error);
     }
   };
 
-
   useEffect(() => {
     handlePostDetails()
   }, [])
+  useEffect(() => {
+    fetchComments();
+  }, []);
+
+
+  useEffect(() => {
+    handlePostDetails()
+  }, [handlePostClick])
   return (
     <>
       <div className="flex relative">
@@ -201,9 +211,9 @@ const PostDetails = ({ posts }) => {
                   >
                     •
                   </span>
-                  <p className="ml-1 dark:text-white"> {timeAgo}</p>
+                  <p className="ml-1 dark:text-white">{moment(timePost?.createdAt)?.fromNow()}</p>
                 </div>
-                <p className="text-xs">{post.author?.name}</p>
+                <p className="text-xs dark:text-white">{post.author?.name}</p>
               </div>
             </div>
           </div>
@@ -219,7 +229,7 @@ const PostDetails = ({ posts }) => {
           </p>
           <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]"> 
                    <p className="text-black my-5 dark:text-white">{(post?.content) ? (post?.content) : (post?.title)}</p>
-            <img src={post?.images} alt="img" className="rounded-2xl" />
+            {(post.images)?.length>0&&<img src={post?.images} alt="img" className="rounded-2xl" />}
           </div>
           {/* Post Actions */}
           <div className="inline-flex items-center my-1 py-3">
@@ -251,7 +261,7 @@ const PostDetails = ({ posts }) => {
                   </svg>
                 )}
               </button>
-              <span className="text-xs font-normal my-1">{post.likeCount}</span>
+              <span className="text-xs font-normal my-1">{likeCount}</span>
               <button className="text-xs" onClick={handleDownvoteClick}>
                 {!isDownvoted ? (
                   <svg
@@ -280,7 +290,7 @@ const PostDetails = ({ posts }) => {
                 )}
               </button>
             </div>
-            <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
+            <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center"  onClick={() => setIsOpen(!isOpen)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -296,11 +306,11 @@ const PostDetails = ({ posts }) => {
                 />
               </svg>
               <span className="ml-2 text-xs font-normal text-grey">
-                {post.commentCount}
+                {comments.length}
               </span>
             </div>
             {/* Share */}
-            <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center">
+            <div className="flex hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl ml-2 items-center" onClick={()=>handleClickToast()}>
               <svg
                 rpl=""
                 aria-hidden="true"
@@ -321,7 +331,7 @@ const PostDetails = ({ posts }) => {
           <div>
             {!isOpen ? (
               <div
-                className="flex justify-start border border-gray-400 p-3 cursor-pointer xl:w-[32rem] lg:w-[32rem] w-[25rem] rounded-3xl items-center"
+                className="flex justify-start border border-gray-400 p-3 cursor-pointer responsiveCommentWidth rounded-3xl items-center"
                 onClick={() => setIsOpen(true)}
               >
                 <span className="dark:text-white">Add a comment</span>
@@ -331,7 +341,7 @@ const PostDetails = ({ posts }) => {
             )}
 
             {isOpen && (data ? (
-              <div className="mt-4 border border-gray-400 rounded-lg p-3 xl:w-[32rem] lg:w-[32rem] w-[25rem]">
+              <div className="mt-4 border border-gray-400 rounded-lg p-3 responsiveCommentWidth">
                 <div className="flex items-center space-x-2">
                   <Input
                     className="flex-grow border-none focus:outline-none dark:text-white"
@@ -385,7 +395,7 @@ const PostDetails = ({ posts }) => {
             </div>
 
             <div className="mb-6">
-              <h2 className="text-md font-bold dark:text-white">{post.channel?.name} Hub</h2>
+              <h2 className="text-md font-bold dark:text-white">{post.channel?.name|| "Community "} Hub</h2>
               <p className="text-[14px] dark:text-white">
                 {showMore ? post?.content : `${post?.content?.slice(0, 40)}...`}
               </p>

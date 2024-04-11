@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
 import MenuButtons from '../components/Home/MenuButtons';
 import Posts from '../components/Home/Posts';
 import { ContextAPIContext } from '../components/Context/ContextAPIContext ';
@@ -10,8 +11,32 @@ const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { commId, darkMode, handleDownClick, handleUpClick, likeCountMaintain, isUpvoted, isDownvoted, fetchLikedPost, handleClickToast,data } = useContext(ContextAPIContext);
+    const { commId, darkMode,handleCommunityDetails, handleClickToast, data } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+  const params = useParams();
+  const fetchChannelData = async () => {
+    try {
+        const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${params.id}`, {
+            headers: {
+                projectId: "t0v7xsdvt1j1",
+            },
+        });
+        setChannelData(response.data.data);
+        setLoading(false);
+    } catch (error) {
+        setError(error);
+        setLoading(false);
+    }
+};
+useEffect(() => {
+
+
+    fetchChannelData();
+}, []);
+useEffect(() => {
+    fetchChannelData()
+}, [handleCommunityDetails])
 
     const handleClick = () => {
         if (!isJoined) {
@@ -27,33 +52,53 @@ const CommunityPageDetails = () => {
 
 
     //   }, [])
-    useEffect(() => {
-        const fetchChannelData = async () => {
-            try {
-                const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${commId}`, {
-                    headers: {
-                        projectId: "t0v7xsdvt1j1",
-                    },
-                });
-                setChannelData(response.data.data);
-                setLoading(false);
-            } catch (error) {
-                setError(error);
-                setLoading(false);
-            }
-        };
-
-        fetchChannelData();
-    }, []);
+    const [isUpvoted, setIsUpvoted] = useState(false);
+    const [isDownvoted, setIsDownvoted] = useState(false);
+    const handleUpvoteClick = () => {
+        if (isUpvoted) {
+          toast.success("Upvote removed");
+          setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount but not below 0
+        } else {
+          toast.success("Upvoted");
+          if (isDownvoted) {
+            setLikeCount(prevCount => prevCount + 2); // increase likeCount by 2 if it was previously downvoted
+          } else {
+            setLikeCount(prevCount => prevCount + 1); // increase likeCount by 1 if it was not previously downvoted
+          }
+        }
+        setIsUpvoted(!isUpvoted);
+        setIsDownvoted(false);
+      };
+      useEffect(() => {
+        if (channelData && channelData.likeCount) {
+          setLikeCount(channelData.likeCount);
+        }
+      }, [channelData]);
+      const handleDownvoteClick = () => {
+        if (isDownvoted) {
+          toast.success("Downvote removed");
+          setLikeCount(prevCount => prevCount + 1); // increase likeCount
+        } else {
+          toast.success("Downvoted");
+          if (isUpvoted) {
+            setLikeCount(prevCount => Math.max(0, prevCount - 2)); // decrease likeCount by 2 if it was previously upvoted
+          } else {
+            setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount by 1 if it was not previously upvoted
+          }
+        }
+        setIsDownvoted(!isDownvoted);
+        setIsUpvoted(false);
+      };
+ 
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className='my-0 xl:w-[62rem] lg:w-[62rem] h-[100vh]'>
+        <div className={`my-0 w-full h-[100vh] ${darkMode ? "bg-[#0B1416]" : "bg-gray-50"}`}>
             <div className={`${darkMode ? "bg-[#0B1416]" : "bg-gray-50"}`}>
                 <div className='w-full rounded-xl relative'>
-                    <img src={channelData?.owner?.profileImage || "https://picsum.photos/id/870/200/300?grayscale&blur=1"} alt="" className=' rounded-xl h-[8rem] object-cover xl:w-[62rem] lg:w-[62rem]' />
+                    <img src={channelData?.owner?.profileImage || "https://picsum.photos/id/870/200/300?grayscale&blur=1"} alt="" className=' rounded-xl h-[8rem] object-cover xl:w-full lg:w-full' />
 
                     <div className='flex  top-20 left-9 justify-between'>
                         <div className='flex -mt-12'>
@@ -65,7 +110,7 @@ const CommunityPageDetails = () => {
                                 <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"}`} alt="" /> <span className="text-black dark:text-white ml-2 font-medium" > Create a Post</span>
                             </div>
                             <div className='rounded-full w-12 h-12 hover:bg-gray-200 border border-black flex items-center justify-center dark:border-white'>
-                                <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"}`} className='cursor-pointer' alt="bell" onClick={()=>handleClickToast()}/>
+                                <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"}`} className='cursor-pointer' alt="bell" onClick={() => handleClickToast()} />
                             </div>
                             <div
                                 className={`rounded-2xl p-2 hover:bg-gray-200 border border-black flex items-center justify-center font-medium dark:text-white dark:border-white cursor-pointer`}
@@ -79,8 +124,8 @@ const CommunityPageDetails = () => {
                         </div>
                     </div>
                     <div className='flex justify-between'>
-                        <div className='w-[40rem]'>
-                            <div className='flex justify-end'>
+                        <div className='w-full]'>
+                            <div className='flex justify-start'>
                                 <MenuButtons showCountrySelect={false} />
                             </div>
                             <div className="py-2">
@@ -111,13 +156,13 @@ const CommunityPageDetails = () => {
                                             <img
                                                 src={channelData?.image || "https://picsum.photos/200/100"}
                                                 alt="avatar"
-                                                className='w-[26rem] h-[20rem]'
+                                                className='w-[30rem] h-[20rem]'
                                             />
 
                                         </div>
                                         <div className="inline-flex items-center my-1">
                                             <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
-                                                <button className="text-xs" onClick={handleUpClick}>
+                                                <button className="text-xs" onClick={handleUpvoteClick}>
                                                     {!isUpvoted ? (
                                                         <svg
                                                             rpl=""
@@ -144,8 +189,8 @@ const CommunityPageDetails = () => {
                                                         </svg>
                                                     )}
                                                 </button>
-                                                <span className="text-xs font-normal my-1">{"2"}</span>
-                                                <button className="text-xs" onClick={handleDownClick}>
+                                                <span className="text-xs font-normal my-1">{likeCount}</span>
+                                                <button className="text-xs" onClick={handleDownvoteClick}>
                                                     {!isDownvoted ? (
                                                         <svg
                                                             rpl=""
@@ -212,7 +257,7 @@ const CommunityPageDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className={`fixed right-60 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-200 rounded-xl"} dark:border dark:border-white p-3`}>
+                        <div className={`fixed right-20 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-200 rounded-xl"} dark:border dark:border-white p-3`}>
                             <div className="mb-6">
                                 <h2 className="text-md font-bold dark:text-white">{channelData.name} Community</h2>
                                 <p className="text-[14px] dark:text-white">
@@ -228,7 +273,7 @@ const CommunityPageDetails = () => {
                                 </div>
                             </div>
                             <hr />
-                           {data&& <div>
+                            {data && <div>
                                 <div>
                                     <h5 className='text-12 text-[#645caf] py-3'>USER FLAIR</h5>
                                     <div className='flex items-center'>

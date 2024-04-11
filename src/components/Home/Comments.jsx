@@ -12,16 +12,16 @@ const onDeleteComment = (comment) => {
 
 const Comments = ({ postId }) => {
   const{comments,setComments,data,darkMode}=useContext(ContextAPIContext)
-  const [expandedReplies, setExpandedReplies] = useState({});
-  const [count, setCount] = useState(5);
+  // const [expandedReplies, setExpandedReplies] = useState({});
+  // const [count, setCount] = useState(5);
 
-  const toggleReplies = (commentId) => {
-    setCount(count + 3);
-    setExpandedReplies((prevState) => ({
-      ...prevState,
-      [commentId]: !prevState[commentId],
-    }));
-  };
+  // const toggleReplies = (commentId) => {
+  //   setCount(count + 3);
+  //   setExpandedReplies((prevState) => ({
+  //     ...prevState,
+  //     [commentId]: !prevState[commentId],
+  //   }));
+  // };
  
     const fetchComments = async () => {
       try {
@@ -266,8 +266,8 @@ const Comments = ({ postId }) => {
                     </div>
                   </faceplate-hovercard>
                 </div>
-                <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author}</strong>
-                *&nbsp;{" "}
+                <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author_details.name}</strong>
+                *&nbsp;
                 <p className="text-sm dark:text-white">{moment(comment.createdAt).fromNow()}</p>
            
               </div>

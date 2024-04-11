@@ -22,7 +22,7 @@ const CreateAPost = () => {
     const [imageData, setImageData] = React.useState(null);
     const [linkData, setLinkData] = React.useState("");
     const [postTitle, setPostTitle] = useState("");
-    const { data ,darkMode} = useContext(ContextAPIContext)
+    const { data ,darkMode,setSelectedItem} = useContext(ContextAPIContext)
 
     const handlePostSubmit = async () => {
         // e.preventDefault()
@@ -55,6 +55,7 @@ const CreateAPost = () => {
             const data = await response.json();
             // console.log("Post created:", data);
             toast.success("Post created Successfully!");
+            setSelectedItem("New")
             setTimeout(() => {
                 location.href="/"
                 

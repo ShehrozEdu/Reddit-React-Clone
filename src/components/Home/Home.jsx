@@ -130,7 +130,7 @@ const Home = () => {
   };
 
   return (
-    <div className={`xl:ml-[23rem] lg:ml-[23rem] ml-0 ${location.pathname === '/submit' ? 'xl:ml-[15.6rem] lg:ml-[15.6rem] mt-0 h-screen w-screen ' + (darkMode ? 'bg-[#0B1416]' : 'bg-[#dae0e6]') : ''}`}>
+    <div className={`xl:ml-[23rem] lg:ml-[23rem] ml-0 w-full ${location.pathname === '/submit' ? 'xl:ml-[15.6rem] lg:ml-[15.6rem] mt-0 h-screen w-screen ' + (darkMode ? 'bg-[#0B1416]' : 'bg-[#dae0e6]') : ''}`}>
 
       <Routes>
         <Route

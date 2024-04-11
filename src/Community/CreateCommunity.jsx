@@ -9,6 +9,8 @@
     Input,
   } from "@material-tailwind/react";
   import { ContextAPIContext } from "../components/Context/ContextAPIContext ";
+import { toast } from "react-toastify";
+
 
   const CreateCommunity = () => {
     const {darkMode}=useContext(ContextAPIContext)
@@ -18,15 +20,13 @@
     const [checked, setChecked] = useState(false);
     const [imageFiles, setImageFiles] = useState(null);
 
-    const handleImageFilesChange = (event) => {
-      setImageFiles(event.target.files);
-    };
-
+   
     const handleChangeInput = (e) => {
-      const inputText = e.target.value;
-      if (inputText.length <= maxCharacters && inputText.startsWith("r/")) {
-        setCommunityName(inputText);
-      }
+      // const inputText = e.target.value;
+      // if (inputText.length <= maxCharacters && inputText.startsWith("r/")) {
+      //   setCommunityName(inputText);
+      // }
+      setCommunityName(e.target.value)
     };
 
     const handleInputFocus = () => {
@@ -76,15 +76,21 @@
     
         const data = await response.json();
         console.log("Community created successfully:", data);
+        if(data.status==="success"){
+
+          toast.success(`${data.data.name} has been created successfully!`)
+        }else{
+          toast.error(`Channel with this name already exists`)
+
+        }
+        setTimeout(() => {
+         location.href="/" 
+        }, 2000);
       } catch (error) {
         console.error("Error creating community:", error);
       }
     };
     
-    
-    
-
-
     return (
       <>
         <div

@@ -55,7 +55,7 @@ const Header = () => {
 
 
 
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast } = useContext(ContextAPIContext);
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast,handlePostClick } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
   const throttledFilterData = useThrottle(filterData, 500);
@@ -88,10 +88,7 @@ const Header = () => {
   useEffect(() => {
     throttledFilterData();
   }, [searchQuery, throttledFilterData]);
-  const handlePostClick = (postId) => {
-    navigate(`/post/${postId}`);
-    setShowResults(false);
-  };
+ 
 
   // console.log(data)
   const handleLogout = () => {
@@ -149,11 +146,11 @@ const Header = () => {
               <Input
                 icon={<MagnifyingGlassIcon className="h-5 w-5" />}
                 label="Search Reddit"
-                className={darkMode ? "dark-customInp" : "customInp"}
+                className={darkMode ? "dark-customInp" : "customInp focus:border-0"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowResults(true)}
-                onClick={()=>handleNavigate()}
+                // onClick={()=>handleNavigate()}
               />
               {/* Render search results */}
               {showResults && (
@@ -162,6 +159,7 @@ const Header = () => {
                     <Scrollbars autoHide style={{ "height": "26rem" }}>
                       <List className={` ${darkMode ? 'clr-dark-head' : ''} `}>
                         {searchResults.map((item, idx) => (
+                          <>
                           <ListItem
                             ripple={false}
                             className="py-0 pr-1 pl-1 text-black dark:text-white "
@@ -190,12 +188,15 @@ const Header = () => {
                                 </div>
                               </div>
                             </div>
+                          
 
                             <ListItemSuffix>
                               {item?.images[0]?.startsWith("https") && <img src={item.images[0]} width={130} alt="img" />}
                             </ListItemSuffix>
 
                           </ListItem>
+                          <hr />
+                          </>
                         ))}
                       </List>
                     </Scrollbars>
@@ -242,7 +243,7 @@ const Header = () => {
               <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600  rounded-3xl p-3 cursor-pointer" onClick={() => navigate("/submit")}>
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Add" /> <span className="text-black dark:text-white ml-2"> Create</span>
               </div>
-              <div className="rounded-3xl cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
+              <div onClick={handleClickToast} className="rounded-3xl cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600  p-2">
                 <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-notif.svg" : "/images/svgs/notification.svg"} alt="" />
               </div>
               <div className="">
@@ -397,7 +398,7 @@ const Header = () => {
                         Settings
                       </ListItem>
                       <hr />
-                      <ListItem className="rounded-none pt-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => navigate("/premium")}>
+                      <ListItem className="rounded-none pt-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => {handleTogglePop(); navigate("/premium")}}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shield.svg" : "/images/svgs/shield.svg"} alt="" />
                         </ListItemPrefix>

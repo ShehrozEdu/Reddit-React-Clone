@@ -28,12 +28,12 @@
 }
 .customInp {
   width: 37rem !important;
-  border-radius: 0.9rem !important;
+  /* border-radius: 0.9rem !important; */
   background-color: #eaedef !important;
 }
 .dark-customInp {
   width: 37rem !important;
-  border-radius: 0.9rem !important;
+  /* border-radius: 0.9rem !important; */
   background-color: #1a282d !important;
 }
 .clr-dark-head{
@@ -682,4 +682,51 @@ _2WCbLB03wJFwv7fN2Dk2qt,
   background: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.00) 111.72%), #0045AC !important;
 }
 
+.responsiveWidth{
+  width: 65rem !important;
+}
 
+.customInp:focus{    outline: #0c3744 !important;
+
+}
+@media (max-width:1281px) {
+  
+  
+  .responsiveWidth{
+    width: 52rem !important;
+  }
+  
+}
+@media (max-width:1025px) {
+  .responsiveWidth{
+    width: 55rem !important;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 640px and up) */
+@media (min-width: 640px) { 
+  .responsiveCommentWidth {
+    width: 13rem;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media (min-width: 768px) { 
+  .responsiveCommentWidth {
+    width: 25rem;
+  }
+}
+
+/* Large devices (laptops/desktops, 1024px and up) */
+@media (min-width: 1024px) { 
+  .responsiveCommentWidth {
+    width: 27rem;
+  }
+}
+
+/* Extra large devices (large laptops and desktops, 1280px and up) */
+@media (min-width: 1380px) { 
+  .responsiveCommentWidth {
+    width: 32rem;
+  }
+}

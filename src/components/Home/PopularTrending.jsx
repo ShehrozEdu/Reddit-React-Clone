@@ -60,14 +60,17 @@ const PopularTrending = ({ trendingData }) => {
   const addToLocalStorage = (community) => {
     const newRecentCommunities = [community, ...recentCommunities.filter((c) => c && c._id !== community._id)];
     setRecentCommunities(newRecentCommunities);
-    localStorage.setItem("recentCommunities", JSON.stringify(newRecentCommunities));
+    sessionStorage.setItem("recentCommunities", JSON.stringify(newRecentCommunities));
 };
 
 
   return (
     <div
-      className={`rounded-xl mb-4 border ${darkMode?"bg-[#0B1416]":"bg-gray-100"} w-64 ${isFixed ? "fixed right-3 top-90" : "fixed top-32 right-3"
-        }`}
+    className={`rounded-xl mb-4 border ${darkMode ? "bg-[#0B1416]" : "bg-gray-100"} w-64 ${
+      isFixed
+        ? "md:right-10 fixed right-20 top-90"
+        : "md:right-10 fixed top-32 right-20"
+    }`}
       style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
     >
       <div className="p-5 text-xs font-semibold w-full text-[#627c95]">

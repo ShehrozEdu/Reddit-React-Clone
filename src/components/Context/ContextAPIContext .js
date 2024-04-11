@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { createContext, useState, useContext, useEffect } from "react";
+import {useNavigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
 
 export const ContextAPIContext = createContext(); // Export ContextAPIContext
@@ -17,7 +19,7 @@ export const ContextAPIProvider = ({ children }) => {
   const [isSignIn, setIsSignIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [comments, setComments] = useState([]);
-  const [selectedItem, setSelectedItem] = useState("Top");
+  const [selectedItem, setSelectedItem] = useState("Best");
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [isDownvoted, setIsDownvoted] = useState(false);
   const [commId, setCommId] = useState(false);
@@ -28,11 +30,23 @@ export const ContextAPIProvider = ({ children }) => {
   const[otherLike,setOtherLike]=useState([])
   const [upvotes, setUpvotes] = useState({});
   const [downvotes, setDownvotes] = useState({});
+
+  const navigate=useNavigate();
+
+    const handleCommunityDetails = (id) => {
+    setCommId(id);
+    // console.log(id)
+    navigate(`/community/${id}`)
+  }
+
   const handleClickToast = () => {
     toast.warning('Work Under Progress');
   };
   
-
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`);
+    setShowResults(false);
+  };
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
@@ -170,6 +184,8 @@ export const ContextAPIProvider = ({ children }) => {
   return (
     <ContextAPIContext.Provider
       value={{
+        handleCommunityDetails,
+        handlePostClick,
         isMobile, setIsMobile,handleResize,
         upvotes, setUpvotes,downvotes, setDownvotes,
         handleClickToast,
