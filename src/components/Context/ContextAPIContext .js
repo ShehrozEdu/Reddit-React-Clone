@@ -25,7 +25,8 @@ export const ContextAPIProvider = ({ children }) => {
   const [commId, setCommId] = useState(false);
   const [recentCommunities, setRecentCommunities] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const storedDarkMode = localStorage.getItem('darkMode') === 'false';
+  const [darkMode, setDarkMode] = useState(storedDarkMode || false);
   const [likeCountMaintain, setLikeCountMaintain] = useState(false);
   const[otherLike,setOtherLike]=useState([])
   const [upvotes, setUpvotes] = useState({});
@@ -47,8 +48,12 @@ export const ContextAPIProvider = ({ children }) => {
     navigate(`/post/${postId}`);
     setShowResults(false);
   };
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
+   useEffect(() => {
+    // Toggle the "dark" class
+    document.documentElement.classList.toggle('dark', darkMode);
+
+    // Store the current mode in localStorage
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
 
   const data = JSON.parse(localStorage.getItem("userData"));

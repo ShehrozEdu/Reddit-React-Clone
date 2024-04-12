@@ -209,7 +209,7 @@ const Header = () => {
           {/* Buttons on the right */}
           {!data ? (
             <div className="flex items-center gap-1">
-              (
+              
               <div className="flex items-center justify-center bg-gray-300 p-1 rounded-3xl">
                 <IconButton variant="text" color="black">
                   <QrCodeIcon className="h-6 w-6" />

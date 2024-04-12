@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, Input, List, ListItem, ListItemPrefix, ListItemSuffix, Popover, PopoverContent, PopoverHandler, Switch, Typography } from '@material-tailwind/react';
 import Aside from '../Navbar/Aside';
+import Login from "../Auth/Login"
 import { ContextAPIContext } from '../Context/ContextAPIContext ';
 
 const ResponsiveHeader = () => {
@@ -94,7 +95,7 @@ const ResponsiveHeader = () => {
                 <div className='flex items-center'>
                     <Button className=' p-3 clr-FF4500 rounded-2xl capitalize py-2 cursor-pointer' onClick={()=>{handleClickToast()}}>Use app</Button>
                     <div onClick={handleSearchIconClick}><img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-search.svg" : "/images/svgs/search.svg"}`} alt="" className='mx-2 cursor-pointer' /></div>
-                    <div>
+                   {data? <div>
                     <Popover
                   open={openPop}
                   placement="top"
@@ -247,7 +248,9 @@ const ResponsiveHeader = () => {
                   </PopoverContent>
                 </Popover>
                         
-                    </div>
+                    </div>:<div>
+                      
+                    <Login /></div>}
                 </div>
             </div>
             <div>
