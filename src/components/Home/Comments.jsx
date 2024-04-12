@@ -267,7 +267,12 @@ const Comments = ({ postId }) => {
                   </faceplate-hovercard>
                 </div>
                 <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author_details.name}</strong>
-                *&nbsp;
+                <span
+                    id="time-ago-separator"
+                    class="flex items-center w-2xs text-[#576F76] dark:text-white font-normal text-12 mr-2"
+                  >
+                    •
+                  </span>
                 <p className="text-sm dark:text-white">{moment(comment.createdAt).fromNow()}</p>
            
               </div>
