@@ -273,7 +273,7 @@ const Comments = ({ postId }) => {
               </div>
               {comment.author ===data?._id?  <button className="text-red-500 text-end" onClick={() => deleteComment(comment?._id)}>Delete</button>:""}
             </div>
-            <div className="p-3 pt-0 mt-2 flex flex-col justify-between hover:bg-grey-lighter rounded-xl border-l">
+            <div className="p-3 pt-0 mt-2 flex flex-col justify-between hover:bg-grey-lighter rounded-xl ">
               <div className="flex justify-between items-center ml-4">
                 <p className=" text-gray-500">{comment.content}</p>
 

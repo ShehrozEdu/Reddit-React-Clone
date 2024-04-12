@@ -243,7 +243,7 @@ const PostDetails = ({ posts }) => {
   };
   return (
     <>
-      <div className="flex relative">
+      <div className="flex relative h-[calc(100vh-3.2rem)] ">
         <div className="flex flex-col bg-white dark:bg-[#0B1416] rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] xl:p-6 lg:p-6 md:p-4 p-0">
           <div className="flex items-center mb-4">
             <div className="flex items-center">
