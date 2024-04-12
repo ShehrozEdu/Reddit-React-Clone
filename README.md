@@ -1,8 +1,8 @@
-# React Social App
+# Reddit Clone
 
 ## Description
 
-React Social App is a social media platform inspired by Reddit that allows users to create posts, manage profiles, authenticate, upvote and downvote content, comment and reply, delete and edit posts, and create channels (subreddits). Built with React 18 and modern web technologies, the app provides an engaging and interactive social media experience.
+Reddit clone is a social media platform inspired by Reddit that allows users to create posts, manage profiles, authenticate, upvote and downvote content, comment and reply, delete and edit posts, and create channels (subreddits). Built with React 18 and modern web technologies, the app provides an engaging and interactive social media experience.
 
 ## Features
 
