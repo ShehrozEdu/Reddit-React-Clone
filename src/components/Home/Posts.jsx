@@ -417,7 +417,7 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
                           </svg>
                         )}
                       </button>
-                      <span className="text-xs font-normal my-1">{singlePost.likeCount}</span>
+                      <span className="text-xs font-normal my-1">{data?singlePost.likeCount:postData.likeCount}</span>
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
                         {!singlePost.isDisliked ? (
                           <svg
