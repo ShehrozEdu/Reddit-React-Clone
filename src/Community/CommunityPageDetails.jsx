@@ -15,7 +15,7 @@ const CommunityPageDetails = () => {
     const [isJoined, setIsJoined] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
   const commParams = useParams();
-  console.log("params",commParams)
+//   console.log("params",commParams)
   const fetchChannelData = async () => {
     try {
         const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${commParams.id}`, {

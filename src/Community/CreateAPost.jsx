@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     Tabs,
     TabsHeader,
@@ -13,17 +13,40 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ContextAPIContext } from '../components/Context/ContextAPIContext ';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 
 
 const CreateAPost = () => {
+    const { data, darkMode, setSelectedItem } = useContext(ContextAPIContext)
     const [activeTab, setActiveTab] = React.useState("post");
     const [postData, setPostData] = React.useState("");
     const [imageData, setImageData] = React.useState(null);
     const [linkData, setLinkData] = React.useState("");
+    const [selectedChannelID, setSelectedChannelID] = useState(null);
     const [postTitle, setPostTitle] = useState("");
-    const { data ,darkMode,setSelectedItem} = useContext(ContextAPIContext)
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [popularCommunityChannel, setPopularCommunityChannel] = useState([])
 
+    useEffect(() => {
+        const fetchPopularCommunity = async () => {
+            try {
+                const response = await axios.get(
+                    "https://academics.newtonschool.co/api/v1/reddit/channel",
+                    {
+                        headers: {
+                            projectId: "t0v7xsdvt1j1",
+                        },
+                    }
+                );
+                setPopularCommunityChannel(response.data.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchPopularCommunity();
+    }, []);
+// console.log(selectedChannelID)
     const handlePostSubmit = async () => {
         // e.preventDefault()
         const token = localStorage.getItem("token");
@@ -32,18 +55,22 @@ const CreateAPost = () => {
                 toast.error("User is not logged in. Please Login");
                 return;
             }
-    
+
             const formData = new FormData();
-    
+
             formData.append('title', postTitle);
-    
+
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = postData;
             const plainText = tempDiv.textContent || tempDiv.innerText || "";
-    
+
             formData.append('content', plainText);
             formData.append('images', imageData);
             formData.append('appType', "reddit");
+            if (selectedChannelID) {
+                formData.append('channelId', selectedChannelID);
+            }
+    
             const response = await fetch('https://academics.newtonschool.co/api/v1/reddit/post/', {
                 method: 'POST',
                 headers: {
@@ -57,14 +84,14 @@ const CreateAPost = () => {
             toast.success("Post created Successfully!");
             setSelectedItem("New")
             setTimeout(() => {
-                location.href="/"
-                
+                location.href = "/"
+
             }, 3000);
         } catch (error) {
             console.error("Error creating post:", error);
         }
     };
-    
+
 
 
     const dataTab = [
@@ -144,6 +171,9 @@ const CreateAPost = () => {
             )
         },
     ];
+    // console.log(data._id)
+    // console.log(popularCommunityChannel.map((ids) => ids))
+    // console.log(selectedOption)
 
     return (
         <>
@@ -154,11 +184,30 @@ const CreateAPost = () => {
                 </div>
                 <hr />
                 <div className='w-40 mt-5'>
-                    <Select label="Select Channel" className='bg-white dark:bg-black dark:text-white text-black'>
-                        <Option>u/{data.name}</Option>
-                    </Select>
+
+                    <select
+                        className='bg-white dark:bg-black dark:text-white text-black p-3 rounded-xl'
+                        value={selectedOption}
+                        onChange={(e) => {
+                            setSelectedOption(e.target.value);
+                            const selectedChannel = popularCommunityChannel.find(channel => `r/${channel.name}` === e.target.value);
+                            if (selectedChannel) {
+                                setSelectedChannelID(selectedChannel._id);
+                            }
+                        }}
+                    >
+                        <option value={`u/${data.name}`}>u/{data.name}</option>
+                        {
+                            popularCommunityChannel
+                                .filter(channel => data._id === channel.owner._id)
+                                .map((channel, idx) => (
+                                    <option key={idx} value={`r/${channel.name}`} className='bg-white dark:bg-black dark:text-white text-black'>r/{channel.name}</option>
+                                ))
+                        }
+                    </select>
+
                 </div>
-                <div className={`border mt-5 ${darkMode?"bg-[#0B1416]":"bg-white "}rounded-xl`}>
+                <div className={`border mt-5 ${darkMode ? "bg-[#0B1416]" : "bg-white "}rounded-xl`}>
                     <Tabs value={activeTab}>
                         <TabsHeader
                             className="rounded-none border-b border-blue-gray-50 bg-transparent pb-0 "
@@ -172,7 +221,7 @@ const CreateAPost = () => {
                                     key={value}
                                     value={value}
                                     onClick={() => setActiveTab(value)}
-                                    className={`${activeTab === value ? "text-gray-900 border-r" : ""} dark:text-white` }
+                                    className={`${activeTab === value ? "text-gray-900 border-r" : ""} dark:text-white`}
                                 >
                                     {label}
                                 </Tab>
