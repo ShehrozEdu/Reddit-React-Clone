@@ -10,21 +10,13 @@ import axios from "axios";
 
 const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
   const [timeAgo, setTimeAgo] = useState("");
-  const [likeCount, setLikeCount] = useState(postData.likeCount);
   const [joinedStatus, setJoinedStatus] = useState(false);
   const [editToggled, setEditToggled] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState(postData?.title || "");
   const [newPostData, setNewPostData] = useState(postData?.content || '');
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
-  const { likeCountMaintain, setIsUpvoted, setIsDownvoted, setCommId } = useContext(ContextAPIContext)
+  const { setIsUpvoted, setIsDownvoted, setCommId } = useContext(ContextAPIContext)
   const [singlePost, setSinglePost] = useState([])
-  const [upvotes, setUpvotes] = useState({});
-  const [downvotes, setDownvotes] = useState({});
-
-
-
-
-
   const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
   useEffect(() => {
@@ -67,12 +59,10 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
       console.error("Error fetching posts:", error);
     }
   };
+  // Fetches the post data when this component mounts, and adds it to the global state.
   useEffect(() => {
     fetchLikedPost();
-
-
   }, [])
-
 
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
@@ -138,8 +128,6 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
     }
   };
 
-  // console.log("upvote", upvotes);
-  // console.log("downvotes", downvotes);
 
   const deletePost = async (postId) => {
     try {
@@ -167,6 +155,10 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
       console.error("Error deleting post:", error);
     }
   };
+
+
+
+
   const toggleFollow = async (id) => {
     try {
       const token = localStorage.getItem("token");

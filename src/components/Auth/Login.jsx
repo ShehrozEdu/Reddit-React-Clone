@@ -68,6 +68,9 @@ const handleSubmit = async () => {
       toast.error("Name, email, and password are required.");
       return;
     }
+    if ((formData.password).length <= 8) {
+      toast.error("Password length should be more than 8.");
+      return;}
     if (!isEmailValid(formData.email)) {
       toast.error("Please enter a valid email address.");
       return;

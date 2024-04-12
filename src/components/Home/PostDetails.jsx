@@ -17,8 +17,8 @@ const PostDetails = ({ posts }) => {
   const [showMore, setShowMore] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [comment, setComment] = useState("");
-  const [timeAgo, setTimeAgo] = useState("");
-  const [likeCount, setLikeCount] = useState(Number.isNaN(post.likeCount) ? 0 : post.likeCount);
+  const [isDownvoted, setIsDownvoted] = useState(false)
+  const [isUpvoted, setIsUpvoted] = useState(false)
 
   if (!post) {
     return <div>Post not found</div>;
@@ -61,49 +61,35 @@ const PostDetails = ({ posts }) => {
     },
   ];
 
+  // const fetchLikedPost = async () => {
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}`, {
+  //       headers: {
+  //         projectId: "t0v7xsdvt1j1",
+  //         Authorization: `Bearer ${token}`
+  //       },
+  //     });
+  //     console.log(post)
+  //     setpost(response.data.data);
+  //     console.log(post)
+     
+     
+  //   } catch (error) {
+  //     console.error("Error fetching posts:", error);
+  //   }
+  // };
+  // // Fetches the post data when this component mounts, and adds it to the global state.
+  // useEffect(() => {
+  //   handlePostDetails();
+  // }, [])
 
 
-
-  const [isUpvoted, setIsUpvoted] = useState(false);
-const [isDownvoted, setIsDownvoted] = useState(false);
-
-const handleUpvoteClick = () => {
-  if (isUpvoted) {
-    toast.success("Upvote removed");
-    setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount but not below 0
-  } else {
-    toast.success("Upvoted");
-    if (isDownvoted) {
-      setLikeCount(prevCount => prevCount + 2); // increase likeCount by 2 if it was previously downvoted
-    } else {
-      setLikeCount(prevCount => prevCount + 1); // increase likeCount by 1 if it was not previously downvoted
-    }
-  }
-  setIsUpvoted(!isUpvoted);
-  setIsDownvoted(false);
-};
-
-const handleDownvoteClick = () => {
-  if (isDownvoted) {
-    toast.success("Downvote removed");
-    setLikeCount(prevCount => prevCount + 1); // increase likeCount
-  } else {
-    toast.success("Downvoted");
-    if (isUpvoted) {
-      setLikeCount(prevCount => Math.max(0, prevCount - 2)); // decrease likeCount by 2 if it was previously upvoted
-    } else {
-      setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount by 1 if it was not previously upvoted
-    }
-  }
-  setIsDownvoted(!isDownvoted);
-  setIsUpvoted(false);
-};
-
-useEffect(() => {
-  if (post && post.likeCount) {
-    setLikeCount(post.likeCount);
-  }
-}, [post]);
+// useEffect(() => {
+//   if (post && post.likeCount) {
+//     setLikeCount(post.likeCount);
+//   }
+// }, [post]);
 
   const createComment = async () => {
     if (!data) {
@@ -193,6 +179,68 @@ useEffect(() => {
   useEffect(() => {
     handlePostDetails()
   }, [handlePostClick])
+
+ 
+  const handleUpClick = async (postId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
+
+  
+
+    try {
+      const response = await axios({
+        method: post.isLiked === true ? "DELETE" : "POST",
+        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
+
+      if (response.data.status === "success") {
+        toast.success(post.isLiked ? "Upvote removed" : "Upvoted");    
+        // setIsUpvoted(!alreadyUpvoted);
+        handlePostDetails();
+      
+
+      }
+    } catch (error) {
+      console.error("Upvote operation failed:", error);
+     
+    }
+  };
+
+  const handleDownClick = async (postId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
+
+
+    try {
+      const response = await axios({
+        method: post.isDisliked === true ? "DELETE" : "POST",
+        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          projectId: "t0v7xsdvt1j1",
+        },
+      });
+
+      if (response.data.status === "success") {
+        toast.success(post.isDisliked ? "Downvote removed" : "Downvoted");
+
+        handlePostDetails();
+      }
+    } catch (error) {
+      console.error("Downvote operation failed:", error);
+  
+    }
+  };
   return (
     <>
       <div className="flex relative">
@@ -233,9 +281,9 @@ useEffect(() => {
           </div>
           {/* Post Actions */}
           <div className="inline-flex items-center my-1 py-3">
-            <div className={`flex justify-between hover:bg-grey-lighter p-2 ${isDownvoted?"bg-[#6A5CFF]":"bg-gray-300"} ${isUpvoted?"bg-[#D93A00]":"bg-gray-300"} rounded-xl items-center`}>
-              <button className="text-xs" onClick={handleUpvoteClick}>
-                {!isUpvoted ? (
+            <div className={`flex justify-between hover:bg-grey-lighter p-2  rounded-xl items-center bg-gray-300`}>
+              <button className="text-xs" onClick={()=>handleUpClick(post._id)}>
+                {!post.isLiked ? (
                   <svg
                     rpl=""
                     fill="currentColor"
@@ -261,9 +309,9 @@ useEffect(() => {
                   </svg>
                 )}
               </button>
-              <span className="text-xs font-normal my-1">{likeCount}</span>
-              <button className="text-xs" onClick={handleDownvoteClick}>
-                {!isDownvoted ? (
+              <span className="text-xs font-normal my-1">{post.likeCount}</span>
+              <button className="text-xs" onClick={()=>handleDownClick(post._id)}>
+                {!post.isDisliked ? (
                   <svg
                     rpl=""
                     fill="currentColor"

@@ -24,7 +24,7 @@ const CommunityPageDetails = () => {
             },
         });
         setChannelData(response.data.data);
-        console.log(channelData)
+        // console.log(channelData)
         setLoading(false);
     } catch (error) {
         setError(error);
@@ -126,12 +126,12 @@ useEffect(() => {
                         </div>
                     </div>
                     <div className='flex justify-between'>
-                        <div className='w-full]'>
+                        <div className='w-full'>
                             <div className='flex justify-start'>
                                 <MenuButtons showCountrySelect={false} />
                             </div>
-                            <div className="py-2">
-                                <div className={`w-full hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"}cursor-pointer`}>
+                            <div className="py-2 w-[60%]">
+                                <div className={` hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"}cursor-pointer`}>
                                     <div className="pt-2">
                                         <div className="flex items-center text-xs mb-2">
                                             <a href="#" className="font-semibold no-underline hover:underline text-black flex items-center">
