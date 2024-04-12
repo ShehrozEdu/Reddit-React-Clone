@@ -7,7 +7,7 @@ import Login from "../Auth/Login"
 import { ContextAPIContext } from '../Context/ContextAPIContext ';
 
 const ResponsiveHeader = () => {
-    const{setDarkMode, darkMode,data,handleClickToast,handleAsideToggle,isAsideOpen, setIsAsideOpen} = useContext(ContextAPIContext)
+    const{setDarkMode, darkMode,data,handleClickToast,handleAsideToggle,isAsideOpen} = useContext(ContextAPIContext)
     const [showInput, setShowInput] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);

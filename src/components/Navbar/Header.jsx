@@ -20,13 +20,9 @@ import {
   Switch,
 } from "@material-tailwind/react";
 import {
-  BellIcon,
-  Cog6ToothIcon,
   MagnifyingGlassIcon,
   QrCodeIcon,
-  EllipsisHorizontalIcon,
 } from "@heroicons/react/24/solid";
-import { TrashIcon } from "@heroicons/react/24/outline";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { useLocation, useNavigate } from "react-router-dom";
 import Login from "../Auth/Login";

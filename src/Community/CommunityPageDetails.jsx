@@ -57,6 +57,10 @@ useEffect(() => {
     const [isUpvoted, setIsUpvoted] = useState(false);
     const [isDownvoted, setIsDownvoted] = useState(false);
     const handleUpvoteClick = () => {
+        if (!data) {
+            toast.error("You must be logged in to upvote");
+            return;
+        }
         if (isUpvoted) {
           toast.success("Upvote removed");
           setLikeCount(prevCount => Math.max(0, prevCount - 1)); // decrease likeCount but not below 0
@@ -77,6 +81,10 @@ useEffect(() => {
         }
       }, [channelData]);
       const handleDownvoteClick = () => {
+        if (!data) {
+            toast.error("You must be logged in to upvote");
+            return;
+        }
         if (isDownvoted) {
           toast.success("Downvote removed");
           setLikeCount(prevCount => prevCount + 1); // increase likeCount
