@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 
 const PostDetails = ({ posts }) => {
-  const { setComments,comments, data, handleClickToast,handlePostClick, } = useContext(ContextAPIContext);
+  const { setComments,comments, data, handleClickToast,handlePostClick, checkUserLoggedIn} = useContext(ContextAPIContext);
   const params = useParams();
   const timePost = posts?.find((post) => post?._id === params?.id);
   // console.log(timePost.createdAt)
@@ -124,6 +124,10 @@ const PostDetails = ({ posts }) => {
     }
   };
   const handlePostDetails = async () => {
+    if (!checkUserLoggedIn()) {
+      toast.error("User is not logged in");
+      return;
+    }
     if (!data) {
       toast.error("User is not logged in");
       return;

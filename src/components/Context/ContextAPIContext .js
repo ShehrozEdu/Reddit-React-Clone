@@ -180,10 +180,18 @@ export const ContextAPIProvider = ({ children }) => {
       setIsMobile(window.innerWidth < 900);
     };
 
- 
+    const checkUserLoggedIn = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("User is not logged in");
+        return false;
+      }
+      return true;
+    };
   return (
     <ContextAPIContext.Provider
       value={{
+        checkUserLoggedIn,
         handleCommunityDetails,
         handlePostClick,
         isMobile, setIsMobile,handleResize,

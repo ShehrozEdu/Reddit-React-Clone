@@ -23,6 +23,7 @@ const Home = () => {
     setPopularCommunityChannel,
     setLoading,
     darkMode,
+    checkUserLoggedIn,
   } = useContext(ContextAPIContext);
   // const { id } = useParams();
   const [page, setPage] = useState(1);
@@ -126,6 +127,9 @@ const Home = () => {
   }, []);
 
   const handlePostClick = (postId) => {
+    if (!checkUserLoggedIn()) {
+      return;
+    }
     navigate(`/post/${postId}`);
   };
 
