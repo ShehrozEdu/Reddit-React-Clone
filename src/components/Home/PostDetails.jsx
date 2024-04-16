@@ -90,7 +90,7 @@ const PostDetails = ({ posts }) => {
 //     setLikeCount(post.likeCount);
 //   }
 // }, [post]);
-
+// createComment: Allows a user to create a comment on a specific post. Checks if user is logged in and sends a POST request to server with comment content.
   const createComment = async () => {
     if (!data) {
       toast.error("User is not logged in");
@@ -123,6 +123,7 @@ const PostDetails = ({ posts }) => {
       console.error("Error:", error);
     }
   };
+  // handlePostDetails: Fetches details of a specific post based on the provided post ID. Sends a GET request to the server and updates state with retrieved post data.
   const handlePostDetails = async () => {
     if (!checkUserLoggedIn()) {
       toast.error("User is not logged in");
@@ -155,6 +156,7 @@ const PostDetails = ({ posts }) => {
       console.log(error);
     }
   };
+  // fetchComments: Retrieves comments for a specific post. Sends a GET request to the server and updates state with retrieved comments.
   const fetchComments = async () => {
     const token=localStorage.getItem("token")
     try {
@@ -183,7 +185,7 @@ const PostDetails = ({ posts }) => {
   useEffect(() => {
     handlePostDetails()
   }, [handlePostClick])
-
+// handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
  
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
@@ -216,7 +218,7 @@ const PostDetails = ({ posts }) => {
      
     }
   };
-
+// handleDownClick: Allows a user to downvote a post. Toggles downvote status and sends appropriate request (POST/DELETE) to server.
   const handleDownClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {

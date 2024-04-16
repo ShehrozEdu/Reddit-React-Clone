@@ -52,9 +52,9 @@ export const ContextAPIProvider = ({ children }) => {
     // Toggle the "dark" class
     document.documentElement.classList.toggle('dark', darkMode);
 
-    // Store the current mode in localStorage
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-  }, [darkMode]);
+  //   // Store the current mode in localStorage
+  //   localStorage.setItem('darkMode', JSON.stringify(darkMode));
+  // }, [darkMode]);
 
   const data = JSON.parse(localStorage.getItem("userData"));
 
