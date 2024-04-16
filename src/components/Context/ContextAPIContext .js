@@ -48,9 +48,9 @@ export const ContextAPIProvider = ({ children }) => {
     navigate(`/post/${postId}`);
     setShowResults(false);
   };
-   useEffect(() => {
-    // Toggle the "dark" class
-    document.documentElement.classList.toggle('dark', darkMode);
+  //  useEffect(() => {
+  //   // Toggle the "dark" class
+  //   document.documentElement.classList.toggle('dark', darkMode);
 
   //   // Store the current mode in localStorage
   //   localStorage.setItem('darkMode', JSON.stringify(darkMode));
