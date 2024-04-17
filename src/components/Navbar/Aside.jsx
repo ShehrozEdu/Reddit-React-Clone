@@ -31,7 +31,7 @@ const Aside = () => {
   const [open, setOpen] = React.useState(0);
   const [subOpen, setSubOpen] = React.useState(0);
   const [width, setWidth] = useState("75%");
-  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,handleCommNav, setIsAsideOpen,handleCommunityDetails } = useContext(ContextAPIContext);
+  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,handleCommNav, setIsAsideOpen,handleCommunityDetails,handleAsideToggle } = useContext(ContextAPIContext);
 
   const location = useLocation();
 
@@ -143,7 +143,7 @@ const Aside = () => {
               <AccordionBody className="py-1">
                 <List className="p-0">
                 {( recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
-    <ListItem key={index} onClick={()=>handleCommunityDetails(community._id)}>
+    <ListItem key={index} onClick={()=>{handleCommunityDetails(community._id);handleAsideToggle()}}>
         <div className="flex items-center dark:text-white">
             <img
                 className="h-8 w-8 border rounded-full mr-2"
@@ -541,7 +541,7 @@ const Aside = () => {
                       </ListItem>
                       {popularCommunityChannel.slice(0, 3).map((item, idx) => {
                         return (
-                          <ListItem className="pl-0 py-1 flex items-center" key={idx} onClick={() => handleCommunityDetails(item._id)}>
+                          <ListItem className="pl-0 py-1 flex items-center" key={idx} onClick={() => {handleCommunityDetails(item._id);handleAsideToggle()}}>
                             <span className="mr-3">
                               <img
                                 src={item.image ? item.image : "https://styles.redditmedia.com/t5_2r0ij/styles/communityIcon_yor9myhxz5x11.png"}
@@ -605,7 +605,7 @@ const Aside = () => {
               </ListItem>
               <AccordionBody className="py-1">
                 <List className="p-0">
-                  <ListItem onClick={() => window.open("https://www.redditinc.com/", "_blank")}>
+                  <ListItem onClick={() => {window.open("https://www.redditinc.com/", "_blank");handleAsideToggle();}}>
                     <ListItemPrefix >
                       <img src="/images/svgs/resourcesTab/aboutReddit.svg" alt="" />
                     </ListItemPrefix>
@@ -617,25 +617,25 @@ const Aside = () => {
                     </ListItemPrefix>
                     Advertise
                   </ListItem >
-                  <ListItem onClick={handleClickToast}>
+                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/help.svg" alt="" />
                     </ListItemPrefix>
                     Help
                   </ListItem>
-                  <ListItem onClick={handleClickToast}>
+                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/bolg.svg" alt="" />
                     </ListItemPrefix>
                     Blog
                   </ListItem>
-                  <ListItem onClick={handleClickToast}>
+                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/careers.svg" alt="" />
                     </ListItemPrefix>
                     Careers
                   </ListItem>
-                  <ListItem onClick={handleClickToast}>
+                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
                     <ListItemPrefix>
                       <img src="/images/svgs/resourcesTab/press.svg" alt="" />
                     </ListItemPrefix>

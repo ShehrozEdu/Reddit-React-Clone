@@ -17,8 +17,6 @@ const PostDetails = ({ posts }) => {
   const [showMore, setShowMore] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [comment, setComment] = useState("");
-  const [isDownvoted, setIsDownvoted] = useState(false)
-  const [isUpvoted, setIsUpvoted] = useState(false)
 
   if (!post) {
     return <div>Post not found</div>;
@@ -61,35 +59,6 @@ const PostDetails = ({ posts }) => {
     },
   ];
 
-  // const fetchLikedPost = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${post._id}`, {
-  //       headers: {
-  //         projectId: "t0v7xsdvt1j1",
-  //         Authorization: `Bearer ${token}`
-  //       },
-  //     });
-  //     console.log(post)
-  //     setpost(response.data.data);
-  //     console.log(post)
-     
-     
-  //   } catch (error) {
-  //     console.error("Error fetching posts:", error);
-  //   }
-  // };
-  // // Fetches the post data when this component mounts, and adds it to the global state.
-  // useEffect(() => {
-  //   handlePostDetails();
-  // }, [])
-
-
-// useEffect(() => {
-//   if (post && post.likeCount) {
-//     setLikeCount(post.likeCount);
-//   }
-// }, [post]);
 // createComment: Allows a user to create a comment on a specific post. Checks if user is logged in and sends a POST request to server with comment content.
   const createComment = async () => {
     if (!data) {
@@ -123,6 +92,7 @@ const PostDetails = ({ posts }) => {
       console.error("Error:", error);
     }
   };
+  
   // handlePostDetails: Fetches details of a specific post based on the provided post ID. Sends a GET request to the server and updates state with retrieved post data.
   const handlePostDetails = async () => {
     if (!checkUserLoggedIn()) {

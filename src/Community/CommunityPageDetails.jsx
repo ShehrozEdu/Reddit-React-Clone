@@ -11,7 +11,7 @@ const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { commId, darkMode,handleCommunityDetails, handleClickToast, data } = useContext(ContextAPIContext);
+    const { commId, darkMode,handleCommunityDetails, handleClickToast, data,commNameFetch } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
   const commParams = useParams();
@@ -108,9 +108,9 @@ useEffect(() => {
         <div className={`my-0 w-full h-[100vh] ${darkMode ? "bg-[#0B1416]" : "bg-gray-50"}`}>
             <div className={`${darkMode ? "bg-[#0B1416]" : "bg-gray-50"}`}>
                 <div className='w-full rounded-xl relative'>
-                    <img src={channelData?.owner?.profileImage || "https://picsum.photos/id/870/200/300?grayscale&blur=1"} alt="" className=' rounded-xl h-[8rem] object-cover xl:w-full lg:w-full' />
+                    <img src={channelData?.owner?.profileImage || "https://picsum.photos/id/870/200/300?grayscale&blur=1"} alt="" className=' rounded-xl h-[8rem] object-cover w-full' />
 
-                    <div className='flex  top-20 left-9 justify-between'>
+                    <div className='flex  top-20 left-9 justify-between lg:flex-row xl:flex-row flex-col'>
                         <div className='flex -mt-12'>
                             <img src={channelData?.owner?.profileImage || "https://www.redditstatic.com/avatars/avatar_default_02_A06A42.png"} className="rounded-full w-[88px] h-[88px] " alt="" />
                             <h1 className='flex items-center font-bold text-32 mb-0 mt-14 dark:text-white'>r/{channelData?.name}</h1>
@@ -138,7 +138,7 @@ useEffect(() => {
                             <div className='flex justify-start'>
                                 <MenuButtons showCountrySelect={false} />
                             </div>
-                            <div className="py-2 w-[60%]">
+                            <div className="py-2 xl:w-[60%] lg:w-[60%] w-[100%]">
                                 <div className={` hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"}cursor-pointer`}>
                                     <div className="pt-2">
                                         <div className="flex items-center text-xs mb-2">
@@ -267,7 +267,7 @@ useEffect(() => {
                                 </div>
                             </div>
                         </div>
-                        <div className={`fixed right-20 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-200 rounded-xl"} dark:border dark:border-white p-3`}>
+                        <div className={`fixed xl:block lg:block hidden right-20 w-[19rem] mt-14 ${darkMode ? "bg-[#0B1416]" : "bg-gray-200 rounded-xl"} dark:border dark:border-white p-3`}>
                             <div className="mb-6">
                                 <h2 className="text-md font-bold dark:text-white">{channelData.name} Community</h2>
                                 <p className="text-[14px] dark:text-white">

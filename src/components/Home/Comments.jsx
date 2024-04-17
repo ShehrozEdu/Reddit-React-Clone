@@ -11,7 +11,7 @@ const onDeleteComment = (comment) => {
 };
 
 const Comments = ({ postId }) => {
-  const{comments,setComments,data,darkMode}=useContext(ContextAPIContext)
+  const { comments, setComments, data, darkMode } = useContext(ContextAPIContext)
   // const [expandedReplies, setExpandedReplies] = useState({});
   // const [count, setCount] = useState(5);
 
@@ -22,29 +22,29 @@ const Comments = ({ postId }) => {
   //     [commentId]: !prevState[commentId],
   //   }));
   // };
- 
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get(
-          `https://academics.newtonschool.co/api/v1/reddit/post/${postId}/comments`,
-          {
-            headers: {
-              projectId: "t0v7xsdvt1j1",
-            },
-          }
-        );
-        setComments(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    useEffect(() => {
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `https://academics.newtonschool.co/api/v1/reddit/post/${postId}/comments`,
+        {
+          headers: {
+            projectId: "t0v7xsdvt1j1",
+          },
+        }
+      );
+      setComments(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     fetchComments();
 
   }, [postId]);
   const deleteComment = async (commentId) => {
     const token = localStorage.getItem("token");
-  
+
     // Check if token is available
     if (!token) {
       // Handle the case where the user is not logged in
@@ -53,7 +53,7 @@ const Comments = ({ postId }) => {
       // You can show a message to the user
       return;
     }
-  
+
     try {
       const response = await fetch(
         `https://academics.newtonschool.co/api/v1/reddit/comment/${commentId}`,
@@ -65,22 +65,22 @@ const Comments = ({ postId }) => {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Response was not ok");
       }
-  
+
       fetchComments();
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
+
   return (
-    <div className="flex flex-col gap-4">
-      {comments.map((comment,index) => (
+  <div className="flex flex-col gap-4">
+      {comments.map((comment, index) => (
         <>
-          <div key={index} className="p-4 pb-0 rounded-lg xl:w-[42rem] lg:w-[42rem] w-full">
+          <div key={index} className="p-4 pb-0 rounded-lg xl:w-[35rem] lg:w-[35rem] w-full">
             <div className="flex justify-between">
               <div className="flex items-center">
                 <div slot="commentAvatar" className="mr-2">
@@ -266,17 +266,17 @@ const Comments = ({ postId }) => {
                     </div>
                   </faceplate-hovercard>
                 </div>
-                <strong className="mr-3 text-sm dark:text-white">{data?._id===comment.author? 'You': comment.author_details.name}</strong>
+                <strong className="mr-3 text-sm dark:text-white">{data?._id === comment.author ? 'You' : comment.author_details.name}</strong>
                 <span
-                    id="time-ago-separator"
-                    class="flex items-center w-2xs text-[#576F76] dark:text-white font-normal text-12 mr-2"
-                  >
-                    •
-                  </span>
+                  id="time-ago-separator"
+                  class="flex items-center w-2xs text-[#576F76] dark:text-white font-normal text-12 mr-2"
+                >
+                  •
+                </span>
                 <p className="text-sm dark:text-white">{moment(comment.createdAt).fromNow()}</p>
-           
+
               </div>
-              {comment.author ===data?._id?  <button className="text-red-500 text-end" onClick={() => deleteComment(comment?._id)}>Delete</button>:""}
+              {comment.author === data?._id ? <button className="text-red-500 text-end" onClick={() => deleteComment(comment?._id)}>Delete</button> : ""}
             </div>
             <div className="p-3 pt-0 mt-2 flex flex-col justify-between hover:bg-grey-lighter rounded-xl ">
               <div className="flex justify-between items-center ml-4">
@@ -284,10 +284,10 @@ const Comments = ({ postId }) => {
 
                 {/* Post Actions */}
               </div>
-              
+
             </div>
-          
-           
+
+
           </div>
           {/* <div className=" h-24"></div> */}
         </>

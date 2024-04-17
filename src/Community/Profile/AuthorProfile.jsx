@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 const AuthorProfile = ({ posts }) => {
     const [data, setData] = useState(null);
     const [activeTab, setActiveTab] = useState('Posts');
-    const { handleClickToast } = useContext(ContextAPIContext);
+    const { handleClickToast, setCommNameFetch } = useContext(ContextAPIContext);
     const { authorName } = useParams();
     // console.log(authorName)
     useEffect(() => {
@@ -24,6 +24,7 @@ const AuthorProfile = ({ posts }) => {
             );
 
             setData(result.data.data);
+            setCommNameFetch(result.data.data)
         };
 
         fetchData();
@@ -57,18 +58,18 @@ const AuthorProfile = ({ posts }) => {
                 <div className='flex items-center'>
                     <img src={(data[0].author.profileImage) ? (data[0].author.profileImage) : "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png"} alt="" className='rounded-full w-16 h-16' />
                     <div className='ml-2'>
-                        <h5 className='font-bold text-2xl'>{data[0].author.name}</h5>
-                        <p>u/{data[0].author.name}</p>
+                        <h5 className='font-bold text-2xl dark:text-white'>{data[0].author.name}</h5>
+                        <p className='dark:text-white'> u/{data[0].author.name}</p>
                     </div>
                 </div>
                 <div className='flex mt-6'>
-                    <div className={`cursor-pointer ${activeTab === 'Overview' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => {handleTabClick('Overview');handleClickToast();}}>
+                    <div className={`cursor-pointer dark:text-white ${activeTab === 'Overview' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => {handleTabClick('Overview');handleClickToast();}}>
                         Overview
                     </div>
-                    <div className={`cursor-pointer ${activeTab === 'Posts' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => handleTabClick('Posts')}>
+                    <div className={`cursor-pointer dark:text-white ${activeTab === 'Posts' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => handleTabClick('Posts')}>
                         Posts
                     </div>
-                    <div className={`cursor-pointer ${activeTab === 'Comments' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => { handleTabClick('Comments'); handleClickToast(); }}>
+                    <div className={`cursor-pointer dark:text-white ${activeTab === 'Comments' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => { handleTabClick('Comments'); handleClickToast(); }}>
     Comments
 </div>
                 </div>
@@ -81,15 +82,15 @@ const AuthorProfile = ({ posts }) => {
                             <div>
                                 <div className='flex items-center gap-2 py-5' key={index}>
                                     <img src="/images/svgs/defaultProfile.svg" className='w-6 h-6 rounded-full bg-blue-gray-100' alt="" />
-                                    <h5 className="text-sm">{item?.author?.name}</h5>
-                                    <span class="px-2xs"> • </span>
-                                    <h6 className='text-xs underline'>{item?.title}</h6>
+                                    <h5 className="text-sm dark:text-white">{item?.author?.name}</h5>
+                                    <span class="px-2xs dark:text-white"> • </span>
+                                    <h6 className='text-xs underline dark:text-white'>{item?.title}</h6>
 
                                 </div>
 
                                 <div className='flex flex-col'>
-                                    {item.title && <div className='font-bold pb-2'>{item?.title}</div>}
-                                    <div>{item.content}</div>
+                                    {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
+                                    <div className='dark:text-white'>{item.content}</div>
                                     <div><img src={item.images[0]} alt="postImg" /></div>
 
                                 </div>

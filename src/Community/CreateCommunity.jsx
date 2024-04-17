@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 
   const CreateCommunity = () => {
-    const {darkMode}=useContext(ContextAPIContext)
+    const {darkMode,handleAsideToggle}=useContext(ContextAPIContext)
     const [communityName, setCommunityName] = useState("");
     const [inputFocused, setInputFocused] = useState(false); 
     const maxCharacters = 21;

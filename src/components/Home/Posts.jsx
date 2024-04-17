@@ -8,7 +8,7 @@ import axios from "axios";
 
 
 
-const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
+const Post2 = ({ postData, handlePostClick, data }) => {
   const [timeAgo, setTimeAgo] = useState("");
   const [joinedStatus, setJoinedStatus] = useState(false);
   const [editToggled, setEditToggled] = useState(false);
@@ -20,6 +20,7 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
   const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
   useEffect(() => {
+    
     const createdAt = new Date(postData.createdAt);
     const currentTime = new Date();
     const timeDifference = currentTime - createdAt;
@@ -70,9 +71,6 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
       toast.error("User is not logged in.");
       return;
     }
-
-  
-
     try {
       const response = await axios({
         method: singlePost.isLiked === true ? "DELETE" : "POST",
@@ -84,13 +82,24 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
       });
 
       if (response.data.status === "success") {
-        toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");    
-        // setIsUpvoted(!alreadyUpvoted);
+        toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");
+        
+        // Adjust likeCount and dislikeCount
+        if (singlePost.isLiked) {
+            singlePost.likeCount -= 1; // Remove upvote
+        } else {
+            singlePost.likeCount += 1; // Add upvote
+            if (singlePost.isDisliked) {
+                singlePost.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
+            }
+        }
+        
+        // Toggle isLiked and isDisliked states
+        singlePost.isLiked = !singlePost.isLiked;
         setIsDownvoted(false);
+        
         fetchLikedPost();
-      
-
-      }
+    }
     } catch (error) {
       console.error("Upvote operation failed:", error);
      
@@ -104,7 +113,6 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
       return;
     }
 
-
     try {
       const response = await axios({
         method: singlePost.isDisliked === true ? "DELETE" : "POST",
@@ -117,11 +125,23 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
 
       if (response.data.status === "success") {
         toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
-
-        setIsDownvoted(true);
+        
+        // Adjust likeCount and dislikeCount
+        if (singlePost.isDisliked) {
+            singlePost.dislikeCount -= 1; // Remove downvote
+        } else {
+            singlePost.dislikeCount += 1; // Add downvote
+            if (singlePost.isLiked) {
+                singlePost.likeCount -= 1; // Remove upvote if switching from upvote to downvote
+            }
+        }
+        
+        // Toggle isDisliked and isLiked states
+        singlePost.isDisliked = !singlePost.isDisliked;
         setIsUpvoted(false);
-        fetchLikedPost()
-      }
+        
+        fetchLikedPost();
+    }
     } catch (error) {
       console.error("Downvote operation failed:", error);
   
@@ -417,7 +437,10 @@ const Post2 = ({ postData, handlePostClick, data, fetchPosts }) => {
                           </svg>
                         )}
                       </button>
-                      <span className="text-xs font-normal my-1">{data?singlePost.likeCount:postData.likeCount}</span>
+                      <span className="text-xs font-normal my-1">
+    {data ? singlePost.likeCount - singlePost.dislikeCount : postData.likeCount - postData.dislikeCount}
+</span>
+
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
                         {!singlePost.isDisliked ? (
                           <svg
