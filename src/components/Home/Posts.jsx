@@ -20,7 +20,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
   useEffect(() => {
-    
+
     const createdAt = new Date(postData.createdAt);
     const currentTime = new Date();
     const timeDifference = currentTime - createdAt;
@@ -83,26 +83,26 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
       if (response.data.status === "success") {
         toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");
-        
+
         // Adjust likeCount and dislikeCount
         if (singlePost.isLiked) {
-            singlePost.likeCount -= 1; // Remove upvote
+          singlePost.likeCount -= 1; // Remove upvote
         } else {
-            singlePost.likeCount += 1; // Add upvote
-            if (singlePost.isDisliked) {
-                singlePost.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
-            }
+          singlePost.likeCount += 1; // Add upvote
+          if (singlePost.isDisliked) {
+            singlePost.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
+          }
         }
-        
+
         // Toggle isLiked and isDisliked states
         singlePost.isLiked = !singlePost.isLiked;
         setIsDownvoted(false);
-        
+
         fetchLikedPost();
-    }
+      }
     } catch (error) {
       console.error("Upvote operation failed:", error);
-     
+
     }
   };
 
@@ -125,26 +125,26 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
       if (response.data.status === "success") {
         toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
-        
+
         // Adjust likeCount and dislikeCount
         if (singlePost.isDisliked) {
-            singlePost.dislikeCount -= 1; // Remove downvote
+          singlePost.dislikeCount -= 1; // Remove downvote
         } else {
-            singlePost.dislikeCount += 1; // Add downvote
-            if (singlePost.isLiked) {
-                singlePost.likeCount -= 1; // Remove upvote if switching from upvote to downvote
-            }
+          singlePost.dislikeCount += 1; // Add downvote
+          if (singlePost.isLiked) {
+            singlePost.likeCount -= 1; // Remove upvote if switching from upvote to downvote
+          }
         }
-        
+
         // Toggle isDisliked and isLiked states
         singlePost.isDisliked = !singlePost.isDisliked;
         setIsUpvoted(false);
-        
+
         fetchLikedPost();
-    }
+      }
     } catch (error) {
       console.error("Downvote operation failed:", error);
-  
+
     }
   };
 
@@ -411,7 +411,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                   <div className="inline-flex items-center my-1">
                     <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
                       <button className="text-xs" onClick={() => handleUpClick(postData._id)}>
-                        {!singlePost.isLiked? (
+                        {!singlePost.isLiked ? (
                           <svg
                             rpl=""
                             fill="currentColor"
@@ -438,8 +438,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                         )}
                       </button>
                       <span className="text-xs font-normal my-1">
-    {data ? singlePost.likeCount - singlePost.dislikeCount : postData.likeCount - postData.dislikeCount}
-</span>
+                        {data ? singlePost.likeCount - singlePost.dislikeCount : postData.likeCount - postData.dislikeCount}
+                      </span>
 
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
                         {!singlePost.isDisliked ? (

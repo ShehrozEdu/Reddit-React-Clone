@@ -48,8 +48,20 @@ export const ContextAPIProvider = ({ children }) => {
     setShowResults(false);
   };
   useEffect(() => {
+    // Check if 'darkMode' is in localStorage when component mounts
+    const savedMode = JSON.parse(localStorage.getItem('darkMode'));
+    if (savedMode !== null) {
+        setDarkMode(savedMode);
+    }
+}, []);
+
+useEffect(() => {
+    // Save the current mode in localStorage
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+
+    // Toggle the class based on the mode
     document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
+}, [darkMode]);
 
   const data = JSON.parse(localStorage.getItem("userData"));
 

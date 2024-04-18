@@ -92,7 +92,7 @@ const PostDetails = ({ posts }) => {
       console.error("Error:", error);
     }
   };
-  
+
   // handlePostDetails: Fetches details of a specific post based on the provided post ID. Sends a GET request to the server and updates state with retrieved post data.
   const handlePostDetails = async () => {
     if (!checkUserLoggedIn()) {
@@ -177,7 +177,7 @@ const PostDetails = ({ posts }) => {
       });
 
       if (response.data.status === "success") {
-        toast.success(post.isLiked ? "Upvote removed" : "Upvoted");    
+        toast.success(n  .isLiked ? "Upvote removed" : "Upvoted");    
         // setIsUpvoted(!alreadyUpvoted);
         handlePostDetails();
       

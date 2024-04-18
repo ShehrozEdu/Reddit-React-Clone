@@ -130,7 +130,7 @@ const ProfileOverview = () => {
           <div className='p-3'>
             <h3 className='font-bold py-2'>{data.name}</h3>
 
-            <div className={`cursor-pointer bg-[#E2E7E9] rounded-3xl p-2 w-24 flex items-center font-medium cursor-pointer`} onClick={handleClickToast}>
+            <div className={` bg-[#E2E7E9] rounded-3xl p-2 w-24 flex items-center font-medium cursor-pointer`} onClick={handleClickToast}>
               <span className='mr-2'><img src="/images/svgs/share-arrow.svg" alt="" /></span>Share
             </div>
             <div className="grid grid-cols-2 gap-4 py-5">

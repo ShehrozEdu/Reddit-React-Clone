@@ -91,7 +91,7 @@ const AuthorProfile = ({ posts }) => {
                                 <div className='flex flex-col'>
                                     {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
                                     <div className='dark:text-white'>{item.content}</div>
-                                    <div><img src={item.images[0]} alt="postImg" /></div>
+                                    {item.images.length>=1&&<div><img src={item.images[0]} alt="postImg" /></div>}
 
                                 </div>
 

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MenuButtons from '../components/Home/MenuButtons';
-import Posts from '../components/Home/Posts';
 import { ContextAPIContext } from '../components/Context/ContextAPIContext ';
 import axios from 'axios';
 import moment from 'moment';
@@ -14,6 +13,7 @@ const CommunityPageDetails = () => {
     const { commId, darkMode,handleCommunityDetails, handleClickToast, data,commNameFetch } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+    const navigate=useNavigate();
   const commParams = useParams();
 //   console.log("params",commParams)
   const fetchChannelData = async () => {
@@ -99,7 +99,15 @@ useEffect(() => {
         setIsDownvoted(!isDownvoted);
         setIsUpvoted(false);
       };
- 
+      const handleNavigation = () => {
+        // Pass the channel ID and name in the state object of the navigate function
+        navigate("/submit", {
+            state: {
+                channelID: channelData?._id,
+                channelName: channelData?.name,
+            },
+        });
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
@@ -116,7 +124,7 @@ useEffect(() => {
                             <h1 className='flex items-center font-bold text-32 mb-0 mt-14 dark:text-white'>r/{channelData?.name}</h1>
                         </div>
                         <div className='flex p-2 justify-around w-96'>
-                            <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-3xl  p-3 cursor-pointer border border-black dark:border-white" onClick={handleClickToast}>
+                            <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-3xl  p-3 cursor-pointer border border-black dark:border-white" onClick={handleNavigation}>
                                 <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"}`} alt="" /> <span className="text-black dark:text-white ml-2 font-medium" > Create a Post</span>
                             </div>
                             <div className='rounded-full w-12 h-12 hover:bg-gray-200 border border-black flex items-center justify-center dark:border-white'>
