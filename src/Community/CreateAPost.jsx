@@ -102,9 +102,9 @@ const CreateAPost = () => {
             console.log(data)
             toast.success("Post created Successfully!");
             setSelectedItem("New");
-            // setTimeout(() => {
-            //     location.href = "/";
-            // }, 3000);
+            setTimeout(() => {
+                location.href = "/";
+            }, 2000);
         } catch (error) {
             console.error("Error creating post:", error);
         }
