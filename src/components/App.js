@@ -26,7 +26,7 @@ function App() {
   }, []);
 
   return (
-    <div className= {`${darkMode ? 'bg-[#0B1416]' : ''}`}>
+    <div className= {`${darkMode ? 'bg-[#0B1416]' : "bg-white"}`}>
       {!isMobile && <Header />}
      {isMobile&& <ResponsiveHeader/>}
       <div className="flex relative">

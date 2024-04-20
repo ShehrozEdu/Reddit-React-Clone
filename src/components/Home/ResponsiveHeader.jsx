@@ -281,9 +281,10 @@ const handleTogglePop = (event) => {
                         />
                         {searchResults && showResults && (
                             <div className="absolute top-28 z-10">
-                                <Card className="w-[26rem]">
+                                <Card className="xl:w-[26rem] lg:w-[26rem] w-[19.5rem]">
                                     <List className="overflow-y-scroll max-h-96">
                                         {searchResults.map((item, idx) => (
+                                           <>
                                             <ListItem
                                                 ripple={false}
                                                 className="py-1 pr-1 text-black"
@@ -292,7 +293,7 @@ const handleTogglePop = (event) => {
                                             >
                                                 <div className="flex">
                                                     <div className="flex flex-col justify-start">
-                                                        <Typography variant="small">Heading</Typography>
+                                                       
                                                         <Typography
                                                             variant="small"
                                                             color="black"
@@ -319,6 +320,8 @@ const handleTogglePop = (event) => {
 
                                                 </ListItemSuffix>
                                             </ListItem>
+                                            <hr />
+                                            </>
                                         ))}
                                     </List>
                                 </Card>

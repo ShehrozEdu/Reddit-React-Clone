@@ -10,7 +10,7 @@ const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { commId, darkMode,handleCommunityDetails, handleClickToast, data,commNameFetch } = useContext(ContextAPIContext);
+    const { commId, darkMode,handleCommunityDetails, handleClickToast, data,isMobile } = useContext(ContextAPIContext);
     const [isJoined, setIsJoined] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
     const navigate=useNavigate();
@@ -123,7 +123,7 @@ useEffect(() => {
                             <img src={channelData?.owner?.profileImage || "https://www.redditstatic.com/avatars/avatar_default_02_A06A42.png"} className="rounded-full w-[88px] h-[88px] " alt="" />
                             <h1 className='flex items-center font-bold text-32 mb-0 mt-14 dark:text-white'>r/{channelData?.name}</h1>
                         </div>
-                        <div className='flex p-2 justify-around w-96'>
+                        <div className='flex p-2 justify-around xl:w-96 lg:w-96 w-[20rem]'>
                             <div className=" flex items-center hover:bg-gray-200 dark:hover:bg-gray-600 rounded-3xl  p-3 cursor-pointer border border-black dark:border-white" onClick={handleNavigation}>
                                 <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"}`} alt="" /> <span className="text-black dark:text-white ml-2 font-medium" > Create a Post</span>
                             </div>
@@ -163,11 +163,14 @@ useEffect(() => {
                                             <a href="#" className="text-grey mx-1 no-underline hover:underline dark:text-white">
                                                 {channelData.owner?.name}
                                             </a>
-                                            <span className="text-grey dark:text-white">
+                                           {!isMobile? <span className="text-grey dark:text-white">
                                                 {moment(channelData.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
-                                            </span>
+                                            </span>:""}
 
                                         </div>
+                                       {isMobile && <div><span className="text-grey dark:text-white text-xs">
+                                                {moment(channelData.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                                            </span></div>}
                                         <div className="flex flex-col">
                                             <h2 className="text-lg font-normal mb-1 dark:text-white">{channelData?.description}</h2>
 
