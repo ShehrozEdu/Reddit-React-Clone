@@ -19,77 +19,70 @@ import { toast } from "react-toastify";
     const maxCharacters = 21;
     const [checked, setChecked] = useState(false);
     const [imageFiles, setImageFiles] = useState(null);
-
-   
-    const handleChangeInput = (e) => {
-      // const inputText = e.target.value;
-      // if (inputText.length <= maxCharacters && inputText.startsWith("r/")) {
-      //   setCommunityName(inputText);
-      // }
-      setCommunityName(e.target.value)
-    };
-
-    const handleInputFocus = () => {
-      setInputFocused(true);
-    };
-
-    const handleInputBlur = () => {
-      setInputFocused(false);
-    };
-
-  
     const [open, setOpen] = React.useState(false);
+// Toggle open state
+const handleOpen = () => setOpen(!open);
 
-    const handleOpen = () => setOpen(!open);
+// Handle input change
+const handleChangeInput = (e) => {
+  setCommunityName(e.target.value);
+};
 
-    const handleCreateCommunity = async (event) => {
-      event.preventDefault(); 
-    
-      const formDataObject = new FormData();
-      // formDataObject.append('title', communityName);
-      formDataObject.append('content', 'postContent');
-      formDataObject.append('name', communityName);
-    
-      try {
-        // const imageData = document.getElementById('images').files[0];
-        formDataObject.append('images', "/images/svgs/defaultProfile.svg");
-    
-        const token = localStorage.getItem("token");
-        
-        if (!token) {
-          
-          toast.error("User is not logged in.");
-          return;
-        }
-        
-        const response = await fetch(
-          "https://academics.newtonschool.co/api/v1/reddit/channel/",
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'projectId': 't0v7xsdvt1j1',
-            },
-            body: formDataObject,
-          }
-        );
-    
-        const data = await response.json();
-        console.log("Community created successfully:", data);
-        if(data.status==="success"){
+// Handle input focus
+const handleInputFocus = () => {
+  setInputFocused(true);
+};
 
-          toast.success(`${data.data.name} has been created successfully!`)
-        }else{
-          toast.error(`Channel with this name already exists`)
+// Handle input blur
+const handleInputBlur = () => {
+  setInputFocused(false);
+};
 
-        }
-        setTimeout(() => {
-         location.href="/" 
-        }, 2000);
-      } catch (error) {
-        console.error("Error creating community:", error);
+// Create community
+const handleCreateCommunity = async (event) => {
+  event.preventDefault();
+
+  const formDataObject = new FormData();
+  formDataObject.append('content', 'postContent');
+  formDataObject.append('name', communityName);
+
+  try {
+    formDataObject.append('images', "/images/svgs/defaultProfile.svg");
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
+
+    const response = await fetch(
+      "https://academics.newtonschool.co/api/v1/reddit/channel/",
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'projectId': 't0v7xsdvt1j1',
+        },
+        body: formDataObject,
       }
-    };
+    );
+
+    const data = await response.json();
+    console.log("Community created successfully:", data);
+    if (data.status === "success") {
+      toast.success(`${data.data.name} has been created successfully!`)
+    } else {
+      toast.error(`Channel with this name already exists`)
+    }
+    setTimeout(() => {
+      location.href = "/"
+    }, 2000);
+  } catch (error) {
+    console.error("Error creating community:", error);
+  }
+};
+
     
     return (
       <>

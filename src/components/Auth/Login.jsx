@@ -14,22 +14,31 @@ import "react-toastify/dist/ReactToastify.css";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 
 const Login = ({ navigate }) => {
-  const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-  const { isSignIn, setIsSignIn, handleClickToast } =
+// State variables
+const [open, setOpen] = useState(false);
+const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  password: "",
+});
+
+// Context
+const { isSignIn, setIsSignIn, handleClickToast } =
   useContext(ContextAPIContext);
+
+// Toggle open state
 const handleOpen = () => setOpen((cur) => !cur);
+
+// Toggle sign-in/signup component
 const toggleComponent = () => setIsSignIn((prev) => !prev);
 
+// Check if email is valid
 const isEmailValid = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
+// Handle form input change
 const handleChange = (e) => {
   const { name, value } = e.target;
   setFormData((prevData) => ({
@@ -38,43 +47,56 @@ const handleChange = (e) => {
   }));
 };
 
+// Handle form submission
 const handleSubmit = async () => {
+  // Determine API URL based on sign-in/signup mode
   const apiUrl = isSignIn
     ? "https://academics.newtonschool.co/api/v1/user/login"
     : "https://academics.newtonschool.co/api/v1/user/signup";
 
+  // Headers for API request
   const headers = {
     "Content-Type": "application/json",
     projectID: "yourProjectID",
   };
 
-  let body;
+  let body; // Initialize request body
+
+  // If signing in
   if (isSignIn) {
+    // Check if email and password are provided
     if (!formData.email || !formData.password) {
       toast.error("Email and password are required.");
       return;
     }
+    // Check if email is valid
     if (!isEmailValid(formData.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
+    // Construct request body
     body = {
       email: formData.email,
       password: formData.password,
       appType: "reddit",
     };
-  } else {
+  } else { // If signing up
+    // Check if name, email, and password are provided
     if (!formData.name || !formData.email || !formData.password) {
       toast.error("Name, email, and password are required.");
       return;
     }
-    if ((formData.password).length <= 8) {
+    // Check if password meets length requirement
+    if (formData.password.length <= 8) {
       toast.error("Password length should be more than 8.");
-      return;}
+      return;
+    }
+    // Check if email is valid
     if (!isEmailValid(formData.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
+    // Construct request body
     body = {
       name: formData.name,
       email: formData.email,
@@ -84,13 +106,14 @@ const handleSubmit = async () => {
   }
 
   try {
+    // Make API request
     const response = await fetch(apiUrl, {
       method: "POST",
       headers,
       body: JSON.stringify(body),
     });
 
-
+    // Handle non-OK response
     if (!response.ok) {
       if (isSignIn) {
         toast.error("Username or Password is wrong");
@@ -100,9 +123,13 @@ const handleSubmit = async () => {
       return;
     }
 
+    // Parse response data
     const responseData = await response.json();
+
+    // Store token in local storage
     localStorage.setItem("token", responseData.token);
 
+    // Store user data in local storage based on sign-in/signup mode
     if (isSignIn) {
       localStorage.setItem("userData", JSON.stringify(responseData.data));
     } else {
@@ -111,11 +138,15 @@ const handleSubmit = async () => {
         JSON.stringify(responseData.data.user)
       );
     }
+
+    // Show success toast message
     if (isSignIn) {
       toast.success("Signed In, Welcome");
     } else {
       toast.success("Signup completed, redirecting to home");
     }
+
+    // Redirect to home page and reload the page after 2 seconds
     setTimeout(() => {
       navigate("/");
       handleOpen();
@@ -125,6 +156,8 @@ const handleSubmit = async () => {
     console.error("API request error:", error.message);
   }
 };
+
+
 
 
   return (

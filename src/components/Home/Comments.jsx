@@ -22,7 +22,7 @@ const Comments = ({ postId }) => {
   //     [commentId]: !prevState[commentId],
   //   }));
   // };
-
+// Fetch comments for a specific post
   const fetchComments = async () => {
     try {
       const response = await axios.get(
@@ -38,10 +38,12 @@ const Comments = ({ postId }) => {
       console.log(error);
     }
   };
+  // Fetch comments when postId changes
   useEffect(() => {
     fetchComments();
 
   }, [postId]);
+  // Delete a comment
   const deleteComment = async (commentId) => {
     const token = localStorage.getItem("token");
 
