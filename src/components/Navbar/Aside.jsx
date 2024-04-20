@@ -33,57 +33,59 @@ const Aside = () => {
   const [width, setWidth] = useState("75%");
   const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,handleCommNav, setIsAsideOpen,handleCommunityDetails,handleAsideToggle } = useContext(ContextAPIContext);
 
-  const location = useLocation();
+  // Adjusts width based on current location path
+useEffect(() => {
+  if (location.pathname === "/submit") {
+    setWidth("100%");
+  } else {
+    setWidth("75%");
+  }
+}, [location.pathname]);
 
-  useEffect(() => {
-    if (location.pathname === "/submit") {
-      setWidth("100%");
-    } else {
-      setWidth("75%");
-    }
-  }, [location.pathname]);
+// Toggles main navigation menu
+const handleOpen = (value) => {
+  setOpen(open === value ? 0 : value);
+  if (open !== value) {
+    setSubOpen(0);
+  }
+};
 
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
-    if (open !== value) {
-      setSubOpen(0);
-    }
+// Toggles sub navigation menu
+const handleSubOpen = (value) => {
+  setSubOpen(subOpen === value ? 0 : value);
+};
+
+// Navigates to the specified route
+const navigate = useNavigate();
+
+// Retrieves recent communities from session storage
+useEffect(() => {
+  const storedCommunities = sessionStorage.getItem("recentCommunities");
+  if (storedCommunities) {
+    setRecentCommunities(JSON.parse(storedCommunities));
+  }
+}, []);
+
+// Detects whether the device is mobile
+const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
   };
 
-  const handleSubOpen = (value) => {
-    setSubOpen(subOpen === value ? 0 : value);
+  handleResize();
+
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
   };
-  useEffect(() => {
-    // console.log(clickedButton);
-  }, [clickedButton]);
-  // console.log(popularCommunityChannel)
-  const navigate = useNavigate();
-  useEffect(() => {
-    const storedCommunities = sessionStorage.getItem("recentCommunities");
-    if (storedCommunities) {
-      setRecentCommunities(JSON.parse(storedCommunities));
-    }
-  }, []);
+}, []);
 
-  const [isMobile, setIsMobile] = useState(false);
+// Retrieves user info from local storage
+const userinfo = localStorage.getItem("userData");
 
-  useEffect(() => {
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    handleResize();
-
-
-    window.addEventListener('resize', handleResize);
-
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  const userinfo = localStorage.getItem("userData");
  
   return (
 

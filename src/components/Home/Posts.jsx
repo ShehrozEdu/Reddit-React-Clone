@@ -9,6 +9,7 @@ import axios from "axios";
 
 
 const Post2 = ({ postData, handlePostClick, data }) => {
+  const navigate = useNavigate();
   const [timeAgo, setTimeAgo] = useState("");
   const [joinedStatus, setJoinedStatus] = useState(false);
   const [editToggled, setEditToggled] = useState(false);
@@ -19,6 +20,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [singlePost, setSinglePost] = useState([])
   const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
+  //Calculates the time difference between the current time and the creation time of a post to display how long ago it was posted.
   useEffect(() => {
 
     const createdAt = new Date(postData.createdAt);
@@ -38,7 +40,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     setTimeAgo(timeAgoString);
   }, [postData.createdAt]);
 
-
+//Fetches details of a post, including whether the current user has upvoted or downvoted it.
   const fetchLikedPost = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -64,7 +66,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   useEffect(() => {
     fetchLikedPost();
   }, [])
-
+// handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -105,7 +107,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
     }
   };
-
+// handleDownClick: Allows a user to downvote a post. Toggles downvote status and sends appropriate request (POST/DELETE) to server.
   const handleDownClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -148,7 +150,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     }
   };
 
-
+//Deletes a post from the server.
   const deletePost = async (postId) => {
     try {
       // console.log(postId)
@@ -178,7 +180,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
 
 
-
+  // Toggles follow/unfollow status of a user in a community.
   const toggleFollow = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -224,21 +226,18 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       }
     }
   }
-
+  // Retrieves and sets the follow status from/to local storage.
   useEffect(() => {
     const status = localStorage.getItem('joinedStatus');
     if (status) {
       setJoinedStatus(status === 'true');
     }
   }, []);
-
+  // Updates local storage with the follow status.
   useEffect(() => {
     localStorage.setItem('joinedStatus', joinedStatus);
   }, [joinedStatus]);
-  // console.log("before",newImagesData)
-
-
-
+//Submits edited post data to the server.
   const handleEditPostSubmit = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -283,18 +282,16 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       console.error("Error editing post:", error);
     }
   }
-
-
-
+  //Toggles the state of post edit mode.
   const handleEditToggle = (curr) => {
     setEditToggled(!curr);
   };
+  //Navigates to the details page of a community.
   const handleCommunityDetails = (id) => {
     setCommId(id);
     // addToLocalStorage(item);
     navigate(`/community/${id}`)
   }
-  const navigate = useNavigate();
   return (
     <>
       {postData.author.name != "ash" && (

@@ -25,6 +25,7 @@ const CreateAPost = () => {
     const [popularCommunityChannel, setPopularCommunityChannel] = useState([]);
     const [isCommunitySelected, setIsCommunitySelected] = useState(false);
 
+    // Fetch popular community channels
     useEffect(() => {
         const fetchPopularCommunity = async () => {
             try {
@@ -44,7 +45,7 @@ const CreateAPost = () => {
         fetchPopularCommunity();
     }, []);
 
-
+    // Handle community change
     const handleCommunityChange = (e) => {
         const value = e.target.value;
         setSelectedOption(value);
@@ -57,6 +58,8 @@ const CreateAPost = () => {
             setSelectedChannelID(null);
         }
     }
+
+    // Handle post submission
     const handlePostSubmit = async () => {
         const token = localStorage.getItem("token");
         try {
@@ -106,8 +109,7 @@ const CreateAPost = () => {
         }
     };
 
-
-
+    // Data for tabs
     const dataTab = [
         {
             label: "Post",
@@ -129,7 +131,6 @@ const CreateAPost = () => {
                     <button
                         onClick={handlePostSubmit}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-                        
                     >
                         Submit
                     </button>
@@ -156,7 +157,6 @@ const CreateAPost = () => {
                     <button
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
                         onClick={handlePostSubmit}
-                     
                     >
                         Submit
                     </button>
@@ -178,35 +178,13 @@ const CreateAPost = () => {
                     <button
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
                         onClick={handlePostSubmit}
-                      
                     >
                         Submit
                     </button>
                 </div>
             )
         },
-        {
-            label: "Poll",
-            value: "poll",
-            render: (
-                <div>
-                    <input
-                        type="text"
-                        value={linkData}
-                        onChange={(e) => setLinkData(e.target.value)}
-                        placeholder="Enter link URL..."
-                        className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                    />
-                    <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-                        onClick={handlePostSubmit}
-                      
-                    >
-                        Submit
-                    </button>
-                </div>
-            )
-        },
+
     ];
 
     return (

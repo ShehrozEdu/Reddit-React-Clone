@@ -54,66 +54,73 @@ const Header = () => {
   const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast,handlePostClick } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
-  const throttledFilterData = useThrottle(filterData, 500);
+// Throttles filterData function to limit its execution rate
+const throttledFilterData = useThrottle(filterData, 500);
 
-  function filterData() {
-    const filteredResults = posts.filter(
-      (item) =>
-        item?.content &&
-        item?.content.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setSearchResults(filteredResults);
+// Filters posts based on search query and sets search results
+function filterData() {
+  const filteredResults = posts.filter(
+    (item) =>
+      item?.content &&
+      item?.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  setSearchResults(filteredResults);
+}
+
+// Closes search results when clicked outside
+useEffect(() => {
+  if (showResults) {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }
+}, [showResults]);
 
-  useEffect(() => {
-    if (showResults) {
-      const handleClickOutside = (event) => {
-        if (searchRef.current && !searchRef.current.contains(event.target)) {
-          setShowResults(false);
-        }
-      };
+// Throttles filterData function whenever searchQuery changes
+useEffect(() => {
+  throttledFilterData();
+}, [searchQuery, throttledFilterData]);
 
-      document.addEventListener("mousedown", handleClickOutside);
+// Logs out user by removing user data and token from local storage
+const handleLogout = () => {
+  localStorage.removeItem("userData");
+  localStorage.removeItem("token");
+  window.location.href = "/";
+};
 
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
-  }, [showResults]);
+// Toggles state of open
+const [open, setOpen] = React.useState(false);
+const handleOpen = () => setOpen(!open);
 
-  useEffect(() => {
-    throttledFilterData();
-  }, [searchQuery, throttledFilterData]);
- 
+// Toggles state of isChecked
+const [isChecked, setIsChecked] = useState(false);
+const handleCheckboxChange = () => {
+  setIsChecked(!isChecked);
+};
 
-  // console.log(data)
-  const handleLogout = () => {
-    localStorage.removeItem("userData");
-    localStorage.removeItem("token");
-    window.location.href = "/";
-  };
-  const [open, setOpen] = React.useState(false);
+// Manages popover state and anchor element
+const [openPop, setOpenPop] = useState(false);
+const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpen = () => setOpen(!open);
-  const [isChecked, setIsChecked] = useState(false);
+const handleTogglePop = (event) => {
+  if (openPop) {
+    // Close the popover
+    setOpenPop(false);
+  } else {
+    // Open the popover
+    setAnchorEl(event.currentTarget);
+    setOpenPop(true);
+  }
+};
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
-
-  const [openPop, setOpenPop] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleTogglePop = (event) => {
-    if (openPop) {
-      // Close the popover
-      setOpenPop(false);
-    } else {
-      // Open the popover
-      setAnchorEl(event.currentTarget);
-      setOpenPop(true);
-    }
-  };
   return (
     <div className="sticky top-0 z-50">
       <Navbar

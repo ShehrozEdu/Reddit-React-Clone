@@ -7,84 +7,95 @@ import Login from "../Auth/Login"
 import { ContextAPIContext } from '../Context/ContextAPIContext ';
 
 const ResponsiveHeader = () => {
-    const{setDarkMode, darkMode,data,handleClickToast,handleAsideToggle,isAsideOpen} = useContext(ContextAPIContext)
-    const [showInput, setShowInput] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const navigate = useNavigate();
-    const [showResults, setShowResults] = useState(false);
-    const searchRef = useRef(null);
-  const [open, setOpen] = React.useState(false);
+    // Context API
+const { setDarkMode, darkMode, data, handleClickToast, handleAsideToggle, isAsideOpen } = useContext(ContextAPIContext);
 
-    const handleOpen = () => setOpen(!open);
-    useEffect(() => {
-        if (showResults) {
-            const handleClickOutside = (event) => {
-                if (searchRef.current && !searchRef.current.contains(event.target)) {
-                    setShowResults(false);
-                }
-            };
+// State variables
+const [showInput, setShowInput] = useState(false);
+const [searchQuery, setSearchQuery] = useState('');
+const [searchResults, setSearchResults] = useState([]);
+const [showResults, setShowResults] = useState(false);
+const [open, setOpen] = useState(false);
+const [openPop, setOpenPop] = useState(false);
+const [anchorEl, setAnchorEl] = useState(null);
 
-            document.addEventListener("mousedown", handleClickOutside);
+// Navigation
+const navigate = useNavigate();
 
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }
-    }, [showResults]);
+// Ref for search input
+const searchRef = useRef(null);
 
-    useEffect(() => {
-        if (showInput && searchQuery.trim() !== '') {
-            const delayDebounceFn = setTimeout(() => {
-                fetchSearchResults();
-            }, 300); // Throttle time: 300 milliseconds
-            return () => clearTimeout(delayDebounceFn);
-        }
-    }, [searchQuery, showInput]); // Include showInput in the dependency array
+// Toggle menu
+const handleOpen = () => setOpen(!open);
 
-    const fetchSearchResults = async () => {
-        try {
-            const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?search={"content":"${searchQuery}"}`, {
-                headers: {
-                    'projectId': "t0v7xsdvt1j1",
-                }
-            });
-            setSearchResults(response.data.data);
-            setShowResults(true);
+// Handle click outside search results
+useEffect(() => {
+    if (showResults) {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowResults(false);
+            }
+        };
 
-        } catch (error) {
-            console.error('Error fetching search results:', error);
-        }
+        document.addEventListener("mousedown", handleClickOutside);
 
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
     }
+}, [showResults]);
 
- 
-
-    const handleSearchIconClick = () => {
-        setShowInput(true);
-        // setShowResults(true); 
+// Fetch search results
+useEffect(() => {
+    if (showInput && searchQuery.trim() !== '') {
+        const delayDebounceFn = setTimeout(() => {
+            fetchSearchResults();
+        }, 300); // Throttle time: 300 milliseconds
+        return () => clearTimeout(delayDebounceFn);
     }
+}, [searchQuery, showInput]); // Include showInput in the dependency array
 
-    const handlePostClick = (postId) => {
-        navigate(`/post/${postId}`);
-        setSearchQuery("")
-        setShowResults(false);
-        setShowInput(false);
+const fetchSearchResults = async () => {
+    try {
+        const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?search={"content":"${searchQuery}"}`, {
+            headers: {
+                'projectId': "t0v7xsdvt1j1",
+            }
+        });
+        setSearchResults(response.data.data);
+        setShowResults(true);
 
-    };
-    const [openPop, setOpenPop] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-  
-    const handleTogglePop = (event) => {
-      if (openPop) {
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+    }
+}
+
+// Handle search icon click
+const handleSearchIconClick = () => {
+    setShowInput(true);
+    // setShowResults(true); 
+}
+
+// Handle post click
+const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`);
+    setSearchQuery("");
+    setShowResults(false);
+    setShowInput(false);
+};
+
+// Toggle popover
+const handleTogglePop = (event) => {
+    if (openPop) {
         // Close the popover
         setOpenPop(false);
-      } else {
+    } else {
         // Open the popover
         setAnchorEl(event.currentTarget);
         setOpenPop(true);
-      }
-    };
+    }
+};
+
     return (
         <div className=''>
             <div className='flex justify-between items-center py-3'>
