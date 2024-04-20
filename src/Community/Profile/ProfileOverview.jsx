@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ProfileOverview = () => {
+  const navigate=useNavigate()
   const [activeTab, setActiveTab] = useState('Overview');
   const { data,handleClickToast,darkMode,isMobile,handleResize } = useContext(ContextAPIContext);
 
@@ -78,7 +79,7 @@ const ProfileOverview = () => {
 
         </div>
         <div className=" flex items-center hover:bg-gray-200 rounded-3xl p-3 cursor-pointer border border-black dark:border-white w-40 mt-4" >
-        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Plus" /> <span className="text-black ml-2 font-medium dark:text-white"> Create a Post</span>
+        <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Plus" /> <span className="text-black ml-2 font-medium dark:text-white" onClick={()=>navigate("/submit")}> Create a Post</span>
         </div>
         <hr />
         {(!dataProf?.title || !dataProf?.content) ?
