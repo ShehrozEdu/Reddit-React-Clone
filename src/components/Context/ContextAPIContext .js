@@ -29,7 +29,7 @@ export const ContextAPIProvider = ({ children }) => {
   const [likeCountMaintain, setLikeCountMaintain] = useState(false);
   const [otherLike, setOtherLike] = useState([]);
   const [upvotes, setUpvotes] = useState({});
-  const [downvotes, setDownvotes] = useState({});
+const [downvotes, setDownvotes] = useState({});
   const [commNameFetch, setCommNameFetch] = useState([]);
   const navigate = useNavigate();
 

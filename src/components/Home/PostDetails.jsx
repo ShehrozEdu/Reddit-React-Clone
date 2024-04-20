@@ -163,9 +163,6 @@ const PostDetails = ({ posts }) => {
       toast.error("User is not logged in.");
       return;
     }
-
-  
-
     try {
       const response = await axios({
         method: post.isLiked === true ? "DELETE" : "POST",
@@ -177,46 +174,69 @@ const PostDetails = ({ posts }) => {
       });
 
       if (response.data.status === "success") {
-        toast.success(n  .isLiked ? "Upvote removed" : "Upvoted");    
-        // setIsUpvoted(!alreadyUpvoted);
-        handlePostDetails();
-      
+        toast.success(post.isLiked ? "Upvote removed" : "Upvoted");
 
+        // Adjust likeCount and dislikeCount
+        if (post.isLiked) {
+          post.likeCount -= 1; // Remove upvote
+        } else {
+          post.likeCount += 1; // Add upvote
+          if (post.isDisliked) {
+            post.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
+          }
+        }
+
+        // Toggle isLiked and isDisliked states
+        post.isLiked = !post.isLiked;
+
+        handlePostDetails();
       }
     } catch (error) {
       console.error("Upvote operation failed:", error);
-     
+
     }
   };
 // handleDownClick: Allows a user to downvote a post. Toggles downvote status and sends appropriate request (POST/DELETE) to server.
-  const handleDownClick = async (postId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("User is not logged in.");
-      return;
-    }
+const handleDownClick = async (postId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("User is not logged in.");
+    return;
+  }
 
+  try {
+    const response = await axios({
+      method: post.isDisliked === true ? "DELETE" : "POST",
+      url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        projectId: "t0v7xsdvt1j1",
+      },
+    });
 
-    try {
-      const response = await axios({
-        method: post.isDisliked === true ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
+    if (response.data.status === "success") {
+      toast.success(post.isDisliked ? "Downvote removed" : "Downvoted");
 
-      if (response.data.status === "success") {
-        toast.success(post.isDisliked ? "Downvote removed" : "Downvoted");
-
-        handlePostDetails();
+      // Adjust likeCount and dislikeCount
+      if (post.isDisliked) {
+        post.dislikeCount -= 1; // Remove downvote
+      } else {
+        post.dislikeCount += 1; // Add downvote
+        if (post.isLiked) {
+          post.likeCount -= 1; // Remove upvote if switching from upvote to downvote
+        }
       }
-    } catch (error) {
-      console.error("Downvote operation failed:", error);
-  
+
+      // Toggle isDisliked and isLiked states
+      post.isDisliked = !post.isDisliked;
+
+      handlePostDetails();
     }
-  };
+  } catch (error) {
+    console.error("Downvote operation failed:", error);
+
+  }
+};
   return (
     <>
       <div className="flex relative  ">
