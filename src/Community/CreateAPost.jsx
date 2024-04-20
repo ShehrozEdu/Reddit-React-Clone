@@ -71,10 +71,11 @@ const CreateAPost = () => {
                 toast.error("Please select a community before submitting");
                 return;
             }
-            if (!postTitle || !postData || !imageData) {
+            if (!postTitle || !postData ) {
                 toast.error("Please fill all the fields before submitting");
                 return;
             }
+           
 
             const formData = new FormData();
             formData.append('title', postTitle);
