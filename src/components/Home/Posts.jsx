@@ -399,7 +399,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
                     {postData.images.length > 0 ? (
                       <div>
-                        <div className="max-w-96">
+                        <div className="max-w-96 tablet-widthPost">
 
                           <img src={postData?.images[0]} alt="avatar" className="w-full" />
                         </div>

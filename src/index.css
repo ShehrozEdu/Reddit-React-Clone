@@ -770,3 +770,15 @@ _2WCbLB03wJFwv7fN2Dk2qt,
     width: 32rem;
   }
 }
+
+@media screen and (min-width: 760px) and (max-width: 1120px) {
+  .tablet-widthPost {
+    max-width: 47rem;
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1140px) {
+  .right-FLoatMidLap{
+    right:1rem !important;
+  }
+
+}
