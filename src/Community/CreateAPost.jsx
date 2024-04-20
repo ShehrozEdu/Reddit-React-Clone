@@ -189,86 +189,65 @@ const CreateAPost = () => {
                 </div>
             )
         },
-        {
-            label: "Poll",
-            value: "poll",
-            render: (
-                <div>
-                    <input
-                        type="text"
-                        value={linkData}
-                        onChange={(e) => setLinkData(e.target.value)}
-                        placeholder="Enter link URL..."
-                        className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                    />
-                    <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-                        onClick={handlePostSubmit}
-                      
-                    >
-                        Submit
-                    </button>
-                </div>
-            )
-        },
+    
     ];
 
     return (
-        <div className='w-[50vw] p-10 pl-40'>
-            <div className='font-medium flex justify-between pb-3'>
-                <p className='dark:text-white'>Create a Post</p>
-                <p className='uppercase text-xs text-blue-400'>Drafts</p>
-            </div>
-            <hr />
-            <div className='w-40 mt-5'>
-                <select
-                    className='bg-white dark:bg-black dark:text-white text-black p-3 rounded-xl'
-                    value={selectedOption}
-                    onChange={handleCommunityChange}
-                >
-                    <option value="">Choose a community</option>
-                    <option value={`u/${data.name}`}>u/{data.name}</option>
-                    {
-                        popularCommunityChannel
-                            .filter(channel => data._id === channel.owner._id)
-                            .map((channel, idx) => (
-                                <option key={idx} value={`r/${channel.name}`}>
-                                    r/{channel.name}
-                                </option>
-                            ))
-                    }
-                </select>
-            </div>
-
-            <div className={`border mt-5 ${darkMode ? "bg-[#0B1416]" : "bg-white "}rounded-xl`}>
-                <Tabs value={activeTab}>
-                    <TabsHeader
-                        className="rounded-none border-b border-blue-gray-50 bg-transparent pb-0 "
-                        indicatorProps={{
-                            className: "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none",
-                        }}
-                    >
-                        {dataTab.map(({ label, value }) => (
-                            <Tab
-                                key={value}
-                                value={value}
-                                onClick={() => setActiveTab(value)}
-                                className={`${activeTab === value ? "text-gray-900 border-r" : ""} dark:text-white`}
-                            >
-                                {label}
-                            </Tab>
-                        ))}
-                    </TabsHeader>
-                    <TabsBody>
-                        {dataTab.map(({ value, render }) => (
-                            <TabPanel key={value} value={value}>
-                                {render}
-                            </TabPanel>
-                        ))}
-                    </TabsBody>
-                </Tabs>
-            </div>
+        <div className='p-10'>
+        <div className='font-medium flex justify-between pb-3'>
+            <p className='dark:text-white'>Create a Post</p>
+            <p className='uppercase text-xs text-blue-400'>Drafts</p>
         </div>
+        <hr />
+        <div className='mt-5'>
+            <select
+                className='bg-white dark:bg-black dark:text-white text-black p-3 rounded-xl w-full sm:w-40'
+                value={selectedOption}
+                onChange={handleCommunityChange}
+            >
+                <option value="">Choose a community</option>
+                <option value={`u/${data.name}`}>u/{data.name}</option>
+                {
+                    popularCommunityChannel
+                        .filter(channel => data._id === channel.owner._id)
+                        .map((channel, idx) => (
+                            <option key={idx} value={`r/${channel.name}`}>
+                                r/{channel.name}
+                            </option>
+                        ))
+                }
+            </select>
+        </div>
+
+        <div className={`border mt-5 ${darkMode ? "bg-[#0B1416]" : "bg-white "}rounded-xl`}>
+            <Tabs value={activeTab}>
+                <TabsHeader
+                    className="rounded-none border-b border-blue-gray-50 bg-transparent pb-0 "
+                    indicatorProps={{
+                        className: "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none",
+                    }}
+                >
+                    {dataTab.map(({ label, value }) => (
+                        <Tab
+                            key={value}
+                            value={value}
+                            onClick={() => setActiveTab(value)}
+                            className={`${activeTab === value ? "text-gray-900 border-r" : ""} dark:text-white`}
+                        >
+                            {label}
+                        </Tab>
+                    ))}
+                </TabsHeader>
+                <TabsBody>
+                    {dataTab.map(({ value, render }) => (
+                        <TabPanel key={value} value={value}>
+                            {render}
+                        </TabPanel>
+                    ))}
+                </TabsBody>
+            </Tabs>
+        </div>
+    </div>
     );
 }
 
