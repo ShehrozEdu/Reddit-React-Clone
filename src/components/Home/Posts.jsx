@@ -52,12 +52,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       });
 
       setSinglePost(response.data.data);
-      if (response.data.data.isLiked) {
-        setIsUpvoted(true)
-
-
-      }
-      if (response.data.data.isDisliked) setIsDownvoted(true);
+     
+   
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -66,6 +62,9 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   useEffect(() => {
     fetchLikedPost();
   }, [])
+  // useEffect(() => {
+  //   fetchLikedPost();
+  // }, [data])
   // handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
@@ -436,7 +435,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                         )}
                       </button>
                       <span className="text-xs font-normal my-1">
-                        {data ? singlePost.likeCount - singlePost.dislikeCount : postData.likeCount - postData.dislikeCount}
+                        {singlePost.likeCount - singlePost.dislikeCount || postData.likeCount - postData.dislikeCount}
                       </span>
 
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
