@@ -116,7 +116,7 @@ const handleTogglePop = (event) => {
                   <PopoverHandler>
                   <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-threeDots.svg" : "/images/svgs/threeDots.svg"}`} alt="" className='mx-2 cursor-pointer' />
                   </PopoverHandler>
-                  <PopoverContent className={`${darkMode ? "bg-[#0B1416]" : ""}`}>
+                  <PopoverContent className={`${darkMode ? "bg-[#0B1416] z-[1000]" : "z-[1000]"}`}>
                     <List className={`my-2 p-0 `}>
                       <ListItem className="group rounded-none py-3 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black" onClick={() => { handleTogglePop(); navigate(`/user/${data?.name.toLowerCase()}/`) }}>
                         <ListItemPrefix>
