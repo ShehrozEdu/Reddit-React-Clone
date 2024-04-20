@@ -105,6 +105,8 @@ const handleTogglePop = (event) => {
                 </div>
                 <div className='flex items-center'>
                     <Button className=' p-3 clr-FF4500 rounded-2xl capitalize py-2 cursor-pointer' onClick={()=>{handleClickToast()}}>Use app</Button>
+                    <div className='mx-1' onClick={()=>navigate("/submit")}>
+                      <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"}`} alt="" /> </div>
                     <div onClick={handleSearchIconClick}><img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-search.svg" : "/images/svgs/search.svg"}`} alt="" className='mx-2 cursor-pointer' /></div>
                    {data? <div>
                     <Popover
@@ -113,6 +115,7 @@ const handleTogglePop = (event) => {
                   handler={handleTogglePop}
                   anchorEl={anchorEl}
                 >
+                  
                   <PopoverHandler>
                   <img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-threeDots.svg" : "/images/svgs/threeDots.svg"}`} alt="" className='mx-2 cursor-pointer' />
                   </PopoverHandler>
