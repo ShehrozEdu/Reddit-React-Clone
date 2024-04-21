@@ -237,6 +237,50 @@ const handleDownClick = async (postId) => {
 
   }
 };
+
+const getCategoryFromContent = (content) => {
+  const webDevelopmentKeywords = ["web", "development", "programming", "coding"];
+  const greetingsKeywords = ["hello", "hi", "hey", "greetings"];
+  const cookingKeywords = ["cooking", "recipe", "baking", "kitchen"];
+  const therapyKeywords = ["therapy", "mental health", "counseling", "psychology"];
+  const positivityKeywords = ["positivity", "self-care", "wellness", "mindfulness"];
+  const travelingKeywords = ["travel", "exploring", "adventure", "destination"];
+  const readingKeywords = ["reading", "book", "novel", "literature"];
+
+  const lowerContent = content?.toLowerCase();
+  
+  if (webDevelopmentKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Web Development";
+  }
+
+  if (greetingsKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Greetings";
+  }
+
+  if (cookingKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Cooking";
+  }
+
+  if (therapyKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Therapy";
+  }
+
+  if (positivityKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Positivity/Self-care";
+  }
+
+  if (travelingKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Traveling";
+  }
+
+  if (readingKeywords.some(keyword => lowerContent?.includes(keyword))) {
+      return "Reading Books";
+  }
+
+  return "Other";
+};
+const category = getCategoryFromContent(post.content|| post.title);
+
   return (
     <>
       <div className="flex relative  h-screen">
@@ -268,8 +312,8 @@ const handleDownClick = async (postId) => {
                 ? post.content.slice(0, 16) + "..."
                 : post.content)}
           </p>
-          <p className="text-xs text-black-300 mt-2 bg-yellow-500 rounded-xl w-32 py-1 font-bold p-2">
-            Foreign Relations
+          <p className="text-xs text-black-300 mt-2 bg-yellow-500 rounded-xl max-w-32 py-1 font-bold p-2">
+           {category}
           </p>
           <div className="flex flex-col xl:w-[75%] lg:w-[75%] w-[100%]"> 
                    <p className="text-black my-5 dark:text-white">{(post?.content) ? (post?.content) : (post?.title)}</p>

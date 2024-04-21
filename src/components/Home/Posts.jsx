@@ -9,7 +9,6 @@ import axios from "axios";
 
 
 const Post2 = ({ postData, handlePostClick, data }) => {
-  const navigate = useNavigate();
   const [timeAgo, setTimeAgo] = useState("");
   const [joinedStatus, setJoinedStatus] = useState(false);
   const [editToggled, setEditToggled] = useState(false);
@@ -18,9 +17,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
   const { setIsUpvoted, setIsDownvoted, setCommId } = useContext(ContextAPIContext)
   const [singlePost, setSinglePost] = useState([])
-  const { darkMode, handleClickToast, isMobile } = useContext(ContextAPIContext);
+  const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
-  //Calculates the time difference between the current time and the creation time of a post to display how long ago it was posted.
   useEffect(() => {
 
     const createdAt = new Date(postData.createdAt);
@@ -40,7 +38,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     setTimeAgo(timeAgoString);
   }, [postData.createdAt]);
 
-  //Fetches details of a post, including whether the current user has upvoted or downvoted it.
+
   const fetchLikedPost = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -52,8 +50,12 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       });
 
       setSinglePost(response.data.data);
-     
-   
+      if (response.data.data.isLiked) {
+        setIsUpvoted(true)
+
+
+      }
+      if (response.data.data.isDisliked) setIsDownvoted(true);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -62,10 +64,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   useEffect(() => {
     fetchLikedPost();
   }, [])
-  // useEffect(() => {
-  //   fetchLikedPost();
-  // }, [data])
-  // handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
+
   const handleUpClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -106,7 +105,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
     }
   };
-  // handleDownClick: Allows a user to downvote a post. Toggles downvote status and sends appropriate request (POST/DELETE) to server.
+
   const handleDownClick = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -149,7 +148,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     }
   };
 
-  //Deletes a post from the server.
+
   const deletePost = async (postId) => {
     try {
       // console.log(postId)
@@ -179,7 +178,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
 
 
-  // Toggles follow/unfollow status of a user in a community.
+
   const toggleFollow = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -225,18 +224,21 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       }
     }
   }
-  // Retrieves and sets the follow status from/to local storage.
+
   useEffect(() => {
     const status = localStorage.getItem('joinedStatus');
     if (status) {
       setJoinedStatus(status === 'true');
     }
   }, []);
-  // Updates local storage with the follow status.
+
   useEffect(() => {
     localStorage.setItem('joinedStatus', joinedStatus);
   }, [joinedStatus]);
-  //Submits edited post data to the server.
+  // console.log("before",newImagesData)
+
+
+
   const handleEditPostSubmit = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -281,28 +283,31 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       console.error("Error editing post:", error);
     }
   }
-  //Toggles the state of post edit mode.
+
+
+
   const handleEditToggle = (curr) => {
     setEditToggled(!curr);
   };
-  //Navigates to the details page of a community.
   const handleCommunityDetails = (id) => {
     setCommId(id);
     // addToLocalStorage(item);
     navigate(`/community/${id}`)
   }
+  const navigate = useNavigate();
   return (
     <>
       {postData.author.name != "ash" && (
 
         <>
           <div className="py-2">
-            <div className={`xl:w-10/12 lg:w-10/12 w-full hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
+            <div className={`w-10/12 hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
               <hr />
               <div className="pt-2">
                 <div className="flex items-center text-xs mb-2 justify-between">
                   <div className="flex items-center">
                     <a
+
                       className="font-semibold no-underline hover:underline text-black flex items-center"
                     >
                       <img
@@ -318,10 +323,10 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                     <span className="text-grey-light mx-1 text-xxs dark:text-white">•</span>
                     <span className="text-grey dark:text-white">Posted by</span>
                     <a className="text-grey mx-1 no-underline hover:underline dark:text-white" onClick={() => navigate(`/users/${(postData.author?.name)}/`)}>
-                      {(postData.author?.name.split(' ')[0])}
-                    </a>
 
-                    {!isMobile && <span className="text-grey dark:text-white ml-2">{timeAgo}</span>}
+                      {(postData.author?.name)}
+                    </a>
+                    <span className="text-grey dark:text-white ml-2">{timeAgo}</span>
                   </div>
 
                   <div className="flex items-center">
@@ -376,35 +381,33 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
                   </div>
                 </div>
-                {!editToggled ? <>
-                  {isMobile && <span className="text-grey dark:text-white flex justify-between text-xs mt-0">{timeAgo}</span>}
-                  <div className="flex flex-col" onClick={() => {
-                    if (localStorage.getItem('token')) {
-                      handlePostClick(postData._id)
-                    } else {
-                      toast.error("Login please")
-                    }
-                  }}>
-                    <h2 className={`text-lg font-normal mb-1 dark:text-white ${postData.title ? "font-semibold" : ""}`}>
-                      {postData?.title || (postData.content && postData.content.length > 150
-                        ? postData.content.slice(0, 150) + "..."
-                        : postData.content)}
-                    </h2>
-                    <h2 className="text-lg font-normal mb-1 dark:text-white">
-                      {postData?.title && (postData.content && postData.content.length > 150
-                        ? postData.content.slice(0, 150) + "..."
-                        : postData.content)}
-                    </h2>
+                {!editToggled ? <> <div className="flex flex-col" onClick={() => {
+                  if (localStorage.getItem('token')) {
+                    handlePostClick(postData._id)
+                  } else {
+                    toast.error("Login please")
+                  }
+                }}>
+                  <h2 className={`text-lg font-normal mb-1 dark:text-white ${postData.title ? "font-semibold" : ""}`}>
+                    {postData?.title || (postData.content && postData.content.length > 150
+                      ? postData.content.slice(0, 150) + "..."
+                      : postData.content)}
+                  </h2>
+                  <h2 className="text-lg font-normal mb-1 dark:text-white">
+                    {postData?.title && (postData.content && postData.content.length > 150
+                      ? postData.content.slice(0, 150) + "..."
+                      : postData.content)}
+                  </h2>
 
-                    {postData.images.length > 0 ? (
-                      <div>
-                        <div className="max-w-96 tablet-widthPost">
+                  {postData.images.length > 0 ? (
+                    <div>
+                      <div className="max-w-96">
 
-                          <img src={postData?.images[0]} alt="avatar" className="w-full" />
-                        </div>
-                      </div>) : ""
-                    }
-                  </div>
+                        <img src={postData?.images[0]} alt="avatar" className="w-full" />
+                      </div>
+                    </div>) : ""
+                  }
+                </div>
                   <div className="inline-flex items-center my-1">
                     <div className="flex justify-between hover:bg-grey-lighter p-2 bg-gray-300 rounded-xl items-center">
                       <button className="text-xs" onClick={() => handleUpClick(postData._id)}>
@@ -435,8 +438,9 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                         )}
                       </button>
                       <span className="text-xs font-normal my-1">
-                        {singlePost.likeCount - singlePost.dislikeCount || postData.likeCount - postData.dislikeCount}
+                        {data ? [singlePost.likeCount, singlePost.dislikeCount].reduce((a, b) => a - b) : [postData.likeCount, postData.dislikeCount].reduce((a, b) => a - b)}
                       </span>
+
 
                       <button className="text-xs" onClick={() => handleDownClick(postData._id)}>
                         {!singlePost.isDisliked ? (
@@ -502,7 +506,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                       <span className="ml-2 text-xs font-normal text-grey">Share</span>
                     </div>
                   </div></> : <>
-                  <div className="xl:w-10/12 lg:w-10/12 w-72">
+                  <div>
                     <Input type="text" placeholder='Title' className='text-black' value={newPostTitle} onChange={(e) => setNewPostTitle(e.target.value)} />
                     <ReactQuill
                       value={newPostData}
@@ -513,7 +517,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                       type="file"
                       id='images'
                       onChange={(e) => setNewImagesData(e.target.files[0])}
-                      className="mb-2 mt-5 dark:text-white"
+                      className="mb-2 mt-5"
                     />
                     <button onClick={handleEditPostSubmit} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
                       Submit

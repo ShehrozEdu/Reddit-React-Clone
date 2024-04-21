@@ -12,6 +12,7 @@ import CreateAPost from "../../Community/CreateAPost";
 import CommunityPageDetails from "../../Community/CommunityPageDetails";
 import ProfileOverview from "../../Community/Profile/ProfileOverview";
 import AuthorProfile from "../../Community/Profile/AuthorProfile";
+import ProtectedRouting from "../Auth/ProtectedRouting";
 
 const Home = () => {
   const {
@@ -31,7 +32,7 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showCountrySelect, setshowCountrySelect] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
 
 
@@ -47,7 +48,7 @@ const Home = () => {
     };
   }, []);
 
-  
+
   const fetchPosts = async () => {
     setLoading(true);
     const token = localStorage.getItem('token');
@@ -55,15 +56,15 @@ const Home = () => {
       let headers = {
         projectId: "t0v7xsdvt1j1"
       };
-  
+
       if (token) {
         headers.Authorization = `Bearer ${token}`;
       }
-  
+
       const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?limit=20&page=${page}`, {
         headers: headers,
       });
-  
+
       if (Array.isArray(response.data.data)) {
         if (response.data.data.length === 0) {
           setHasMore(false);
@@ -78,7 +79,7 @@ const Home = () => {
     }
     setLoading(false);
   };
-  
+
 
   useEffect(() => {
     if (hasMore) {
@@ -145,7 +146,7 @@ const Home = () => {
               <MenuButtons showCountrySelect={true} />
               <div className={`flex relative`}>
                 <Posts
-                setPosts={setPosts}
+                  setPosts={setPosts}
                   posts={posts}
                   popularPosts={popularPosts}
                   handlePostClick={handlePostClick}
@@ -161,7 +162,7 @@ const Home = () => {
           path="/popular"
           element={
             <div className="flex flex-col relative">
-                 {!isMobile && <Carousel />}
+              {!isMobile && <Carousel />}
 
               <MenuButtons showCountrySelect={showCountrySelect} />
               <div className="flex relative">
@@ -172,18 +173,37 @@ const Home = () => {
                   isPopular={true}
                   fetchPosts={fetchPosts}
                 />
-                                {/* {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />} */}
+                {/* {!isResponsive && <PopularTrending trendingData={popularCommunityChannel} />} */}
 
               </div>
             </div>
           }
         />
-        <Route path="/post/:id" element={<PostDetails posts={posts} />} />
-        <Route path="/test" element={<Demo />} />
-        <Route path="/submit" element={<CreateAPost />} />
-        <Route path="/community/:id" element={<CommunityPageDetails />} />
-        <Route path="/user/:name/" element={<ProfileOverview />} />
-        <Route path="/users/:authorName" element={<AuthorProfile posts={posts}/>} />
+        <Route
+          path="/post/:id"
+          element={<ProtectedRouting element={<PostDetails posts={posts} />} />}
+        />
+        <Route
+          path="/submit"
+          element={<ProtectedRouting element={<CreateAPost />} />}
+        />
+        <Route
+          path="/community/:id"
+          element={<ProtectedRouting element={<CommunityPageDetails />} />}
+        />
+        <Route
+          path="/user/:name/"
+          element={<ProtectedRouting element={<ProfileOverview />} />}
+        />
+        <Route
+          path="/users/:authorName"
+          element={<ProtectedRouting element={<AuthorProfile posts={posts} />} />}
+        />
+        <Route
+          path="/post/:id"
+          element={<ProtectedRouting element={<PostDetails posts={posts} />} />}
+        />
+      
       </Routes>
     </div>
   );
