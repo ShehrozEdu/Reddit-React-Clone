@@ -300,11 +300,11 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       {postData.author.name != "ash" && (
 
         <>
-          <div className="py-2">
-            <div className={`w-10/12 hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
+       
+            <div className={`xl:w-10/12  lg:w-10/12 w-full hover:border-grey rounded ${darkMode ? "bg-[#0B1416]" : "bg-white"} cursor-pointer`}>
               <hr />
               <div className="pt-2">
-                <div className="flex items-center text-xs mb-2 justify-between">
+                <div className="flex items-center xl:text-xs lg:text-xs text-[0.7rem] mb-2 justify-between">
                   <div className="flex items-center">
                     <a
 
@@ -526,7 +526,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                 </>}
               </div>
             </div>
-          </div></>
+         </>
       )}
     </>
   );
