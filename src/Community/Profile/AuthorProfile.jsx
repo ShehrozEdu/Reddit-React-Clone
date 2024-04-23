@@ -24,6 +24,7 @@ const AuthorProfile = ({ posts }) => {
             );
 
             setData(result.data.data);
+            console.log(result.data.data);
             setCommNameFetch(result.data.data)
         };
 
@@ -76,7 +77,7 @@ const AuthorProfile = ({ posts }) => {
 
 
                 <hr />
-                {(!data) ? <>
+                {(data) ? <>
                     {data.map((item, index) => {
                         return (
                             <div>

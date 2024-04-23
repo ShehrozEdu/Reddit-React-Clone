@@ -13,6 +13,7 @@ import CommunityPageDetails from "../../Community/CommunityPageDetails";
 import ProfileOverview from "../../Community/Profile/ProfileOverview";
 import AuthorProfile from "../../Community/Profile/AuthorProfile";
 import ProtectedRouting from "../Auth/ProtectedRouting";
+import Error from "./Error";
 
 const Home = () => {
   const {
@@ -203,6 +204,7 @@ const Home = () => {
           path="/post/:id"
           element={<ProtectedRouting element={<PostDetails posts={posts} />} />}
         />
+        <Route path={"*"} element={<Error />} />
       
       </Routes>
     </div>
