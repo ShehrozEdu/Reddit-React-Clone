@@ -51,75 +51,75 @@ const Header = () => {
 
 
 
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast,handlePostClick } = useContext(ContextAPIContext);
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
-// Throttles filterData function to limit its execution rate
-const throttledFilterData = useThrottle(filterData, 500);
+  // Throttles filterData function to limit its execution rate
+  const throttledFilterData = useThrottle(filterData, 500);
 
-// Filters posts based on search query and sets search results
-function filterData() {
-  const filteredResults = posts.filter(
-    (item) =>
-      item?.content &&
-      item?.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  setSearchResults(filteredResults);
-}
-
-// Closes search results when clicked outside
-useEffect(() => {
-  if (showResults) {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowResults(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+  // Filters posts based on search query and sets search results
+  function filterData() {
+    const filteredResults = posts.filter(
+      (item) =>
+        item?.content &&
+        item?.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setSearchResults(filteredResults);
   }
-}, [showResults]);
 
-// Throttles filterData function whenever searchQuery changes
-useEffect(() => {
-  throttledFilterData();
-}, [searchQuery, throttledFilterData]);
+  // Closes search results when clicked outside
+  useEffect(() => {
+    if (showResults) {
+      const handleClickOutside = (event) => {
+        if (searchRef.current && !searchRef.current.contains(event.target)) {
+          setShowResults(false);
+        }
+      };
 
-// Logs out user by removing user data and token from local storage
-const handleLogout = () => {
-  localStorage.removeItem("userData");
-  localStorage.removeItem("token");
-  window.location.href = "/";
-};
+      document.addEventListener("mousedown", handleClickOutside);
 
-// Toggles state of open
-const [open, setOpen] = React.useState(false);
-const handleOpen = () => setOpen(!open);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [showResults]);
 
-// Toggles state of isChecked
-const [isChecked, setIsChecked] = useState(false);
-const handleCheckboxChange = () => {
-  setIsChecked(!isChecked);
-};
+  // Throttles filterData function whenever searchQuery changes
+  useEffect(() => {
+    throttledFilterData();
+  }, [searchQuery, throttledFilterData]);
 
-// Manages popover state and anchor element
-const [openPop, setOpenPop] = useState(false);
-const [anchorEl, setAnchorEl] = useState(null);
+  // Logs out user by removing user data and token from local storage
+  const handleLogout = () => {
+    localStorage.removeItem("userData");
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
-const handleTogglePop = (event) => {
-  if (openPop) {
-    // Close the popover
-    setOpenPop(false);
-  } else {
-    // Open the popover
-    setAnchorEl(event.currentTarget);
-    setOpenPop(true);
-  }
-};
+  // Toggles state of open
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(!open);
+
+  // Toggles state of isChecked
+  const [isChecked, setIsChecked] = useState(false);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  // Manages popover state and anchor element
+  const [openPop, setOpenPop] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleTogglePop = (event) => {
+    if (openPop) {
+      // Close the popover
+      setOpenPop(false);
+    } else {
+      // Open the popover
+      setAnchorEl(event.currentTarget);
+      setOpenPop(true);
+    }
+  };
 
   return (
     <div className="sticky top-0 z-50">
@@ -153,66 +153,73 @@ const handleTogglePop = (event) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowResults(true)}
-                // onClick={()=>handleNavigate()}
+              // onClick={()=>handleNavigate()}
               />
               {/* Render search results */}
               {showResults && (
-                <div className="absolute top-12">
-                  <Card className="w-[37rem]">
-                    <Scrollbars autoHide style={{ "height": "26rem" }}>
-                      <List className={` ${darkMode ? 'clr-dark-head' : ''} `}>
-                        {searchResults.map((item, idx) => (
-                          <>
-                          <ListItem
-                            ripple={false}
-                            className="py-0 pr-1 pl-1 text-black dark:text-white "
-                            key={idx}
-                            onClick={() => handlePostClick(item?._id)}
-                          >
-                            <div className="flex">
-                              <div className="flex flex-col justify-start">
-
-                                <Typography
-                                  variant="small"
-                                  color={darkMode ? "white" : "black"}
-                                  className="mr-2 font-medium"
-                                >
-                                  {item?.content?.slice(0, 40)}
-                                </Typography>
-                                <div className="flex items-center justify-start">
-                                  <img
-                                    src={(item.channel?.image)?.startsWith("https") ? (item?.channel?.image) : "/images/svgs/defaultProfile.svg"}
-                                    alt="smallImg"
-                                    className="w-5 rounded-full mr-1"
-                                  />
-                                  <Typography className="text-xs">
-                                    r/{item?.channel?.name.toLowerCase()} and more
-                                  </Typography>
+                <div className="absolute top-12 ">
+                  {searchResults.length > 0 ? (
+                    <Card className="w-[37rem]">
+                      <Scrollbars autoHide style={{ "height": "26rem" }}>
+                        <List className={` ${darkMode ? 'clr-dark-head' : ''} `}>
+                          {searchResults.map((item, idx) => (
+                            <>
+                              <ListItem
+                                ripple={false}
+                                className="py-0 pr-1 pl-1 text-black dark:text-white "
+                                key={idx}
+                                onClick={() => handlePostClick(item?._id)}
+                              >
+                                <div className="flex">
+                                  <div className="flex flex-col justify-start">
+                                    <Typography
+                                      variant="small"
+                                      color={darkMode ? "white" : "black"}
+                                      className="mr-2 font-medium"
+                                    >
+                                      {item?.content?.slice(0, 40)}
+                                    </Typography>
+                                    <div className="flex items-center justify-start">
+                                      <img
+                                        src={(item.channel?.image)?.startsWith("https") ? (item?.channel?.image) : "/images/svgs/defaultProfile.svg"}
+                                        alt="smallImg"
+                                        className="w-5 rounded-full mr-1"
+                                      />
+                                      <Typography className="text-xs">
+                                        r/{item?.channel?.name.toLowerCase()} and more
+                                      </Typography>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          
 
-                            <ListItemSuffix>
-                              {item?.images[0]?.startsWith("https") && <img src={item.images[0]} width={130} alt="img" />}
-                            </ListItemSuffix>
+                                <ListItemSuffix>
+                                  {item?.images[0]?.startsWith("https") && <img src={item.images[0]} width={130} alt="img" />}
+                                </ListItemSuffix>
 
-                          </ListItem>
-                          <hr />
-                          </>
-                        ))}
-                      </List>
-                    </Scrollbars>
-                  </Card>
+                              </ListItem>
+                              <hr />
+                            </>
+                          ))}
+                        </List>
+                      </Scrollbars>
+                    </Card>
+                  ) : (
+                    <><List className={` ${darkMode ? 'clr-dark-head' : ''} min-w-[590px] `}>  <Typography
+                      variant="small"
+                      color={darkMode ? "white" : "black"}
+                      className="mr-2 font-medium w-full"
+                    >No results found.</Typography> </List></>
+                  )}
                 </div>
               )}
+
             </div>
           </div>
 
           {/* Buttons on the right */}
           {!data ? (
             <div className="flex items-center gap-1">
-              
+
               <div className="flex items-center justify-center bg-gray-300 p-1 rounded-3xl">
                 <IconButton variant="text" color="black">
                   <QrCodeIcon className="h-6 w-6" />
@@ -401,7 +408,7 @@ const handleTogglePop = (event) => {
                         Settings
                       </ListItem>
                       <hr />
-                      <ListItem className="rounded-none pt-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => {handleTogglePop(); navigate("/premium")}}>
+                      <ListItem className="rounded-none pt-5 text-sm font-normal text-blue-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600  hover:text-black focus:bg-gray-200 focus:text-black dark:text-white" onClick={() => { handleTogglePop(); navigate("/premium") }}>
                         <ListItemPrefix>
                           <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-shield.svg" : "/images/svgs/shield.svg"} alt="" />
                         </ListItemPrefix>
