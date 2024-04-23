@@ -39,11 +39,13 @@ const ProfileOverview = () => {
       );
 
       setDataProf(result.data.data);
+      // console.log(result.data.data)
+
     };
     fetchData();
   }, [name]);
 
-  console.log(dataProf)
+  // console.log(dataProf)
   return (
     <div className='py-3 flex h-[100%]'>
       <div className='xl:w-[48rem] lg:w-[48rem] w-[25rem] '>
@@ -82,7 +84,7 @@ const ProfileOverview = () => {
         <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-plus.svg" : "/images/svgs/plus.svg"} alt="Plus" /> <span className="text-black ml-2 font-medium dark:text-white" onClick={()=>navigate("/submit")}> Create a Post</span>
         </div>
         <hr />
-        {(!dataProf?.title || !dataProf?.content) ?
+        {(dataProf)?
          <>
           {dataProf?.map((item, index) => {
             return (
@@ -98,7 +100,7 @@ const ProfileOverview = () => {
                 <div className='flex flex-col'>
                   {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
                   <div className="dark:text-white">{item.content}</div>
-                  <div><img src={item?.images[0]} alt="postImg" /></div>
+                  {item.images.length >= 1 && <div><img src={item.images[0]} alt="postImg" /></div>}
 
                 </div>
 

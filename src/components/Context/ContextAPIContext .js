@@ -63,7 +63,7 @@ useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
 }, [darkMode]);
 
-  const data = JSON.parse(localStorage.getItem("userData"));
+  const data = (JSON.parse(localStorage.getItem("userData"))).user;
 
   const handleClick = (button) => {
     setClickedButton(button);

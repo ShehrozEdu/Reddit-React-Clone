@@ -54,6 +54,8 @@ const Header = () => {
   const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
 
+  // console.log(data)
+
   // Throttles filterData function to limit its execution rate
   const throttledFilterData = useThrottle(filterData, 500);
 
@@ -237,7 +239,7 @@ const Header = () => {
                 <Login />
               ) : (
                 <Button className="text-white rounded-2xl clr-FF4500">
-                  {data?.name}
+                  {data?.user?.name}
                 </Button>
               )}
               {/* <EllipsisHorizontalIcon className="h-8 w-8 text-black" />) */}

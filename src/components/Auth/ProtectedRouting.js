@@ -10,8 +10,8 @@ const ProtectedRouting = ({ element }) => {
         try {
             const userDataFromStorage = (localStorage.getItem('userData'));
             const tokenFromStorage = localStorage.getItem('token');
-            console.log('userDataFromStorage:', userDataFromStorage);
-            console.log('tokenFromStorage:', tokenFromStorage);
+            // console.log('userDataFromStorage:', userDataFromStorage);
+            // console.log('tokenFromStorage:', tokenFromStorage);
             setUserData(userDataFromStorage);
             setToken(tokenFromStorage);
         } catch (error) {

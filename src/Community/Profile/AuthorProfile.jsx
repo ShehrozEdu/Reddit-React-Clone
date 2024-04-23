@@ -63,20 +63,20 @@ const AuthorProfile = ({ posts }) => {
                     </div>
                 </div>
                 <div className='flex mt-6'>
-                    <div className={`cursor-pointer dark:text-white ${activeTab === 'Overview' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => {handleTabClick('Overview');handleClickToast();}}>
+                    <div className={`cursor-pointer dark:text-white ${activeTab === 'Overview' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => { handleTabClick('Overview'); handleClickToast(); }}>
                         Overview
                     </div>
                     <div className={`cursor-pointer dark:text-white ${activeTab === 'Posts' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => handleTabClick('Posts')}>
                         Posts
                     </div>
                     <div className={`cursor-pointer dark:text-white ${activeTab === 'Comments' ? 'bg-[#D2DADD]' : 'bg-transparent'} rounded-3xl px-4 py-2`} onClick={() => { handleTabClick('Comments'); handleClickToast(); }}>
-    Comments
-</div>
+                        Comments
+                    </div>
                 </div>
 
 
                 <hr />
-                {(data[0].title || data[0].content) ? <>
+                {(!data) ? <>
                     {data.map((item, index) => {
                         return (
                             <div>
@@ -91,7 +91,7 @@ const AuthorProfile = ({ posts }) => {
                                 <div className='flex flex-col'>
                                     {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
                                     <div className='dark:text-white'>{item.content}</div>
-                                    {item.images.length>=1&&<div><img src={item.images[0]} alt="postImg" /></div>}
+                                    {item.images.length >= 1 && <div><img src={item.images[0]} alt="postImg" /></div>}
 
                                 </div>
 
