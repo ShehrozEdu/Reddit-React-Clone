@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import Comments from "./Comments";
 import MenuButtons from "./MenuButtons";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 
 const PostDetails = ({ posts }) => {
-  const { setComments,comments, data, handleClickToast,handlePostClick, checkUserLoggedIn} = useContext(ContextAPIContext);
+  const { setComments,comments, data, handleClickToast,handlePostClick, darkMode,checkUserLoggedIn} = useContext(ContextAPIContext);
   const params = useParams();
   const timePost = posts?.find((post) => post?._id === params?.id);
   // console.log(timePost.createdAt)
@@ -281,10 +281,11 @@ const getCategoryFromContent = (content) => {
 };
 const category = getCategoryFromContent(post.content|| post.title);
 
+
   return (
     <>
-      <div className="flex relative h-[100%]">
-        <div className="flex flex-col bg-white dark:bg-[#0B1416] rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] xl:p-6 lg:p-6 md:p-4 p-0">
+      <div className={`flex relative ${post.images && post.images.length > 0 ? 'h-[100%]' : 'h-[100vh]'}`} >
+      <div className={`flex flex-col bg-white dark:bg-[#0B1416] rounded-lg xl:w-[75%] lg:w-[75%] w-[100%] xl:p-6 lg:p-6 md:p-4 p-0 `}>
           <div className="flex items-center mb-4">
             <div className="flex items-center">
               <div className="rounded-full h-8 w-8 bg-gray-500 mr-2">
@@ -442,10 +443,10 @@ const category = getCategoryFromContent(post.content|| post.title);
                 <div className="flex justify-between mt-2 space-x-2">
                   <div>
                     <button className="border border-gray-400 rounded-full p-1" onClick={() => handleClickToast()}>
-                      <img src="/images/svgs/newFile.svg" alt="" />
+                    <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-newFile.svg" : "/images/svgs/newFile.svg"} alt="" />
                     </button>
                     <button className="border border-gray-400 rounded-full p-1" onClick={() => handleClickToast()}>
-                      <img src="/images/svgs/T.svg" alt="" />
+                    <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-T.svg" : "/images/svgs/T.svg"} alt="" />
                     </button>
                   </div>
                   <div>

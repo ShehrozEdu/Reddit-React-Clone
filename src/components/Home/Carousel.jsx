@@ -80,13 +80,14 @@ const Carousel = () => {
   return (
     <Slider {...settings} className={`responsiveWidth ${darkMode ? "bg-[#0B1416]" : ""}`}>
       {(posts.map((post) => (
+        post.author.name!="ash"&&
         <Card
           key={post._id}
           shadow={false}
           className={`relative grid h-[13rem] w-full max-w-[28rem] items-end justify-center overflow-hidden text-center cursor-pointer ${darkMode ? "bg-[#0B1416]" : ""}`}
           onClick={() => {
             if (localStorage.getItem('token')) {
-              handlePostClick(postData._id)
+              handlePostClick(post._id)
             } else {
               toast.error("Login please")
             }
