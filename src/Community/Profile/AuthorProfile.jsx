@@ -53,7 +53,7 @@ const AuthorProfile = ({ posts }) => {
     }
 
     return (
-        <div className='py-3 flex h-[100vh]'>
+        <div className='py-3 flex h-[100%]'>
             <div className='w-[48rem] '>
                 <div className='flex items-center'>
                     <img src={(data[0].author.profileImage) ? (data[0].author.profileImage) : "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png"} alt="" className='rounded-full w-16 h-16' />

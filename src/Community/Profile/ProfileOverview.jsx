@@ -45,7 +45,7 @@ const ProfileOverview = () => {
 
   console.log(dataProf)
   return (
-    <div className='py-3 flex h-[100vh]'>
+    <div className='py-3 flex h-[100%]'>
       <div className='xl:w-[48rem] lg:w-[48rem] w-[25rem] '>
         <div className='flex items-center'>
           <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png" alt="" className='rounded-full w-16 h-16' />
