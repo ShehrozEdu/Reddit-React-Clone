@@ -72,7 +72,7 @@ const fetchSearchResults = async () => {
 
 // Handle search icon click
 const handleSearchIconClick = () => {
-    setShowInput(true);
+    setShowInput(!showInput);
     // setShowResults(true); 
 }
 
