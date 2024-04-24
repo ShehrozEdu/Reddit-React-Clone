@@ -72,6 +72,10 @@ const CreateAPost = () => {
                 toast.error("Please fill all the fields before submitting");
                 return;
             }
+            // if (postTitle==="abcd") {
+            //     toast.error("This is not a good way to post");
+            //     return;
+            // }
 
             const formData = new FormData();
             formData.append('title', postTitle);
