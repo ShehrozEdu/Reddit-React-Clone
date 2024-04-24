@@ -4,11 +4,7 @@ import moment from "moment";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { toast } from "react-toastify";
 
-// Dummy onDeleteComment function
-const onDeleteComment = (comment) => {
-  console.log("Deleting comment:", comment.id);
-  // Implement your delete comment logic here
-};
+
 
 const Comments = ({ postId }) => {
   const { comments, setComments, data, darkMode } = useContext(ContextAPIContext)
