@@ -45,30 +45,17 @@ const handleCreateCommunity = async (event) => {
   const formDataObject = new FormData();
   formDataObject.append('content', 'postContent');
   formDataObject.append('name', communityName);
+  formDataObject.append('images', "/images/svgs/defaultProfile.svg");
 
   try {
-    formDataObject.append('images', "/images/svgs/defaultProfile.svg");
-
-  
-
     if (!token) {
       toast.error("User is not logged in.");
       return;
     }
 
-    const response = await fetch(
-      "https://academics.newtonschool.co/api/v1/reddit/channel/",
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectId': 't0v7xsdvt1j1',
-        },
-        body: formDataObject,
-      }
-    );
+    const response = await axiosInstance.post("/channel/", formDataObject);
 
-    const data = await response.json();
+    const data = response.data;
     console.log("Community created successfully:", data);
     if (data.status === "success") {
       toast.success(`${data.data.name} has been created successfully!`)
@@ -82,6 +69,7 @@ const handleCreateCommunity = async (event) => {
     console.error("Error creating community:", error);
   }
 };
+
 
     
     return (

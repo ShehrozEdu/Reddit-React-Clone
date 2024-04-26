@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import axiosInstance from '../../components/Auth/axiosConfig';
 
 const ProfileOverview = () => {
   const navigate=useNavigate()
@@ -26,21 +27,17 @@ const ProfileOverview = () => {
   const { name } = useParams();
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(
-        'https://academics.newtonschool.co/api/v1/reddit/post',
-        {
+      try {
+        const result = await axiosInstance.get('/post', {
           params: {
             search: JSON.stringify({ "author.name": name })
-          },
-          headers: {
-            'projectid': 't0v7xsdvt1j1'
           }
-        }
-      );
-
-      setDataProf(result.data.data);
-      // console.log(result.data.data)
-
+        });
+        setDataProf(result.data.data);
+        // console.log(result.data.data)
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
     fetchData();
   }, [name]);
@@ -100,7 +97,7 @@ const ProfileOverview = () => {
                 <div className='flex flex-col'>
                   {item.title && <div className='font-bold pb-2 dark:text-white'>{item?.title}</div>}
                   <div className="dark:text-white">{item.content}</div>
-                  {item.images.length >= 1 && <div><img src={item.images[0]} alt="postImg" /></div>}
+                  {item.images.length >= 1 && <div><img src={item?.images[0]} alt="postImg" /></div>}
 
                 </div>
 

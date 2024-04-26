@@ -5,6 +5,7 @@ import { ContextAPIContext } from '../components/Context/ContextAPIContext ';
 import axios from 'axios';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import axiosInstance from '../components/Auth/axiosConfig';
 
 const CommunityPageDetails = () => {
     const [channelData, setChannelData] = useState(null);
@@ -16,21 +17,18 @@ const CommunityPageDetails = () => {
     const navigate=useNavigate();
   const commParams = useParams();
 //   console.log("params",commParams)
-  const fetchChannelData = async () => {
+const fetchChannelData = async () => {
+    setLoading(true);
     try {
-        const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/channel/${commParams.id}`, {
-            headers: {
-                projectId: "t0v7xsdvt1j1",
-            },
-        });
-        setChannelData(response.data.data);
-        // console.log(channelData)
-        setLoading(false);
+      const response = await axiosInstance.get(`/channel/${commParams.id}`);
+      setChannelData(response.data.data);
+      setLoading(false);
     } catch (error) {
-        setError(error);
-        setLoading(false);
+      setError(error);
+      setLoading(false);
     }
-};
+  };
+  
 useEffect(() => {
 
 

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import Skeleton from 'react-loading-skeleton';
 import { toast } from "react-toastify";
+import axiosInstance from "../Auth/axiosConfig";
 
 const Carousel = () => {
   const settings = {
@@ -57,16 +58,8 @@ const Carousel = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-
         setLoading(true); // Set loading to true at the start of the API call
-        const response = await axios.get(
-          "https://academics.newtonschool.co/api/v1/reddit/post?page=2",
-          {
-            headers: {
-              projectId: "t0v7xsdvt1j1",
-            },
-          }
-        );
+        const response = await axiosInstance.get("/post?page=2");
         setPosts(response.data.data);
         setLoading(false); // Set loading to false after the API call is complete
       } catch (error) {
@@ -74,9 +67,10 @@ const Carousel = () => {
         setLoading(false); // Set loading to false even if there is an error
       }
     };
-
+  
     fetchPosts();
   }, []);
+  
   return (
     <Slider {...settings} className={`responsiveWidth ${darkMode ? "bg-[#0B1416]" : ""}`}>
       {(posts.map((post) => (

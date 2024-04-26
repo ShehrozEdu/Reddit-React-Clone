@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ContextAPIContext } from '../../components/Context/ContextAPIContext ';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import axiosInstance from '../../components/Auth/axiosConfig';
 
 const AuthorProfile = ({ posts }) => {
     const [data, setData] = useState(null);
@@ -11,44 +12,34 @@ const AuthorProfile = ({ posts }) => {
     // console.log(authorName)
     useEffect(() => {
         const fetchData = async () => {
-            const result = await axios.get(
-                'https://academics.newtonschool.co/api/v1/reddit/post',
-                {
-                    params: {
-                        search: JSON.stringify({ "author.name": authorName })
-                    },
-                    headers: {
-                        'projectid': 't0v7xsdvt1j1'
-                    }
-                }
-            );
-
+          try {
+            const result = await axiosInstance.get('/post', {
+              params: {
+                search: JSON.stringify({ "author.name": authorName })
+              }
+            });
             setData(result.data.data);
-            console.log(result.data.data);
+            // console.log(result.data.data);
             setCommNameFetch(result.data.data)
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
         };
-
         fetchData();
-    }, [authorName]);
+      }, [authorName]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
-    const fetchComments = async () => {
-        try {
-            const response = await axios.get(
-                `https://academics.newtonschool.co/api/v1/reddit/post/${postId}/comments`,
-                {
-                    headers: {
-                        projectId: "t0v7xsdvt1j1",
-                    },
-                }
-            );
-            //   setComments(response.data.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const fetchComments = async () => {
+    //     try {
+    //       const response = await axiosInstance.get(`/post/${postId}/comments`);
+    //       // Handle the response here, e.g., setComments(response.data.data);
+    //     } catch (error) {
+    //       console.error("Error fetching comments:", error);
+    //     }
+    //   };
+      
     if (!data) {
         return <div>Loading...</div>;
     }

@@ -157,86 +157,85 @@ const PostDetails = ({ posts }) => {
   }, [handlePostClick])
 // handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
  
-  const handleUpClick = async (postId) => {
-  
+const handleUpClick = async (postId) => {
+  try {
     if (!token) {
       toast.error("User is not logged in.");
       return;
     }
-    try {
-      const response = await axios({
-        method: post.isLiked === true ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
+    
+    const method = post.isLiked ? "DELETE" : "POST";
+    const response = await axiosInstance({
+      method: method,
+      url: `/like/${postId}`,
+    });
 
-      if (response.data.status === "success") {
-        toast.success(post.isLiked ? "Upvote removed" : "Upvoted");
-
-        // Adjust likeCount and dislikeCount
-        if (post.isLiked) {
-          post.likeCount -= 1; // Remove upvote
-        } else {
-          post.likeCount += 1; // Add upvote
-          if (post.isDisliked) {
-            post.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
-          }
+    if (response.data.status === "success") {
+      toast.success(post.isLiked ? "Upvote removed" : "Upvoted");
+      
+      // Adjust likeCount and dislikeCount
+      const updatedPost = { ...post }; // Create a copy of post object
+      if (post.isLiked) {
+        updatedPost.likeCount -= 1; // Remove upvote
+      } else {
+        updatedPost.likeCount += 1; // Add upvote
+        if (post.isDisliked) {
+          updatedPost.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
         }
-
-        // Toggle isLiked and isDisliked states
-        post.isLiked = !post.isLiked;
-
-        handlePostDetails();
       }
-    } catch (error) {
-      console.error("Upvote operation failed:", error);
 
+      // Toggle isLiked and isDisliked states
+      updatedPost.isLiked = !post.isLiked;
+      updatedPost.isDisliked = false; // Reset isDisliked status when upvoting
+      
+      setPostD(updatedPost); // Update the post state with the modified post object
+      handlePostDetails(); // Fetch updated post details
     }
-  };
-// handleDownClick: Allows a user to downvote a post. Toggles downvote status and sends appropriate request (POST/DELETE) to server.
-const handleDownClick = async (postId) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    toast.error("User is not logged in.");
-    return;
+  } catch (error) {
+    console.error("Upvote operation failed:", error);
   }
+};
 
+const handleDownClick = async (postId) => {
   try {
-    const response = await axios({
-      method: post.isDisliked === true ? "DELETE" : "POST",
-      url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        projectId: "t0v7xsdvt1j1",
-      },
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
+    
+    const method = post.isDisliked ? "DELETE" : "POST";
+    const response = await axiosInstance({
+      method: method,
+      url: `/dislike/${postId}`,
     });
 
     if (response.data.status === "success") {
       toast.success(post.isDisliked ? "Downvote removed" : "Downvoted");
-
+      
       // Adjust likeCount and dislikeCount
+      const updatedPost = { ...post }; // Create a copy of post object
       if (post.isDisliked) {
-        post.dislikeCount -= 1; // Remove downvote
+        updatedPost.dislikeCount -= 1; // Remove downvote
       } else {
-        post.dislikeCount += 1; // Add downvote
+        updatedPost.dislikeCount += 1; // Add downvote
         if (post.isLiked) {
-          post.likeCount -= 1; // Remove upvote if switching from upvote to downvote
+          updatedPost.likeCount -= 1; // Remove upvote if switching from upvote to downvote
         }
       }
 
       // Toggle isDisliked and isLiked states
-      post.isDisliked = !post.isDisliked;
-
-      handlePostDetails();
+      updatedPost.isDisliked = !post.isDisliked;
+      updatedPost.isLiked = false; // Reset isLiked status when downvoting
+      
+      setPostD(updatedPost); // Update the post state with the modified post object
+      handlePostDetails(); // Fetch updated post details
     }
   } catch (error) {
     console.error("Downvote operation failed:", error);
-
   }
 };
+
 
 const getCategoryFromContent = (content) => {
   const webDevelopmentKeywords = ["web", "development", "programming", "coding"];
@@ -293,7 +292,7 @@ const category = getCategoryFromContent(post.content|| post.title);
               </div>
               <div>
                 <div className="text-sm text-gray-600 flex justify-between">
-                  <p className="mr-1 dark:text-white">r/{post.channel?.name}</p>
+                 {post.channel?.name? <p className="mr-1 dark:text-white">r/{post.channel?.name}</p>: <p className="dark:text-white mr-1">u/{post.author?.name}</p>}
                   <span
                     id="time-ago-separator"
                     class="flex items-center w-2xs text-[#576F76] font-normal text-12"
@@ -302,7 +301,7 @@ const category = getCategoryFromContent(post.content|| post.title);
                   </span>
                   <p className="ml-1 dark:text-white">{moment(timePost?.createdAt)?.fromNow()}</p>
                 </div>
-                <p className="text-xs dark:text-white">{post.author?.name}</p>
+               {post.channel?.name&& <p className="text-xs dark:text-white">{post.author?.name}</p>}
               </div>
             </div>
           </div>

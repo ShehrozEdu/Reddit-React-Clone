@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import axios from "axios";
+import axiosInstance from "../Auth/axiosConfig";
 
 
 
@@ -15,7 +16,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [newPostTitle, setNewPostTitle] = useState(postData?.title || "");
   const [newPostData, setNewPostData] = useState(postData?.content || '');
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
-  const { setIsUpvoted, setIsDownvoted, setCommId,token,darkMode, handleClickToast } = useContext(ContextAPIContext)
+  const { setIsUpvoted, setIsDownvoted, setCommId, token, darkMode, handleClickToast } = useContext(ContextAPIContext)
   const [singlePost, setSinglePost] = useState([])
 
   useEffect(() => {
@@ -40,34 +41,29 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   const fetchLikedPost = async () => {
     try {
-      if(!data){
+      if (!data) {
         return;
       }
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${postData._id}`, {
-        headers: {
-          projectId: "t0v7xsdvt1j1",
-          Authorization: `Bearer ${token}`
-        },
-      });
+      const response = await axiosInstance.get(`/post/${postData._id}`);
 
       setSinglePost(response.data.data);
       if (response.data.data.isLiked) {
         setIsUpvoted(true)
-
-
       }
-      if (response.data.data.isDisliked) setIsDownvoted(true);
+      if (response.data.data.isDisliked) {
+        setIsDownvoted(true);
+      }
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
+
   // Fetches the post data when this component mounts, and adds it to the global state.
   useEffect(() => {
     fetchLikedPost();
-  }, [handleUpClick,handleDownClick])
+  }, [handleUpClick, handleDownClick])
 
   const handleUpClick = async (postId) => {
-  
     if (!token) {
       toast.error("User is not logged in.");
       return;
@@ -81,17 +77,13 @@ const Post2 = ({ postData, handlePostClick, data }) => {
         isLiked: !prevState.isLiked,
       }));
 
-      const response = await axios({
-        method: singlePost.isLiked === true ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
+      const method = singlePost.isLiked ? "DELETE" : "POST";
+      const response = await axiosInstance({
+        method: method,
+        url: `/like/${postId}`,
       });
 
       if (response.data.status === "success") {
-        // toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");
         setIsDownvoted(false);
         fetchLikedPost();
       } else {
@@ -111,79 +103,65 @@ const Post2 = ({ postData, handlePostClick, data }) => {
         isLiked: !prevState.isLiked,
       }));
     }
-};
+  };
 
+  const handleDownClick = async (postId) => {
+    if (!token) {
+      toast.error("User is not logged in.");
+      return;
+    }
 
-const handleDownClick = async (postId) => {
-  
-  if (!token) {
-    toast.error("User is not logged in.");
-    return;
-  }
+    try {
+      // Optimistically update UI
+      setSinglePost(prevState => ({
+        ...prevState,
+        dislikeCount: prevState.dislikeCount + (prevState.isDisliked ? -1 : 1),
+        isDisliked: !prevState.isDisliked,
+      }));
 
-  try {
-    // Optimistically update UI
-    setSinglePost(prevState => ({
-      ...prevState,
-      dislikeCount: prevState.dislikeCount + (prevState.isDisliked ? -1 : 1),
-      isDisliked: !prevState.isDisliked,
-    }));
+      const method = singlePost.isDisliked ? "DELETE" : "POST";
+      const response = await axiosInstance({
+        method: method,
+        url: `/dislike/${postId}`,
+      });
 
-    const response = await axios({
-      method: singlePost.isDisliked === true ? "DELETE" : "POST",
-      url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        projectId: "t0v7xsdvt1j1",
-      },
-    });
-
-    if (response.data.status === "success") {
-      // toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
-      setIsUpvoted(false);
-      fetchLikedPost();
-    } else {
-      // Revert UI update if the request fails
+      if (response.data.status === "success") {
+        setIsUpvoted(false);
+        fetchLikedPost();
+      } else {
+        // Revert UI update if the request fails
+        setSinglePost(prevState => ({
+          ...prevState,
+          dislikeCount: prevState.dislikeCount - (prevState.isDisliked ? -1 : 1),
+          isDisliked: !prevState.isDisliked,
+        }));
+      }
+    } catch (error) {
+      // Revert UI update if there's an error
+      console.error("Downvote operation failed:", error);
       setSinglePost(prevState => ({
         ...prevState,
         dislikeCount: prevState.dislikeCount - (prevState.isDisliked ? -1 : 1),
         isDisliked: !prevState.isDisliked,
       }));
     }
-  } catch (error) {
-    // Revert UI update if there's an error
-    console.error("Downvote operation failed:", error);
-    setSinglePost(prevState => ({
-      ...prevState,
-      dislikeCount: prevState.dislikeCount - (prevState.isDisliked ? -1 : 1),
-      isDisliked: !prevState.isDisliked,
-    }));
-  }
-};
+  };
+
+
 
 
 
   const deletePost = async (postId) => {
     try {
-      // console.log(postId)
-    
-      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectId': "t0v7xsdvt1j1"
-        }
-      });
+      const response = await axiosInstance.delete(`/post/${postId}`);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      } else {
-        toast.success("Post deleted successfully")
-        // console.log("Post deleted successfully");
+      if (response.status === 200) {
+        toast.success("Post deleted successfully");
         setTimeout(() => {
-          location.href = "/"
-
+          location.href = "/";
         }, 1200);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -193,9 +171,10 @@ const handleDownClick = async (postId) => {
 
 
 
+
   const toggleFollow = async (id) => {
     try {
-    
+
       let url = '';
       let method = '';
       if (joinedStatus) {
@@ -254,7 +233,6 @@ const handleDownClick = async (postId) => {
 
 
   const handleEditPostSubmit = async () => {
-  
     try {
       const formData = new FormData();
 
@@ -271,32 +249,22 @@ const handleDownClick = async (postId) => {
         formData.append('images', newImagesData);
       }
 
-      const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postData._id}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'projectId': 't0v7xsdvt1j1',
-        },
-        body: formData,
-      });
+      const response = await axiosInstance.patch(`/post/${postData._id}`, formData);
 
-      const data = await response.json();
-      console.log("Post edited:", data);
-      // console.log("FormData:", data);
-
-      if (response.ok) {
+      if (response.status === 200) {
         toast.success("Post edited Successfully!");
+        setTimeout(() => {
+          location.href = "/";
+        }, 1300);
       } else {
         toast.error("Can't edit this Post, please retry");
       }
-
-      setTimeout(() => {
-        location.href = "/"
-      }, 1300);
     } catch (error) {
       console.error("Error editing post:", error);
+      toast.error("Can't edit this Post, please retry");
     }
-  }
+  };
+
 
 
 
@@ -329,9 +297,12 @@ const handleDownClick = async (postId) => {
                       src={postData.author.profileImage || "/images/svgs/defaultProfile.svg"}
                       alt="Avatar"
                     />
-                    <span className="ml-2 text-black dark:text-white" onClick={postData.channel ? () => handleCommunityDetails(postData.channel._id) : () => toast.error("Channel not found")}>
-                      {postData.channel?.name || "Channel"}
-                    </span>
+                    {postData.channel?.name ? <span className="ml-2 text-black dark:text-white" onClick={postData.channel ? () => handleCommunityDetails(postData.channel._id) : () => toast.error("Channel not found")}>
+                      r/{postData.channel?.name}
+                    </span> : <a className="text-grey mx-1 no-underline hover:underline dark:text-white" onClick={() => navigate(`/users/${(postData.author?.name)}/`)}>
+
+                      u/{(postData.author?.name)}
+                    </a>}
 
                   </a>
                   <span className="text-grey-light mx-1 text-xxs dark:text-white">•</span>
@@ -548,79 +519,81 @@ const handleDownClick = async (postId) => {
 
 
 
-const Posts = ({ posts, popularPosts, fetchPosts, handlePostClick }) => {
+const Posts = ({ posts,error, popularPosts, fetchPosts, handlePostClick }) => {
 
   // Importing necessary context and hooks
-const { selectedItem, loading, data, darkMode } = useContext(ContextAPIContext);
+  const { selectedItem, loading, data, darkMode } = useContext(ContextAPIContext);
 
-// Getting current location
-const location = useLocation();
+  // Getting current location
+  const location = useLocation();
 
-// Defining data to display based on the current path
-let dataToDisplay;
-if (location.pathname === "/popular") {
-  // If on the "/popular" path, display popular posts
-  dataToDisplay = popularPosts;
-} else {
-  // Otherwise, display regular posts
-  dataToDisplay = posts;
-}
+  // Defining data to display based on the current path
+  let dataToDisplay;
+  if (location.pathname === "/popular") {
+    // If on the "/popular" path, display popular posts
+    dataToDisplay = popularPosts;
+  } else {
+    // Otherwise, display regular posts
+    dataToDisplay = posts;
+  }
 
-// Sorting posts based on the selected item
-if (selectedItem === "Hot") {
-  // Sorting posts by a custom formula for "Hot" posts
-  posts.sort(
-    (a, b) =>
-      Math.abs(1 - a.likeCount / a.dislikeCount) -
-      Math.abs(1 - b.likeCount / b.dislikeCount)
-  );
-  
-} else if (selectedItem === "Best") {
-  // Sorting posts by the ratio of likes to dislikes for "Best" posts
-  posts.sort(
-    (a, b) => b.likeCount / b.dislikeCount - a.likeCount / a.dislikeCount
-  );
-  
-} else if (selectedItem === "New") {
-  // Sorting posts by creation date for "New" posts
-  posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
-} else if (selectedItem === "Top") {
-  // Sorting posts by like count for "Top" posts
-  posts.sort((a, b) => b.likeCount - a.likeCount);
-  
-} else if (selectedItem === "Rising") {
-  // Sorting posts by a combination of like count and comment count for "Rising" posts
-  posts.sort(
-    (a, b) => b.likeCount + b.commentCount - (a.likeCount + a.commentCount)
-  );
-  
-}
+  // Sorting posts based on the selected item
+  if (selectedItem === "Hot") {
+    // Sorting posts by a custom formula for "Hot" posts
+    posts.sort(
+      (a, b) =>
+        Math.abs(1 - a.likeCount / a.dislikeCount) -
+        Math.abs(1 - b.likeCount / b.dislikeCount)
+    );
 
- 
+  } else if (selectedItem === "Best") {
+    // Sorting posts by the ratio of likes to dislikes for "Best" posts
+    posts.sort(
+      (a, b) => b.likeCount / b.dislikeCount - a.likeCount / a.dislikeCount
+    );
+
+  } else if (selectedItem === "New") {
+    // Sorting posts by creation date for "New" posts
+    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  } else if (selectedItem === "Top") {
+    // Sorting posts by like count for "Top" posts
+    posts.sort((a, b) => b.likeCount - a.likeCount);
+
+  } else if (selectedItem === "Rising") {
+    // Sorting posts by a combination of like count and comment count for "Rising" posts
+    posts.sort(
+      (a, b) => b.likeCount + b.commentCount - (a.likeCount + a.commentCount)
+    );
+
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="xl:w-[70%] lg:w-[70%] md-[80%] w-[100%] p-2">
-    <div className="flex">
+      <div className="flex">
         {/* Main Content */}
         <div className={`${darkMode ? 'bg-[#0B1416]' : ''}`}>
-            {/* Mapping over the dataToDisplay array to render Post2 components */}
-            {dataToDisplay.map((postData, index) => (
-                <React.Fragment key={index}>
-                  
-                    {/* Rendering Post2 component for each post data */}
-                    <Post2 postData={postData} handlePostClick={handlePostClick} fetchPosts={fetchPosts} data={data} />
-                    {/* Alternative way of rendering Post2 component */}
-                    {/* <Post2 postData={postData} /> */}
-                </React.Fragment>
-            ))}
+          {/* Mapping over the dataToDisplay array to render Post2 components */}
+          {dataToDisplay.map((postData, index) => (
+            <React.Fragment key={index}>
+
+              {/* Rendering Post2 component for each post data */}
+              {postData ? <Post2 postData={postData} handlePostClick={handlePostClick} fetchPosts={fetchPosts} data={data} /> : <div className="text-red-500">Error: Failed to load post</div>}
+              {/* Alternative way of rendering Post2 component */}
+              {/* <Post2 postData={postData} /> */}
+            </React.Fragment>
+          ))}
         </div>
-    </div>
-    <div className="flex items-center justify-center">
+      </div>
+      <div className="flex items-center justify-center">
         {/* Displaying a spinner if loading is true */}
         {loading && <Spinner className="w-16 text-gray-900/50 dark:text-white h-[100vh]" />}
+      </div>
     </div>
-</div>
 
   );
 };

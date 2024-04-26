@@ -77,117 +77,7 @@ useEffect(() => {
   const handleAsideToggle = () => {
     setIsAsideOpen(!isAsideOpen);
   };
-  const handleUpClick = async (postId) => {
-  
-
-    // Check if token is available
-    if (!token) {
-      toast.error("User is not logged in.");
-      return;
-    }
-
-    // Check if the post has already been upvoted
-    const alreadyUpvoted = upvotes[postId];
-
-    try {
-      const response = await axios({
-        method: alreadyUpvoted ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
-
-      if (response.data.status === "success") {
-        toast.success(alreadyUpvoted ? "Upvote removed" : "Upvoted");
-
-        // Update likeCount locally
-        setLikeCount(likeCount + (alreadyUpvoted ? -1 : 1));
-
-        // Update the upvotes state to reflect the toggle
-        setUpvotes({ ...upvotes, [postId]: !alreadyUpvoted });
-        setIsUpvoted(true);
-        setIsDownvoted(false);
-      } else {
-        // If the post was previously downvoted, remove the downvote
-        if (downvotes[postId]) {
-          setDownvotes({ ...downvotes, [postId]: false });
-        }
-      }
-    } catch (error) {
-      console.error("Upvote operation failed:", error);
-      toast.error("You already liked this post");
-      setIsUpvoted(true);
-    }
-  };
-
-  const handleDownClick = async (postId) => {
-  
-
-    // Check if token is available
-    if (!token) {
-      toast.error("User is not logged in.");
-      return;
-    }
-
-    // Check if the post has already been downvoted
-    const alreadyDownvoted = downvotes[postId];
-    const alreadyUpvoted = upvotes[postId]; // Check if already upvoted
-
-    try {
-      const response = await axios({
-        method: alreadyDownvoted ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
-
-      if (response.data.status === "success") {
-        toast.success(alreadyDownvoted ? "Downvote removed" : "Downvoted");
-
-        // Update the dislikeCountMaintain state
-        setDislikeCountMaintain(!alreadyDownvoted);
-
-        // Update the downvotes state to reflect the toggle
-        setDownvotes({ ...downvotes, [postId]: !alreadyDownvoted });
-        setIsDownvoted(true);
-
-        // If the post was previously upvoted, remove the upvote and update like count
-        if (alreadyUpvoted) {
-          setUpvotes({ ...upvotes, [postId]: false });
-          // Update like count locally
-          setLikeCount(likeCount - 1);
-        }
-      }
-    } catch (error) {
-      console.error("Downvote operation failed:", error);
-    }
-  };
-  const fetchLikedPost = async (id) => {
-    try {
-    
-      const response = await axios.get(
-        `https://academics.newtonschool.co/api/v1/reddit/post/${id}`,
-        {
-          headers: {
-            projectId: "t0v7xsdvt1j1",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setOtherLike(response.data.data);
-      if (response.data.data.isLiked) {
-        setIsUpvoted(true);
-      }
-      if (response.data.data.isDisliked) setIsDownvoted(true);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
+ 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const handleResize = () => {
@@ -219,9 +109,6 @@ useEffect(() => {
         downvotes,
         setDownvotes,
         handleClickToast,
-        fetchLikedPost,
-        handleDownClick,
-        handleUpClick,
         posts,
         setPosts,
         setPopularPosts,

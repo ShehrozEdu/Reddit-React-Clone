@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 
-const TrendingItem = ({ item, addToLocalStorage }) => {
+const TrendingItem = ({ item, addToLocalStorage,error }) => {
   // Access properties of item using dot notation
   const { name, image, _id } = item;
 
@@ -14,7 +14,9 @@ const TrendingItem = ({ item, addToLocalStorage }) => {
     addToLocalStorage(item);
     navigate(`/community/${id}`)
   }
-  
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="pb-1">
       <div className="px-3 py-2">
@@ -39,15 +41,14 @@ const TrendingItem = ({ item, addToLocalStorage }) => {
   );
 };
 
-const PopularTrending = ({ trendingData }) => {
+const PopularTrending = ({ trendingData,error }) => {
   const [showMore, setShowMore] = useState(false);
   const [isFixed, setIsFixed] = useState(true);
-  const{recentCommunities,setRecentCommunities,darkMode }=useContext(ContextAPIContext);
+  const { recentCommunities, setRecentCommunities, darkMode } = useContext(ContextAPIContext);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       setIsFixed(scrollTop === 0);
     };
 
@@ -57,27 +58,29 @@ const PopularTrending = ({ trendingData }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   const addToLocalStorage = (community) => {
     const newRecentCommunities = [community, ...recentCommunities.filter((c) => c && c._id !== community._id)];
     setRecentCommunities(newRecentCommunities);
     sessionStorage.setItem("recentCommunities", JSON.stringify(newRecentCommunities));
-};
-
+  };
 
   return (
     <div
-    className={`rounded-xl mb-4 border ${darkMode ? "bg-[#0B1416]" : "bg-gray-100"} w-64 md:right-10 fixed xl:right-20 lg:right-20 right-FLoatMidLap top-90"    `}
+      className={`rounded-xl mb-4 border ${darkMode ? "bg-[#0B1416]" : "bg-gray-100"} w-64 md:right-10 fixed xl:right-20 lg:right-20 right-FLoatMidLap top-90`}
       style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
     >
-      <div className="p-5 text-xs font-semibold w-full text-[#627c95]">
-        POPULAR COMMUNITIES
-      </div>
-      {trendingData
-        ?.slice(0, showMore ? trendingData.length : 4)
-        .map((item, index) => (
-          <TrendingItem key={index} item={item} addToLocalStorage={addToLocalStorage}/>
-        ))}
-      {!showMore && trendingData.length > 4 && (
+      <div className="p-5 text-xs font-semibold w-full text-[#627c95]">POPULAR COMMUNITIES</div>
+      {trendingData ? (
+        trendingData
+          .slice(0, showMore ? trendingData.length : 4)
+          .map((item, index) => (
+            <TrendingItem key={index} item={item} addToLocalStorage={addToLocalStorage} error={error}/>
+          ))
+      ) : (
+        <div className="p-5 text-xs text-red-500">Error: Failed to load trending data</div>
+      )}
+      {!showMore && trendingData && trendingData.length > 4 && (
         <div
           className="p-3 text-black hover:bg-gray-500 text-[.789rem] cursor-pointer hover:bg-inherit dark:text-white"
           onClick={() => setShowMore(true)}

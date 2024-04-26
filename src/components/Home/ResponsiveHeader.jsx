@@ -5,6 +5,7 @@ import { Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Li
 import Aside from '../Navbar/Aside';
 import Login from "../Auth/Login"
 import { ContextAPIContext } from '../Context/ContextAPIContext ';
+import axiosInstance from '../Auth/axiosConfig';
 
 const ResponsiveHeader = () => {
   // Context API
@@ -57,18 +58,14 @@ const ResponsiveHeader = () => {
 
   const fetchSearchResults = async () => {
     try {
-      const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post?search={"content":"${searchQuery}"}`, {
-        headers: {
-          'projectId': "t0v7xsdvt1j1",
-        }
-      });
+      const response = await axiosInstance.get(`/post?search={"content":"${searchQuery}"}`);
       setSearchResults(response.data.data);
       setShowResults(true);
-
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
-  }
+  };
+  
 
   // Handle search icon click
   const handleSearchIconClick = () => {

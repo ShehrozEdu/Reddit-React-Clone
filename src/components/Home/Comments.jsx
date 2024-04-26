@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import { ContextAPIContext } from "../Context/ContextAPIContext ";
 import { toast } from "react-toastify";
+import axiosInstance from "../Auth/axiosConfig";
 
 
 
@@ -19,21 +20,15 @@ const Comments = ({ postId }) => {
   //   }));
   // };
 // Fetch comments for a specific post
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get(
-        `https://academics.newtonschool.co/api/v1/reddit/post/${postId}/comments`,
-        {
-          headers: {
-            projectId: "t0v7xsdvt1j1",
-          },
-        }
-      );
-      setComments(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const fetchComments = async () => {
+  try {
+    const response = await axiosInstance.get(`/post/${postId}/comments`);
+    setComments(response.data.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   // Fetch comments when postId changes
   useEffect(() => {
     fetchComments();
@@ -41,38 +36,14 @@ const Comments = ({ postId }) => {
   }, [postId]);
   // Delete a comment
   const deleteComment = async (commentId) => {
-  
-
-    // Check if token is available
-    if (!token) {
-      // Handle the case where the user is not logged in
-      // For example, show a message or redirect to login page
-      toast.error("User is not logged in.");
-      // You can show a message to the user
-      return;
-    }
-
     try {
-      const response = await fetch(
-        `https://academics.newtonschool.co/api/v1/reddit/comment/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            projectID: "t0v7xsdvt1j1",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Response was not ok");
-      }
-
+      await axiosInstance.delete(`/comment/${commentId}`);
       fetchComments();
     } catch (error) {
       console.error("Error:", error);
     }
   };
+  
 
   return (
   <div className="flex flex-col gap-4">
