@@ -31,7 +31,11 @@ export const ContextAPIProvider = ({ children }) => {
   const [upvotes, setUpvotes] = useState({});
 const [downvotes, setDownvotes] = useState({});
   const [commNameFetch, setCommNameFetch] = useState([]);
+
+
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
 
   const handleCommunityDetails = (id) => {
     setCommId(id);
@@ -63,7 +67,7 @@ useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
 }, [darkMode]);
 
-  const data = (JSON.parse(localStorage.getItem("userData"))).user;
+  const data = (JSON.parse(localStorage.getItem("userData")));
 
   const handleClick = (button) => {
     setClickedButton(button);
@@ -74,7 +78,7 @@ useEffect(() => {
     setIsAsideOpen(!isAsideOpen);
   };
   const handleUpClick = async (postId) => {
-    const token = localStorage.getItem("token");
+  
 
     // Check if token is available
     if (!token) {
@@ -119,7 +123,7 @@ useEffect(() => {
   };
 
   const handleDownClick = async (postId) => {
-    const token = localStorage.getItem("token");
+  
 
     // Check if token is available
     if (!token) {
@@ -164,7 +168,7 @@ useEffect(() => {
   };
   const fetchLikedPost = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+    
       const response = await axios.get(
         `https://academics.newtonschool.co/api/v1/reddit/post/${id}`,
         {
@@ -191,7 +195,7 @@ useEffect(() => {
   };
 
   const checkUserLoggedIn = () => {
-    const token = localStorage.getItem("token");
+  
     if (!token) {
       toast.error("User is not logged in");
       return false;
@@ -201,6 +205,7 @@ useEffect(() => {
   return (
     <ContextAPIContext.Provider
       value={{
+        token,
         commNameFetch,
         setCommNameFetch,
         checkUserLoggedIn,

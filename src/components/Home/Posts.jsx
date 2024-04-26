@@ -15,9 +15,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const [newPostTitle, setNewPostTitle] = useState(postData?.title || "");
   const [newPostData, setNewPostData] = useState(postData?.content || '');
   const [newImagesData, setNewImagesData] = useState(postData?.images[0] || null);
-  const { setIsUpvoted, setIsDownvoted, setCommId } = useContext(ContextAPIContext)
+  const { setIsUpvoted, setIsDownvoted, setCommId,token,darkMode, handleClickToast } = useContext(ContextAPIContext)
   const [singlePost, setSinglePost] = useState([])
-  const { darkMode, handleClickToast } = useContext(ContextAPIContext);
 
   useEffect(() => {
 
@@ -41,7 +40,9 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   const fetchLikedPost = async () => {
     try {
-      const token = localStorage.getItem('token');
+      if(!data){
+        return;
+      }
       const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${postData._id}`, {
         headers: {
           projectId: "t0v7xsdvt1j1",
@@ -63,15 +64,23 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   // Fetches the post data when this component mounts, and adds it to the global state.
   useEffect(() => {
     fetchLikedPost();
-  }, [])
+  }, [handleUpClick,handleDownClick])
 
   const handleUpClick = async (postId) => {
-    const token = localStorage.getItem("token");
+  
     if (!token) {
       toast.error("User is not logged in.");
       return;
     }
+
     try {
+      // Optimistically update UI
+      setSinglePost(prevState => ({
+        ...prevState,
+        likeCount: prevState.likeCount + (prevState.isLiked ? -1 : 1),
+        isLiked: !prevState.isLiked,
+      }));
+
       const response = await axios({
         method: singlePost.isLiked === true ? "DELETE" : "POST",
         url: `https://academics.newtonschool.co/api/v1/reddit/like/${postId}`,
@@ -82,77 +91,82 @@ const Post2 = ({ postData, handlePostClick, data }) => {
       });
 
       if (response.data.status === "success") {
-        toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");
-
-        // Adjust likeCount and dislikeCount
-        if (singlePost.isLiked) {
-          singlePost.likeCount -= 1; // Remove upvote
-        } else {
-          singlePost.likeCount += 1; // Add upvote
-          if (singlePost.isDisliked) {
-            singlePost.dislikeCount -= 1; // Remove downvote if switching from downvote to upvote
-          }
-        }
-
-        // Toggle isLiked and isDisliked states
-        singlePost.isLiked = !singlePost.isLiked;
+        // toast.success(singlePost.isLiked ? "Upvote removed" : "Upvoted");
         setIsDownvoted(false);
-
         fetchLikedPost();
+      } else {
+        // Revert UI update if the request fails
+        setSinglePost(prevState => ({
+          ...prevState,
+          likeCount: prevState.likeCount - (prevState.isLiked ? -1 : 1),
+          isLiked: !prevState.isLiked,
+        }));
       }
     } catch (error) {
+      // Revert UI update if there's an error
       console.error("Upvote operation failed:", error);
-
+      setSinglePost(prevState => ({
+        ...prevState,
+        likeCount: prevState.likeCount - (prevState.isLiked ? -1 : 1),
+        isLiked: !prevState.isLiked,
+      }));
     }
-  };
+};
 
-  const handleDownClick = async (postId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("User is not logged in.");
-      return;
+
+const handleDownClick = async (postId) => {
+  
+  if (!token) {
+    toast.error("User is not logged in.");
+    return;
+  }
+
+  try {
+    // Optimistically update UI
+    setSinglePost(prevState => ({
+      ...prevState,
+      dislikeCount: prevState.dislikeCount + (prevState.isDisliked ? -1 : 1),
+      isDisliked: !prevState.isDisliked,
+    }));
+
+    const response = await axios({
+      method: singlePost.isDisliked === true ? "DELETE" : "POST",
+      url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        projectId: "t0v7xsdvt1j1",
+      },
+    });
+
+    if (response.data.status === "success") {
+      // toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
+      setIsUpvoted(false);
+      fetchLikedPost();
+    } else {
+      // Revert UI update if the request fails
+      setSinglePost(prevState => ({
+        ...prevState,
+        dislikeCount: prevState.dislikeCount - (prevState.isDisliked ? -1 : 1),
+        isDisliked: !prevState.isDisliked,
+      }));
     }
+  } catch (error) {
+    // Revert UI update if there's an error
+    console.error("Downvote operation failed:", error);
+    setSinglePost(prevState => ({
+      ...prevState,
+      dislikeCount: prevState.dislikeCount - (prevState.isDisliked ? -1 : 1),
+      isDisliked: !prevState.isDisliked,
+    }));
+  }
+};
 
-    try {
-      const response = await axios({
-        method: singlePost.isDisliked === true ? "DELETE" : "POST",
-        url: `https://academics.newtonschool.co/api/v1/reddit/dislike/${postId}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          projectId: "t0v7xsdvt1j1",
-        },
-      });
-
-      if (response.data.status === "success") {
-        toast.success(singlePost.isDisliked ? "Downvote removed" : "Downvoted");
-
-        // Adjust likeCount and dislikeCount
-        if (singlePost.isDisliked) {
-          singlePost.dislikeCount -= 1; // Remove downvote
-        } else {
-          singlePost.dislikeCount += 1; // Add downvote
-          if (singlePost.isLiked) {
-            singlePost.likeCount -= 1; // Remove upvote if switching from upvote to downvote
-          }
-        }
-
-        // Toggle isDisliked and isLiked states
-        singlePost.isDisliked = !singlePost.isDisliked;
-        setIsUpvoted(false);
-
-        fetchLikedPost();
-      }
-    } catch (error) {
-      console.error("Downvote operation failed:", error);
-
-    }
-  };
 
 
   const deletePost = async (postId) => {
     try {
       // console.log(postId)
-      const token = localStorage.getItem("token");
+    
       const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${postId}`, {
         method: 'DELETE',
         headers: {
@@ -181,7 +195,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   const toggleFollow = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+    
       let url = '';
       let method = '';
       if (joinedStatus) {
@@ -240,7 +254,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
 
   const handleEditPostSubmit = async () => {
-    const token = localStorage.getItem("token");
+  
     try {
       const formData = new FormData();
 
@@ -560,22 +574,27 @@ if (selectedItem === "Hot") {
       Math.abs(1 - a.likeCount / a.dislikeCount) -
       Math.abs(1 - b.likeCount / b.dislikeCount)
   );
+  
 } else if (selectedItem === "Best") {
   // Sorting posts by the ratio of likes to dislikes for "Best" posts
   posts.sort(
     (a, b) => b.likeCount / b.dislikeCount - a.likeCount / a.dislikeCount
   );
+  
 } else if (selectedItem === "New") {
   // Sorting posts by creation date for "New" posts
   posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
 } else if (selectedItem === "Top") {
   // Sorting posts by like count for "Top" posts
   posts.sort((a, b) => b.likeCount - a.likeCount);
+  
 } else if (selectedItem === "Rising") {
   // Sorting posts by a combination of like count and comment count for "Rising" posts
   posts.sort(
     (a, b) => b.likeCount + b.commentCount - (a.likeCount + a.commentCount)
   );
+  
 }
 
  
@@ -588,6 +607,7 @@ if (selectedItem === "Hot") {
             {/* Mapping over the dataToDisplay array to render Post2 components */}
             {dataToDisplay.map((postData, index) => (
                 <React.Fragment key={index}>
+                  
                     {/* Rendering Post2 component for each post data */}
                     <Post2 postData={postData} handlePostClick={handlePostClick} fetchPosts={fetchPosts} data={data} />
                     {/* Alternative way of rendering Post2 component */}

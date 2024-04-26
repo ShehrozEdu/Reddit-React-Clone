@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const CreateAPost = () => {
-    const { data, darkMode, setSelectedItem } = useContext(ContextAPIContext);
+    const { data, darkMode, setSelectedItem,token } = useContext(ContextAPIContext);
     const [activeTab, setActiveTab] = useState("post");
     const [postData, setPostData] = useState("");
     const [imageData, setImageData] = useState(null);
@@ -58,7 +58,6 @@ const CreateAPost = () => {
         }
     }
     const handlePostSubmit = async () => {
-        const token = localStorage.getItem("token");
         try {
             if (!token) {
                 toast.error("User is not logged in. Please Login");
@@ -72,10 +71,7 @@ const CreateAPost = () => {
                 toast.error("Please fill all the fields before submitting");
                 return;
             }
-            // if (postTitle==="abcd") {
-            //     toast.error("This is not a good way to post");
-            //     return;
-            // }
+          
 
             const formData = new FormData();
             formData.append('title', postTitle);

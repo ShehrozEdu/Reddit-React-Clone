@@ -44,15 +44,20 @@ const useThrottle = (callback, delay) => {
 };
 
 const Header = () => {
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick } = useContext(ContextAPIContext);
+  const searchRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [openPop, setOpenPop] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
 
 
 
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick } = useContext(ContextAPIContext);
-  const searchRef = useRef(null);
+
 
   // console.log(data)
 
@@ -99,18 +104,14 @@ const Header = () => {
   };
 
   // Toggles state of open
-  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
   // Toggles state of isChecked
-  const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
 
   // Manages popover state and anchor element
-  const [openPop, setOpenPop] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleTogglePop = (event) => {
     if (openPop) {

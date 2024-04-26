@@ -131,7 +131,7 @@ const handleSubmit = async () => {
 
     // Store user data in local storage based on sign-in/signup mode
     if (isSignIn) {
-      localStorage.setItem("userData", JSON.stringify(responseData.data));
+      localStorage.setItem("userData", JSON.stringify(responseData.data.user));
     } else {
       localStorage.setItem(
         "userData",

@@ -9,9 +9,9 @@ const Demo = () => {
   const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [errorPost, setErrorPost] = useState('');
 
-  const handleImageFilesChange = function (event) {
-    setImageFiles(event.target.files);
-  };
+  // const handleImageFilesChange = function (event) {
+  //   setImageFiles(event.target.files);
+  // };
 
   const addPostHandler = async (event) => {
     event.preventDefault(); 

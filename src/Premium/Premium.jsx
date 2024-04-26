@@ -17,7 +17,7 @@ const Premium = () => {
         </div>
       </div>
       <div className="_1H1BEIdB-vMmFIhl__GcP-">
-        <h2 className="_3xymUbUvqvfnMM2w1bDVpo">Join Reddit Premium Today</h2>
+        <h2 className="_3xymUbUvqvfnMM2w1bDVpo dark:text-white">Join Reddit Premium Today</h2>
         <div className="_21g0kYfKRCqWnHX6Hs4EVJ _2F-2JuCnBDGUkhnXOrig5y ">
           <div className="LpDOx_HYwL2maHntPrY3k">
             <div className="_2ZtkpgcwK6dFNvjfEHZZT4 _3WUWb7Sw86xRHJJhjUgdZ9" data-testid="benefit-tile">

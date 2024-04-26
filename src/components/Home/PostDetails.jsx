@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 
 const PostDetails = ({ posts }) => {
-  const { setComments,comments, data, handleClickToast,handlePostClick, darkMode,checkUserLoggedIn} = useContext(ContextAPIContext);
+  const { setComments,comments,token, data, handleClickToast,handlePostClick, darkMode,checkUserLoggedIn} = useContext(ContextAPIContext);
   const params = useParams();
   const timePost = posts?.find((post) => post?._id === params?.id);
   // console.log(timePost.createdAt)
@@ -65,7 +65,7 @@ const PostDetails = ({ posts }) => {
       toast.error("User is not logged in");
       return;
     }
-    const token = localStorage.getItem("token");
+  
 
     try {
       const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/comment/${post._id}`, {
@@ -103,7 +103,7 @@ const PostDetails = ({ posts }) => {
       toast.error("User is not logged in");
       return;
     }
-    const token = localStorage.getItem("token");
+  
 
     try {
       const response = await fetch(`https://academics.newtonschool.co/api/v1/reddit/post/${params.id}`, {
@@ -128,7 +128,7 @@ const PostDetails = ({ posts }) => {
   };
   // fetchComments: Retrieves comments for a specific post. Sends a GET request to the server and updates state with retrieved comments.
   const fetchComments = async () => {
-    const token=localStorage.getItem("token")
+     
     try {
       const response = await axios.get(`https://academics.newtonschool.co/api/v1/reddit/post/${params.id}/comments`, {
         headers: {
@@ -158,7 +158,7 @@ const PostDetails = ({ posts }) => {
 // handleUpClick: Allows a user to upvote a post. Toggles upvote status and sends appropriate request (POST/DELETE) to server.
  
   const handleUpClick = async (postId) => {
-    const token = localStorage.getItem("token");
+  
     if (!token) {
       toast.error("User is not logged in.");
       return;

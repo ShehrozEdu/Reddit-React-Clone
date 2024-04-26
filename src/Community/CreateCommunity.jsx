@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 
   const CreateCommunity = () => {
-    const {darkMode,handleAsideToggle}=useContext(ContextAPIContext)
+    const {darkMode,token}=useContext(ContextAPIContext)
     const [communityName, setCommunityName] = useState("");
     const [inputFocused, setInputFocused] = useState(false); 
     const maxCharacters = 21;
@@ -49,7 +49,7 @@ const handleCreateCommunity = async (event) => {
   try {
     formDataObject.append('images', "/images/svgs/defaultProfile.svg");
 
-    const token = localStorage.getItem("token");
+  
 
     if (!token) {
       toast.error("User is not logged in.");

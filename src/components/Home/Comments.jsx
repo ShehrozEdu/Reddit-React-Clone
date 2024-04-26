@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 
 const Comments = ({ postId }) => {
-  const { comments, setComments, data, darkMode } = useContext(ContextAPIContext)
+  const { comments, setComments, data, token } = useContext(ContextAPIContext)
   // const [expandedReplies, setExpandedReplies] = useState({});
   // const [count, setCount] = useState(5);
 
@@ -41,7 +41,7 @@ const Comments = ({ postId }) => {
   }, [postId]);
   // Delete a comment
   const deleteComment = async (commentId) => {
-    const token = localStorage.getItem("token");
+  
 
     // Check if token is available
     if (!token) {
