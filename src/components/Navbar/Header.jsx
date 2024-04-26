@@ -59,7 +59,6 @@ const Header = () => {
 
 
 
-  // console.log(data)
 
   // Throttles filterData function to limit its execution rate
   const throttledFilterData = useThrottle(filterData, 500);
@@ -196,7 +195,7 @@ const Header = () => {
                                 </div>
 
                                 <ListItemSuffix>
-                                  {item?.images[0]?.startsWith("https") && <img src={item.images[0]} width={130} alt="img" />}
+                                  {item?.images[0]?.startsWith("https") && <img src={item.images[0]}  className="object-cover w-32 h-32" alt="img" />}
                                 </ListItemSuffix>
 
                               </ListItem>

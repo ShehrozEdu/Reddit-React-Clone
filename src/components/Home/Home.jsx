@@ -205,7 +205,7 @@ const Home = () => {
           element={<ProtectedRouting element={<PostDetails posts={posts} />} />}
         />
         <Route path={"*"} element={<Error />} />
-      
+
       </Routes>
     </div>
   );
