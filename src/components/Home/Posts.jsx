@@ -156,15 +156,17 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const deletePost = async (postId) => {
     try {
       const response = await axiosInstance.delete(`/post/${postId}`);
-
-      if (response.status === 200) {
-        toast.success("Post deleted successfully");
-        setTimeout(() => {
-          location.href = "/";
-        }, 1200);
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+        // console.log(response)
+        if (!response.status==="204") {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          toast.success("Post deleted successfully")
+          // console.log("Post deleted successfully");
+          setTimeout(() => {
+            location.href = "/"
+  
+          }, 1200);
+        }
     } catch (error) {
       console.error("Error deleting post:", error);
     }
