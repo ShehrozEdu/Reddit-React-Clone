@@ -12,6 +12,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ContextAPIContext } from '../components/Context/ContextAPIContext ';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import axiosInstance from '../components/Auth/axiosConfig';
 
 const CreateAPost = () => {
     const { data, darkMode, setSelectedItem, token } = useContext(ContextAPIContext);
@@ -27,22 +28,16 @@ const CreateAPost = () => {
 
     useEffect(() => {
         const fetchPopularCommunity = async () => {
-            try {
-                const response = await axios.get(
-                    "https://academics.newtonschool.co/api/v1/reddit/channel",
-                    {
-                        headers: {
-                            projectId: "t0v7xsdvt1j1",
-                        },
-                    }
-                );
-                setPopularCommunityChannel(response.data.data);
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            const response = await axiosInstance.get("/channel");
+            setPopularCommunityChannel(response.data.data);
+          } catch (error) {
+            console.error(error);
+          }
         };
         fetchPopularCommunity();
-    }, []);
+      }, []);
+      
 
 
     const handleCommunityChange = (e) => {
@@ -59,61 +54,53 @@ const CreateAPost = () => {
     }
     const handlePostSubmit = async () => {
         try {
-            if (!token) {
-                toast.error("User is not logged in. Please Login");
-                return;
-            }
-            if (selectedOption === "") {
-                toast.error("Please select a community before submitting");
-                return;
-            }
-            if (!postTitle || !postData) {
-                toast.error("Please fill all the fields before submitting");
-                return;
-            }
-
-
-            const formData = new FormData();
-            formData.append('title', postTitle);
-
-            // Convert the postData from HTML to plain text
-            const tempDiv = document.createElement("div");
-            tempDiv.innerHTML = postData;
-            const plainText = tempDiv.textContent || tempDiv.innerText || "";
-
-            formData.append('content', plainText);
-            formData.append('images', imageData);
-            formData.append('appType', "reddit");
-
-            if (selectedChannelID) {
-                formData.append('channelId', selectedChannelID);
-            }
-
-            const response = await fetch('https://academics.newtonschool.co/api/v1/reddit/post/', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'projectId': 't0v7xsdvt1j1',
-                },
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if(data.status==="success"){
+          if (!token) {
+            toast.error("User is not logged in. Please Login");
+            return;
+          }
+          if (selectedOption === "") {
+            toast.error("Please select a community before submitting");
+            return;
+          }
+          if (!postTitle || !postData) {
+            toast.error("Please fill all the fields before submitting");
+            return;
+          }
+      
+          const formData = new FormData();
+          formData.append('title', postTitle);
+      
+          // Convert the postData from HTML to plain text
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = postData;
+          const plainText = tempDiv.textContent || tempDiv.innerText || "";
+      
+          formData.append('content', plainText);
+          formData.append('images', imageData);
+          formData.append('appType', "reddit");
+      
+          if (selectedChannelID) {
+            formData.append('channelId', selectedChannelID);
+          }
+      
+          const response = await axiosInstance.post("/post/", formData);
+      
+          const data = response.data;
+      
+          if (data.status === "success") {
             console.log(data.status)
             toast.success("Post created Successfully!");
-            // setSelectedItem("New");
             setTimeout(() => {
-                location.href = "/";
+              location.href = "/";
             }, 2000);
-        }else{
-            toast.error("Error creating a post")
-        }
+          } else {
+            toast.error("Error creating a post");
+          }
         } catch (error) {
-            console.error("Error creating post:", error);
+          console.error("Error creating post:", error);
         }
-    };
+      };
+      
 
 
 
