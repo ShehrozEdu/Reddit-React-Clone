@@ -10,6 +10,7 @@
   } from "@material-tailwind/react";
   import { ContextAPIContext } from "../components/Context/ContextAPIContext ";
 import { toast } from "react-toastify";
+import axiosInstance from "../components/Auth/axiosConfig";
 
 
   const CreateCommunity = () => {

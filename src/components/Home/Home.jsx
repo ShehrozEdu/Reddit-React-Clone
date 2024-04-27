@@ -110,7 +110,7 @@ const Home = () => {
         setError(null);
       } catch (error) {
         console.error(error);
-        setError('Failed to load data, please refresh');
+        // setError('Failed to load data, please refresh');
       }
     };
     fetchPopularCommunity();

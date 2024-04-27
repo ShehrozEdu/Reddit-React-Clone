@@ -19,6 +19,8 @@ const Post2 = ({ postData, handlePostClick, data }) => {
   const { setIsUpvoted, setIsDownvoted, setCommId, token, darkMode, handleClickToast } = useContext(ContextAPIContext)
   const [singlePost, setSinglePost] = useState([])
 
+
+  //conversion of time with createdAt as a base
   useEffect(() => {
 
     const createdAt = new Date(postData.createdAt);
@@ -38,7 +40,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
     setTimeAgo(timeAgoString);
   }, [postData.createdAt]);
 
-
+  //Fetches a single post
   const fetchLikedPost = async () => {
     try {
       if (!data) {
@@ -174,49 +176,43 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
   const toggleFollow = async (id) => {
     try {
-
       let url = '';
       let method = '';
       if (joinedStatus) {
         // Unfollow
         url = `https://academics.newtonschool.co/api/v1/quora/follow/${id}`;
-        method = 'DELETE';
+        method = 'delete';
       } else {
         // Follow
         url = `https://academics.newtonschool.co/api/v1/quora/follow/${id}`;
-        method = 'POST';
+        method = 'post';
       }
 
-      const response = await fetch(url, {
+      const response = await axios({
         method: method,
+        url: url,
         headers: {
           'Authorization': `Bearer ${token}`,
           'projectId': "t0v7xsdvt1j1"
         }
       });
 
-
       if (joinedStatus) {
         toast.success("Unfollowed successfully");
-        // console.log("1",joinedStatus)
       } else {
         toast.success("Followed successfully");
-        // console.log("2",joinedStatus)
-
       }
       setJoinedStatus(!joinedStatus);
-      // console.log("3",joinedStatus)
     }
     catch (error) {
-
-      if (response.status === 400) {
-        toast.error("Already followed")
-
+      if (error.response && error.response.status === 400) {
+        toast.error("Already followed");
       } else {
-        console.log(error)
+        console.log(error);
       }
     }
   }
+
 
   useEffect(() => {
     const status = localStorage.getItem('joinedStatus');
@@ -319,10 +315,10 @@ const Post2 = ({ postData, handlePostClick, data }) => {
                     <PopoverHandler>
                       <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-threeDots.svg" : "/images/svgs/threeDots.svg"} alt="" />
                     </PopoverHandler>
-                    <PopoverContent>
+                    <PopoverContent className="dark:bg-black">
 
                       <List className="w-52">
-                        <ListItem>
+                        <ListItem >
                           {data ? (
                             <div
                               className="text-black dark:text-white dark:bg-black p-2 rounded-full"
@@ -519,7 +515,7 @@ const Post2 = ({ postData, handlePostClick, data }) => {
 
 
 
-const Posts = ({ posts,error, popularPosts, fetchPosts, handlePostClick }) => {
+const Posts = ({ posts, error, popularPosts, fetchPosts, handlePostClick }) => {
 
   // Importing necessary context and hooks
   const { selectedItem, loading, data, darkMode } = useContext(ContextAPIContext);
