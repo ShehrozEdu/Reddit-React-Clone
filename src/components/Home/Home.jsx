@@ -14,6 +14,7 @@ import AuthorProfile from "../../Community/Profile/AuthorProfile";
 import ProtectedRouting from "../Auth/ProtectedRouting";
 import Error from "./Error";
 import axiosInstance from "../Auth/axiosConfig";
+import WorkUnderProgress from "./WorkUnderProgress";
 
 const Home = () => {
   const {
@@ -196,6 +197,7 @@ const Home = () => {
           element={<ProtectedRouting element={<PostDetails posts={posts} />} />}
         />
         <Route path={"*"} element={<Error />} />
+        <Route path={"/work-under-progress"} element={<WorkUnderProgress />} />
 
       </Routes>
     </div>

@@ -8,6 +8,19 @@ import { ContextAPIContext } from '../Context/ContextAPIContext ';
 import axiosInstance from '../Auth/axiosConfig';
 
 const ResponsiveHeader = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize); 
+    };
+  }, []);
   // Context API
   const { setDarkMode, darkMode, data, handleClickToast, handleAsideToggle, isAsideOpen } = useContext(ContextAPIContext);
 
@@ -65,7 +78,7 @@ const ResponsiveHeader = () => {
       console.error('Error fetching search results:', error);
     }
   };
-  
+
 
   // Handle search icon click
   const handleSearchIconClick = () => {
@@ -93,12 +106,18 @@ const ResponsiveHeader = () => {
     }
   };
 
+
   return (
     <div className=''>
       <div className='flex justify-between items-center py-3'>
         <div className='flex items-center'>
-          <div className='mr-2 cursor-pointer' onClick={handleAsideToggle}><img src={`${darkMode ? "/images/svgs/darkModeSvgs/dark-threeLines.svg" : "/images/svgs/threeLines.svg"}`} alt="" className='mx-3' /></div>
-          <div><img src="/images/svgs/reddit-icon.svg" alt="" className='cursor-pointer' onClick={() => { navigate("/") }} /></div>
+        <div className='mr-2 cursor-pointer' onClick={handleAsideToggle}>
+            {isAsideOpen ? (
+              <p className='mx-3 font-normal text-xl'>X</p>
+            ) : (
+                <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-threeLines.svg" : "/images/svgs/threeLines.svg"} alt="Menu" className='mx-3' />
+            )}
+        </div>
         </div>
         <div className='flex items-center'>
           <Button className=' p-3 clr-FF4500 rounded-2xl capitalize py-2 cursor-pointer' onClick={() => { handleClickToast() }}>Use app</Button>

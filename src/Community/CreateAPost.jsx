@@ -15,7 +15,7 @@ import axios from 'axios';
 import axiosInstance from '../components/Auth/axiosConfig';
 
 const CreateAPost = () => {
-    const { data, darkMode, setSelectedItem, token } = useContext(ContextAPIContext);
+    const { data, darkMode, isSignIn, token } = useContext(ContextAPIContext);
     const [activeTab, setActiveTab] = useState("post");
     const [postData, setPostData] = useState("");
     const [imageData, setImageData] = useState(null);
@@ -28,16 +28,16 @@ const CreateAPost = () => {
 
     useEffect(() => {
         const fetchPopularCommunity = async () => {
-          try {
-            const response = await axiosInstance.get("/channel");
-            setPopularCommunityChannel(response.data.data);
-          } catch (error) {
-            console.error(error);
-          }
+            try {
+                const response = await axiosInstance.get("/channel");
+                setPopularCommunityChannel(response.data.data);
+            } catch (error) {
+                console.error(error);
+            }
         };
         fetchPopularCommunity();
-      }, []);
-      
+    }, []);
+
 
 
     const handleCommunityChange = (e) => {
@@ -54,53 +54,82 @@ const CreateAPost = () => {
     }
     const handlePostSubmit = async () => {
         try {
-          if (!token) {
-            toast.error("User is not logged in. Please Login");
-            return;
-          }
-          if (selectedOption === "") {
-            toast.error("Please select a community before submitting");
-            return;
-          }
-          if (!postTitle || !postData) {
-            toast.error("Please fill all the fields before submitting");
-            return;
-          }
-      
-          const formData = new FormData();
-          formData.append('title', postTitle);
-      
-          // Convert the postData from HTML to plain text
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = postData;
-          const plainText = tempDiv.textContent || tempDiv.innerText || "";
-      
-          formData.append('content', plainText);
-          formData.append('images', imageData);
-          formData.append('appType', "reddit");
-      
-          if (selectedChannelID) {
-            formData.append('channelId', selectedChannelID);
-          }
-      
-          const response = await axiosInstance.post("/post/", formData);
-      
-          const data = response.data;
-      
-          if (data.status === "success") {
-            console.log(data.status)
-            toast.success("Post created Successfully!");
-            setTimeout(() => {
-              location.href = "/";
-            }, 2000);
-          } else {
-            toast.error("Error creating a post");
-          }
+            if (!token) {
+                toast.error("User is not logged in. Please Login");
+                return;
+            }
+    
+            // Validation based on active tab
+            switch (activeTab) {
+                case "post":
+                    if (selectedOption === "") {
+                        toast.error("Please select a community before submitting");
+                        return;
+                    }
+                    if (!postTitle || !postData) {
+                        toast.error("Please fill all the fields before submitting");
+                        return;
+                    }
+                    break;
+                case "images/video":
+                    if (selectedOption === "") {
+                        toast.error("Please select a community before submitting");
+                        return;
+                    }
+                    if (!postTitle || !imageData) {
+                        toast.error("Please fill all the fields before submitting");
+                        return;
+                    }
+                    break;
+                case "link":
+                    if (selectedOption === "") {
+                        toast.error("Please select a community before submitting");
+                        return;
+                    }
+                    if (!linkData) {
+                        toast.error("Please fill all the fields before submitting");
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+    
+            const formData = new FormData();
+            formData.append('title', postTitle);
+    
+            // Convert the postData from HTML to plain text
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = postData;
+            const plainText = tempDiv.textContent || tempDiv.innerText || "";
+    
+            formData.append('content', plainText);
+            formData.append('images', imageData);
+            formData.append('appType', "reddit");
+    
+            if (selectedChannelID) {
+                formData.append('channelId', selectedChannelID);
+            }
+    
+            const response = await axiosInstance.post("/post/", formData);
+    
+            const data = response.data;
+    
+            if (data.status === "success") {
+                console.log(data.status)
+                toast.success("Post created Successfully!");
+                setTimeout(() => {
+                    location.href = "/";
+                }, 2000);
+            } else {
+                toast.error("Error creating a post");
+            }
         } catch (error) {
-          console.error("Error creating post:", error);
+            console.error("Error creating post:", error);
         }
-      };
-      
+    };
+    
+
 
 
 
@@ -159,28 +188,7 @@ const CreateAPost = () => {
                 </div>
             )
         },
-        {
-            label: "Link",
-            value: "link",
-            render: (
-                <div>
-                    <input
-                        type="text"
-                        value={linkData}
-                        onChange={(e) => setLinkData(e.target.value)}
-                        placeholder="Enter link URL..."
-                        className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                    />
-                    <button
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-                        onClick={handlePostSubmit}
-
-                    >
-                        Submit
-                    </button>
-                </div>
-            )
-        },
+        
 
     ];
 
@@ -198,7 +206,7 @@ const CreateAPost = () => {
                     onChange={handleCommunityChange}
                 >
                     <option value="">Choose a community</option>
-                    <option value={`u/${data.name}`}>u/{data.name}</option>
+                    <option value={`u/${isSignIn?data.user.name:data.name}`}>u/{isSignIn?data.user.name:data.name}</option>
                     {
                         popularCommunityChannel
                             .filter(channel => data._id === channel.owner._id)

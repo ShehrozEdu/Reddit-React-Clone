@@ -156,7 +156,7 @@ const ProtectedLogin = () => {
 <Card className="mx-auto w-full max-w-[50rem] flex justify-center">
           <CardBody className="flex flex-col gap-4">
             <Typography variant="h4" className="text-black">
-              {isSignIn ? "Log In" : "Sign Up"}
+              {isSignIn ? "Sign In" : "Sign Up"}
             </Typography>
             <Typography
               className="mb-3 font-light text-sm"

@@ -31,62 +31,62 @@ const Aside = () => {
   const [open, setOpen] = React.useState(0);
   const [subOpen, setSubOpen] = React.useState(0);
   const [width, setWidth] = useState("75%");
-  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast,handleCommNav, setIsAsideOpen,handleCommunityDetails,handleAsideToggle } = useContext(ContextAPIContext);
+  const { clickedButton, data, popularCommunityChannel, recentCommunities, setRecentCommunities, darkMode, setCommId, handleClickToast, handleCommNav, setIsAsideOpen, handleCommunityDetails, handleAsideToggle } = useContext(ContextAPIContext);
 
   // Adjusts width based on current location path
-useEffect(() => {
-  if (location.pathname === "/submit") {
-    setWidth("100%");
-  } else {
-    setWidth("75%");
-  }
-}, [location.pathname]);
+  useEffect(() => {
+    if (location.pathname === "/submit") {
+      setWidth("100%");
+    } else {
+      setWidth("75%");
+    }
+  }, [location.pathname]);
 
-// Toggles main navigation menu
-const handleOpen = (value) => {
-  setOpen(open === value ? 0 : value);
-  if (open !== value) {
-    setSubOpen(0);
-  }
-};
-
-// Toggles sub navigation menu
-const handleSubOpen = (value) => {
-  setSubOpen(subOpen === value ? 0 : value);
-};
-
-// Navigates to the specified route
-const navigate = useNavigate();
-
-// Retrieves recent communities from session storage
-useEffect(() => {
-  const storedCommunities = sessionStorage.getItem("recentCommunities");
-  if (storedCommunities) {
-    setRecentCommunities(JSON.parse(storedCommunities));
-  }
-}, []);
-
-// Detects whether the device is mobile
-const [isMobile, setIsMobile] = useState(false);
-
-useEffect(() => {
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
+  // Toggles main navigation menu
+  const handleOpen = (value) => {
+    setOpen(open === value ? 0 : value);
+    if (open !== value) {
+      setSubOpen(0);
+    }
   };
 
-  handleResize();
-
-  window.addEventListener('resize', handleResize);
-
-  return () => {
-    window.removeEventListener('resize', handleResize);
+  // Toggles sub navigation menu
+  const handleSubOpen = (value) => {
+    setSubOpen(subOpen === value ? 0 : value);
   };
-}, []);
 
-// Retrieves user info from local storage
-const userinfo = localStorage.getItem("userData");
+  // Navigates to the specified route
+  const navigate = useNavigate();
 
- 
+  // Retrieves recent communities from session storage
+  useEffect(() => {
+    const storedCommunities = sessionStorage.getItem("recentCommunities");
+    if (storedCommunities) {
+      setRecentCommunities(JSON.parse(storedCommunities));
+    }
+  }, []);
+
+  // Detects whether the device is mobile
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Retrieves user info from local storage
+  const userinfo = localStorage.getItem("userData");
+
+
   return (
 
     <Card className={`h-[calc(100vh-4.2rem)] w-full max-w-[21rem] p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
@@ -97,7 +97,7 @@ const userinfo = localStorage.getItem("userData");
             <ListItem
               className="text-black dark:text-white py-2"
               onClick={() => {
-                {navigate("/");setIsAsideOpen(false)}
+                { navigate("/"); setIsAsideOpen(false) }
               }}
             >
               <ListItemPrefix>
@@ -108,7 +108,7 @@ const userinfo = localStorage.getItem("userData");
             <ListItem
               className="text-black dark:text-white py-2"
               onClick={() => {
-             {   navigate("/popular");setIsAsideOpen(false)}
+                { navigate("/popular"); setIsAsideOpen(false) }
 
               }}
             >
@@ -118,7 +118,7 @@ const userinfo = localStorage.getItem("userData");
               Popular
             </ListItem>
             <hr className=" py-2 border-blue-gray-50" />
-           {userinfo && <Accordion
+            {userinfo && <Accordion
               open={open === 1}
               icon={
                 <ChevronDownIcon
@@ -144,30 +144,30 @@ const userinfo = localStorage.getItem("userData");
               </ListItem>
               <AccordionBody className="py-1">
                 <List className="p-0">
-                {( recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
-    <ListItem key={index} onClick={()=>{handleCommunityDetails(community._id);handleAsideToggle()}}>
-        <div className="flex items-center dark:text-white">
-            <img
-                className="h-8 w-8 border rounded-full mr-2"
-                src={community.image ? community.image : "https://styles.redditmedia.com/t5_4u2xam/styles/communityIcon_ude638vcihsb1.png"}
-                alt="Avatar"
-            />
-            <div className="flex flex-col font-medium items-center dark:text-white">
-                <a
-                    className="text-sm text-black no-underline leading-tight cursor-pointer hover:text-blue-gray-200 dark:text-white"
-                >
-                    r/{community.name}
-                </a>
-            </div>
-        </div>
-    </ListItem>
-)) : <ListItem>No recent Items</ListItem>)}
+                  {(recentCommunities.length > 0 ? recentCommunities.map((community, index) => (
+                    <ListItem key={index} onClick={() => { handleCommunityDetails(community._id); handleAsideToggle() }}>
+                      <div className="flex items-center dark:text-white">
+                        <img
+                          className="h-8 w-8 border rounded-full mr-2"
+                          src={community.image ? community.image : "https://styles.redditmedia.com/t5_4u2xam/styles/communityIcon_ude638vcihsb1.png"}
+                          alt="Avatar"
+                        />
+                        <div className="flex flex-col font-medium items-center dark:text-white">
+                          <a
+                            className="text-sm text-black no-underline leading-tight cursor-pointer hover:text-blue-gray-200 dark:text-white"
+                          >
+                            r/{community.name}
+                          </a>
+                        </div>
+                      </div>
+                    </ListItem>
+                  )) : <ListItem>No recent Items</ListItem>)}
 
 
                 </List>
               </AccordionBody>
             </Accordion>}
-            {userinfo &&<hr className=" py-2 border-blue-gray-50" />}
+            {userinfo && <hr className=" py-2 border-blue-gray-50" />}
             <Accordion
               open={open === 2}
               icon={
@@ -543,7 +543,7 @@ const userinfo = localStorage.getItem("userData");
                       </ListItem>
                       {popularCommunityChannel.slice(0, 3).map((item, idx) => {
                         return (
-                          <ListItem className="pl-0 py-1 flex items-center" key={idx} onClick={() => {handleCommunityDetails(item._id);handleAsideToggle()}}>
+                          <ListItem className="pl-0 py-1 flex items-center" key={idx} onClick={() => { handleCommunityDetails(item._id); handleAsideToggle() }}>
                             <span className="mr-3">
                               <img
                                 src={item.image ? item.image : "https://styles.redditmedia.com/t5_2r0ij/styles/communityIcon_yor9myhxz5x11.png"}
@@ -607,50 +607,40 @@ const userinfo = localStorage.getItem("userData");
               </ListItem>
               <AccordionBody className="py-1">
                 <List className="p-0">
-                  <ListItem onClick={() => {window.open("https://www.redditinc.com/", "_blank");handleAsideToggle();}}>
+                  <ListItem onClick={() => navigate("/work-under-progress")}>
                     <ListItemPrefix >
-                      <img src="/images/svgs/resourcesTab/aboutReddit.svg" alt="" />
+                      <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-aboutReddit.svg" : "/images/svgs/resourcesTab/aboutReddit.svg"} alt="" />
                     </ListItemPrefix>
-                    <h5 >About Reddit</h5>
+                    <h5  className="dark:text-white">About Reddit</h5>
                   </ListItem>
-                  <ListItem onClick={() => window.open("https://support.reddithelp.com/hc/en-us", "_blank")}>
+                  <ListItem onClick={() => navigate("/work-under-progress")}>
                     <ListItemPrefix>
-                      <img src="/images/svgs/resourcesTab/advertise.svg" alt="" />
+                      <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-advertise.svg" : "/images/svgs/resourcesTab/advertise.svg"} alt="" />
                     </ListItemPrefix>
-                    Advertise
+                   <h5 className="dark:text-white"> Advertise</h5>
                   </ListItem >
-                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
+                  <ListItem onClick={() => navigate("/work-under-progress")}>
                     <ListItemPrefix>
-                      <img src="/images/svgs/resourcesTab/help.svg" alt="" />
+                      <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-resourcesTab.svg" : "/images/svgs/resourcesTab/help.svg"} alt="" />
                     </ListItemPrefix>
-                    Help
+                    <h5 className="dark:text-white">Resources</h5>
                   </ListItem>
-                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
+
+                  <ListItem onClick={() => navigate("/work-under-progress")}>
                     <ListItemPrefix>
-                      <img src="/images/svgs/resourcesTab/bolg.svg" alt="" />
+                      <img src={darkMode ? "/images/svgs/darkModeSvgs/dark-blog.svg" : "/images/svgs/resourcesTab/bolg.svg"} alt="" />
                     </ListItemPrefix>
-                    Blog
+                  <h5 className="dark:text-white">  Blog</h5>
                   </ListItem>
-                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
-                    <ListItemPrefix>
-                      <img src="/images/svgs/resourcesTab/careers.svg" alt="" />
-                    </ListItemPrefix>
-                    Careers
-                  </ListItem>
-                  <ListItem onClick={()=>{handleClickToast();handleAsideToggle();}}>
-                    <ListItemPrefix>
-                      <img src="/images/svgs/resourcesTab/press.svg" alt="" />
-                    </ListItemPrefix>
-                    Press
-                  </ListItem>
-                  <hr className="text-blue-700" />
+
+
 
                 </List>
               </AccordionBody>
             </Accordion>
             <hr className=" py-2 border-blue-gray-50" />
 
-       
+
           </List>
         </Scrollbars>
       </div>

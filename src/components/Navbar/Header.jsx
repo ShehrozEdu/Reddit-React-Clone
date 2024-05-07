@@ -44,7 +44,7 @@ const useThrottle = (callback, delay) => {
 };
 
 const Header = () => {
-  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick } = useContext(ContextAPIContext);
+  const { posts, data, setShowResults, showResults, setDarkMode, darkMode, handleClickToast, handlePostClick, isSignIn } = useContext(ContextAPIContext);
   const searchRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -195,7 +195,7 @@ const Header = () => {
                                 </div>
 
                                 <ListItemSuffix>
-                                  {item?.images[0]?.startsWith("https") && <img src={item.images[0]}  className="object-cover w-32 h-32" alt="img" />}
+                                  {item?.images[0]?.startsWith("https") && <img src={item.images[0]} className="object-cover w-32 h-32" alt="img" />}
                                 </ListItemSuffix>
 
                               </ListItem>
@@ -239,7 +239,7 @@ const Header = () => {
                 <Login />
               ) : (
                 <Button className="text-white rounded-2xl clr-FF4500">
-                  {data?.user?.name}
+                  {isSignIn ? data.user.name : data.name}
                 </Button>
               )}
               {/* <EllipsisHorizontalIcon className="h-8 w-8 text-black" />) */}
@@ -292,7 +292,7 @@ const Header = () => {
                           {" "}
                           <p className="text-sm dark:text-white">View Profile</p>
                           <p className="text-xs text-blue-gray-300 dark:text-white">
-                            u/{data?.name}
+                            u/{isSignIn ? data?.user?.name : data?.name}
                           </p>
                         </div>
                       </ListItem>

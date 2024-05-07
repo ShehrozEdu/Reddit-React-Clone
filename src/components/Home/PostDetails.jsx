@@ -431,8 +431,8 @@ const category = getCategoryFromContent(post.content|| post.title);
             {isOpen && (data ? (
               <div className="mt-4 border border-gray-400 rounded-lg p-3 responsiveCommentWidth">
                 <div className="flex items-center space-x-2">
-                  <Input
-                    className="flex-grow border-none focus:outline-none dark:text-white"
+                  <input
+                    className="flex-grow border-none focus:outline-none dark:text-white dark:bg-[#0B1416]"
                     type="text"
                     placeholder="Add a comment..."
                     value={comment}

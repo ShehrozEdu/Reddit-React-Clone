@@ -32,6 +32,7 @@ export const ContextAPIProvider = ({ children }) => {
 const [downvotes, setDownvotes] = useState({});
   const [commNameFetch, setCommNameFetch] = useState([]);
 
+  
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -76,6 +77,7 @@ useEffect(() => {
 
   const handleAsideToggle = () => {
     setIsAsideOpen(!isAsideOpen);
+    
   };
  
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);

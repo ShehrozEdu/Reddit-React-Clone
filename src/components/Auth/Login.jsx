@@ -166,7 +166,7 @@ const handleSubmit = async () => {
         onClick={handleOpen}
         className="clr-FF4500 ml-5 rounded-2xl capitalize"
       >
-        Log In
+        Sign In
       </Button>
 
       <Dialog
@@ -178,7 +178,7 @@ const handleSubmit = async () => {
         <Card className="mx-auto w-full max-w-[64rem] ">
           <CardBody className="flex flex-col gap-4">
             <Typography variant="h4" className="text-black">
-              {isSignIn ? "Log In" : "Sign Up"}
+              {isSignIn ? "Sign In" : "Sign Up"}
             </Typography>
             <Typography
               className="mb-3 font-light text-sm"
