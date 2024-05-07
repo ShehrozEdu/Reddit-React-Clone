@@ -89,7 +89,7 @@ const Aside = () => {
 
   return (
 
-    <Card className={`h-[calc(100vh-4.2rem)] w-full max-w-[21rem] p-4 shadow-xl shadow-blue-gray-900/5 fixed top-16 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
+    <Card className={`h-[calc(100vh-4.2rem)] w-full max-w-[21rem] p-4 shadow-xl shadow-blue-gray-900/5 fixed top-10 left-0 z-10 ${darkMode ? 'bg-[#0B1416]' : ''}`}>
 
       <div className="">
         <Scrollbars autoHide style={{ height: "calc(100vh - 4.2rem)", width: isMobile ? "100%" : width }}>
