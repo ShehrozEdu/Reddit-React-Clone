@@ -112,7 +112,7 @@ const ProfileOverview = () => {
           <img src="https://www.redditstatic.com/shreddit/assets/hmm-snoo.png" className='w-[60px]' alt="" />
         </div>
           <div className='flex justify-center'>
-            <h3 className='text-xs text-gray-600'> <strong>u/{dataProf[0]?.author.name} hasn't posted yet</strong></h3>
+            <h3 className='text-xs text-gray-600'> <strong>u/{dataProf?.author.name} hasn't posted yet</strong></h3>
           </div > 
           </>}
 
